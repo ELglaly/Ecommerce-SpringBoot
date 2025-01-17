@@ -4,6 +4,7 @@ import com.example.demo.exceptions.CategoryNotFoundException;
 import com.example.demo.model.entity.Category;
 import com.example.demo.repository.CategoryRepository;
 import com.example.demo.request.AddCategoryRequest;
+import com.example.demo.request.UpdateCategoryRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -44,7 +45,7 @@ public class CategoryService implements ICategoryService {
 
 
     @Override
-    public Category updateCategory(AddCategoryRequest request, Long id) {
+    public Category updateCategory(UpdateCategoryRequest request, Long id) {
         return categoryRepository.findById(id).map(
                 existingCategory -> {
                 Category category =updateexisitngCategory (existingCategory, request);
@@ -53,7 +54,7 @@ public class CategoryService implements ICategoryService {
         ).orElseThrow(()->   new CategoryNotFoundException("Category not found"));
     }
 
-    public Category updateexisitngCategory(Category existingCategory, AddCategoryRequest request) {
+    public Category updateexisitngCategory(Category existingCategory, UpdateCategoryRequest request) {
         existingCategory.setName(request.getName());
         existingCategory.setDescription(request.getDescription());
         return existingCategory;
