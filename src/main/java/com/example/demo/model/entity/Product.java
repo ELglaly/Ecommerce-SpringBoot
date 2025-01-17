@@ -2,6 +2,7 @@ package com.example.demo.model.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
@@ -12,7 +13,17 @@ import java.util.List;
 @Table(name="Products")
 @Getter
 @Setter
+@NoArgsConstructor
 public class Product {
+
+    public Product(String name, String description, BigDecimal price, int quantity, Category category, String brand) {
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.quantity = quantity;
+        this.category = category;
+        this.brand = brand;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
