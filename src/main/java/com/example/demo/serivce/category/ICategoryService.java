@@ -2,6 +2,7 @@ package com.example.demo.serivce.category;
 
 import com.example.demo.model.entity.Category;
 import com.example.demo.request.AddCategoryRequest;
+import com.example.demo.request.UpdateCategoryRequest;
 
 import java.util.List;
 
@@ -11,8 +12,7 @@ public interface ICategoryService {
     List<Category> getAllCategories();
     Category getCategoryByName(String categoryName);
     Category addCategory(AddCategoryRequest category);
-    Category updateCategory(AddCategoryRequest category,Long id);
+    Category updateCategory(UpdateCategoryRequest category, Long id);
     void deleteCategory(Long id);
     Long getCategoryCount();
-
 }
