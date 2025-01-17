@@ -3,14 +3,12 @@ package com.example.demo.serivce.product;
 import com.example.demo.exceptions.CategoryNotFoundException;
 import com.example.demo.exceptions.ProductAlreadyExistsException;
 import com.example.demo.exceptions.ProductNotFoundException;
-import com.example.demo.model.entity.Category;
 import com.example.demo.model.entity.Product;
 import com.example.demo.repository.CategoryRepository;
 import com.example.demo.repository.ProductRepository;
 import com.example.demo.request.AddProductRequest;
 import com.example.demo.request.UpdateProductRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
