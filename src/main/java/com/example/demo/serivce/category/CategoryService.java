@@ -1,14 +1,18 @@
 package com.example.demo.serivce.category;
 
+import com.example.demo.exceptions.CategoryAlradyExistsException;
 import com.example.demo.exceptions.CategoryNotFoundException;
 import com.example.demo.model.entity.Category;
 import com.example.demo.repository.CategoryRepository;
+import com.example.demo.repository.ProductRepository;
 import com.example.demo.request.AddCategoryRequest;
 import com.example.demo.request.UpdateCategoryRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -16,6 +20,7 @@ import java.util.List;
 public class CategoryService implements ICategoryService {
 
     private final CategoryRepository categoryRepository;
+    private final ProductRepository productRepository;
 
     @Override
     public Category getCategoryById(Long id) {
@@ -36,7 +41,10 @@ public class CategoryService implements ICategoryService {
 
     @Override
     public Category addCategory(AddCategoryRequest request) {
-        return createCategory(request);
+        return Optional.of(request).filter(req-> !categoryRepository.existsByName(req.getName()))
+                .map(this::createCategory)
+                .map(categoryRepository :: save)
+                .orElseThrow(() -> new CategoryAlradyExistsException("Category Already Exists"));
     }
 
     private Category createCategory(AddCategoryRequest request) {

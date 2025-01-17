@@ -12,4 +12,6 @@ public interface ImageRepository extends JpaRepository<Image, Long> {
     List<Image> findImageByProductName(String productName);
 
     Image getImageByUrl(String url);
+
+    Boolean existsByTitle(String title);
 }

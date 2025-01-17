@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.sql.Blob;
-@AllArgsConstructor
+
 @NoArgsConstructor
 @Entity
 @Table(name="Images")
@@ -28,4 +28,10 @@ public class Image {
     @JoinColumn()
     private Product product;
 
+    public Image(Product product, String url, Blob image, String title) {
+        this.product = product;
+        this.url = url;
+        this.image = image;
+        this.title = title;
+    }
 }
