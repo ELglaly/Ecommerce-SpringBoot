@@ -9,12 +9,12 @@ import java.util.List;
 public interface IImageService {
 
     List<ImageDto> addImage(List<MultipartFile> image, Long ProductId);
-    Image getImage(Long id);
+    ImageDto getImage(Long id);
     void updateImage(List<MultipartFile> image, Long id);
     void deleteImage(Long id);
-    Image getImageByUrl(String url);
-    List<Image> getAllImages();
-    List<Image> getImagesByProduct(String product);
+    ImageDto getImageByUrl(String url);
+    List<ImageDto> getAllImages();
+    List<ImageDto> getImagesByProduct(String product);
     Long getImageCountByProduct(String product);
 
 }

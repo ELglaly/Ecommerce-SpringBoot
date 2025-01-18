@@ -1,5 +1,6 @@
 package com.example.demo.serivce.category;
 
+import com.example.demo.model.dto.CategoryDto;
 import com.example.demo.model.entity.Category;
 import com.example.demo.request.AddCategoryRequest;
 import com.example.demo.request.UpdateCategoryRequest;
@@ -8,11 +9,11 @@ import java.util.List;
 
 public interface ICategoryService {
 
-    Category getCategoryById(Long id);
-    List<Category> getAllCategories();
-    Category getCategoryByName(String categoryName);
-    Category addCategory(AddCategoryRequest category);
-    Category updateCategory(UpdateCategoryRequest category, Long id);
+    CategoryDto getCategoryById(Long id);
+    List<CategoryDto> getAllCategories();
+    CategoryDto getCategoryByName(String categoryName);
+    CategoryDto addCategory(CategoryDto category);
+    CategoryDto updateCategory(CategoryDto category, Long id);
     void deleteCategory(Long id);
     Long getCategoryCount();
 }

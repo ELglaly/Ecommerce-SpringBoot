@@ -62,8 +62,10 @@ public class ImageService implements IImageService {
     }
 
     @Override
-    public Image getImage(Long id) {
-        return imageRepository.findById(id).orElseThrow(
+    public ImageDto getImage(Long id) {
+        return imageRepository.findById(id)
+                .map(ImageMapper::toDto)
+                .orElseThrow(
                 ()-> new ImageNotFoundException("Image Not Found")
         );
     }
@@ -113,19 +115,23 @@ public class ImageService implements IImageService {
     }
 
     @Override
-    public Image getImageByUrl(String url) {
-        return imageRepository.getImageByUrl(url);
+    public ImageDto getImageByUrl(String url) {
+        return ImageMapper.toDto(imageRepository.getImageByUrl(url));
     }
 
 
     @Override
-    public List<Image> getAllImages() {
-        return imageRepository.findAll();
+    public List<ImageDto> getAllImages() {
+        return imageRepository.findAll()
+                .stream().map(ImageMapper::toDto)
+                .toList();
     }
 
     @Override
-    public List<Image> getImagesByProduct(String productName) {
-        return imageRepository.findImageByProductName(productName);
+    public List<ImageDto> getImagesByProduct(String productName) {
+        return imageRepository.findImageByProductName(productName).stream()
+                .map(ImageMapper::toDto)
+                .toList();
     }
 
     @Override
