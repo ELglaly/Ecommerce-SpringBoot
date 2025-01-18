@@ -3,11 +3,11 @@ package com.example.demo.serivce.product;
 import com.example.demo.exceptions.CategoryNotFoundException;
 import com.example.demo.exceptions.ProductAlreadyExistsException;
 import com.example.demo.exceptions.ProductNotFoundException;
+import com.example.demo.model.dto.ProductDto;
 import com.example.demo.model.entity.Product;
+import com.example.demo.model.mapping.ProductMapper;
 import com.example.demo.repository.CategoryRepository;
 import com.example.demo.repository.ProductRepository;
-import com.example.demo.request.AddProductRequest;
-import com.example.demo.request.UpdateProductRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,62 +22,58 @@ public class ProductService implements IProductService {
 
     // Add a new product to the repository
     @Override
-    public Product addProduct(AddProductRequest request) {
+    public ProductDto addProduct(ProductDto productDto) {
         // Find product by name; if not found, throw exception
-        return Optional.of(request).filter(req -> !productRepository.existsByName(req.getName()))
+        return Optional.of(productDto).filter(req -> !productRepository.existsByName(req.getName()))
                 .map(this::createProduct)
-                .map(productRepository :: save)
                 .orElseThrow(()-> new ProductAlreadyExistsException("Product Already Exists"));
     }
 
-    // Helper method to create a new Product entity from the request and category
-    private Product createProduct(AddProductRequest request) {
-        return new Product(
-                request.getName(),
-                request.getDescription(),
-                request.getPrice(),
-                request.getQuantity(),
-                request.getCategory(),
-                request.getBrand()
-        );
+    // Helper method to create a new Product entity from the productDto and category
+    private ProductDto createProduct(ProductDto productDto) {
+        Product product = ProductMapper.toEntity(productDto);
+        productRepository.save(product);
+        return productDto;
     }
 
     // return a product by ID and throws exception if not found
     @Override
-    public Product getProductById(Long id) {
+    public ProductDto getProductById(Long id) {
         return productRepository.findById(id)
+                .map(ProductMapper::toDto)
                 .orElseThrow(() -> new ProductNotFoundException("Product Not Found"));
     }
 
     // return all products from the repository
     @Override
-    public List<Product> getAllProducts() {
-        return productRepository.findAll();
+    public List<ProductDto> getAllProducts() {
+        return productRepository.findAll()
+                .stream().map(ProductMapper::toDto)
+                .toList();
     }
 
     // Update an existing product identified by its ID
     @Override
-    public Product updateProduct(UpdateProductRequest request, Long id) {
+    public ProductDto updateProduct(ProductDto productDto, Long id) {
         return productRepository.findById(id)
-                .map(existingProduct -> updateExistingProduct(existingProduct, request))
-                .map(productRepository :: save)
+                .map(existingProduct -> updateExistingProduct(existingProduct, productDto))
                 .orElseThrow(() -> new ProductNotFoundException("Product Not Found"));
     }
 
-    // Helper method to update product fields from the request
-    private Product updateExistingProduct(Product existingProduct, UpdateProductRequest request) {
-        existingProduct.setName(request.getName());
-        existingProduct.setDescription(request.getDescription());
-        existingProduct.setPrice(request.getPrice());
-        existingProduct.setQuantity(request.getQuantity());
-        existingProduct.setBrand(request.getBrand());
+    // Helper method to update product fields from the productDto
+    private ProductDto updateExistingProduct(Product existingProduct, ProductDto productDto) {
+        existingProduct.setName(productDto.getName());
+        existingProduct.setDescription(productDto.getDescription());
+        existingProduct.setPrice(productDto.getPrice());
+        existingProduct.setQuantity(productDto.getQuantity());
+        existingProduct.setBrand(productDto.getBrand());
 
         // Find and update category if present
-        return Optional.ofNullable(categoryRepository.findByName(request.getName()))
+        return Optional.ofNullable(categoryRepository.findByName(productDto.getName()))
                 .map(category -> {
                     existingProduct.setCategory(category);
                     productRepository.save(existingProduct);
-                    return existingProduct;
+                    return productDto;
                 }).orElseThrow(()->new CategoryNotFoundException("Category Not Found"));
     }
 
@@ -92,38 +88,50 @@ public class ProductService implements IProductService {
 
     // return products by their name
     @Override
-    public List<Product> getProductsByName(String name) {
-        return productRepository.findByName(name);
+    public List<ProductDto> getProductsByName(String name) {
+        return productRepository.findByName(name)
+                .stream().map(ProductMapper::toDto)
+                .toList();
     }
 
     // return all products under a specific category
     @Override
-    public List<Product> getAllProductsByCategory(String category) {
-        return productRepository.findByCategoryName(category);
+    public List<ProductDto> getAllProductsByCategory(String category) {
+        return productRepository.findByCategoryName(category)
+                .stream().map(ProductMapper::toDto)
+                .toList();
     }
 
     // return all products of a specific brand
     @Override
-    public List<Product> getAllProductsByBrand(String brand) {
-        return productRepository.findByBrand(brand);
+    public List<ProductDto> getAllProductsByBrand(String brand) {
+        return productRepository.findByBrand(brand)
+                .stream().map(ProductMapper::toDto)
+                .toList();
     }
 
     // return all products matching a specific category and brand
     @Override
-    public List<Product> getAllProductsByCategoryAndBrand(String category, String brand) {
-        return productRepository.findByCategoryNameAndBrand(category, brand);
+    public List<ProductDto> getAllProductsByCategoryAndBrand(String category, String brand) {
+        return productRepository.findByCategoryNameAndBrand(category, brand)
+                .stream().map(ProductMapper::toDto)
+                .toList();
     }
 
     // return all products matching a specific name and category
     @Override
-    public List<Product> getAllProductsByNameAndCategory(String name, String category) {
-        return productRepository.findByNameAndCategoryName(name, category);
+    public List<ProductDto> getAllProductsByNameAndCategory(String name, String category) {
+        return productRepository.findByNameAndCategoryName(name, category)
+                .stream().map(ProductMapper::toDto)
+                .toList();
     }
 
     // return all products matching a specific brand and name
     @Override
-    public List<Product> getAllProductsByBrandAndName(String brand, String name) {
-        return productRepository.findByBrandAndName(brand, name);
+    public List<ProductDto> getAllProductsByBrandAndName(String brand, String name) {
+        return productRepository.findByBrandAndName(brand, name).stream()
+                .map(ProductMapper::toDto)
+                .toList();
     }
 
     // Return the count of products for a specific category
