@@ -1,18 +1,17 @@
 package com.example.demo.model.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.sql.Blob;
 
-@NoArgsConstructor
+
 @Entity
 @Table(name="Images")
 @Getter @Setter
-
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Image {
 
     @Id
@@ -27,11 +26,4 @@ public class Image {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn()
     private Product product;
-
-    public Image(Product product, String url, Blob image, String title) {
-        this.product = product;
-        this.url = url;
-        this.image = image;
-        this.title = title;
-    }
 }
