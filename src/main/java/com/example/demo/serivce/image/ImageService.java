@@ -1,8 +1,8 @@
 package com.example.demo.serivce.image;
 
-import com.example.demo.exceptions.ImageAlreadyExistsException;
-import com.example.demo.exceptions.ImageNotFoundException;
-import com.example.demo.exceptions.ProductNotFoundException;
+
+import com.example.demo.exceptions.ResourceNotFoundException;
+import com.example.demo.exceptions.ResourceNotFoundException;
 import com.example.demo.model.dto.ImageDto;
 import com.example.demo.model.entity.Image;
 import com.example.demo.model.entity.Product;
@@ -22,16 +22,20 @@ import java.util.List;
 
 
 @Service
-@RequiredArgsConstructor
 public class ImageService implements IImageService {
     private final ImageRepository imageRepository;
     private final ProductRepository productRepository;
+
+    public ImageService(ImageRepository imageRepository, ProductRepository productRepository) {
+        this.imageRepository = imageRepository;
+        this.productRepository = productRepository;
+    }
 
     @Override
     public List<ImageDto> addImage(List<MultipartFile> request, Long productId) {
         return productRepository.findById(productId)
                 .map(product -> createImage(request, product))
-                .orElseThrow(() -> new ProductNotFoundException("Product not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found","Product"));
     }
     private List<ImageDto> createImage(List<MultipartFile> request, Product product) {
         List<ImageDto> imagesDto =new ArrayList<>();
@@ -45,11 +49,11 @@ public class ImageService implements IImageService {
         // Logic to save image to the database
         Image saveImage= null;
         try {
-            Image image=new Image();
-            image.setProduct(product);
-            image.setTitle(file.getOriginalFilename());
-            image.setImage(new SerialBlob(file.getBytes()));
             String urlImage="/api/v1/images/image/download/";
+            Image image=new Image.Builder()
+                    .image(new SerialBlob(file.getBytes()))
+                    .product(product).name(file.getOriginalFilename())
+                    .build();
             String url=urlImage+image.getProduct().getName()+image.getId();
             image.setUrl(url);
             saveImage = imageRepository.save(image);
@@ -66,7 +70,7 @@ public class ImageService implements IImageService {
         return imageRepository.findById(id)
                 .map(ImageMapper::toDto)
                 .orElseThrow(
-                ()-> new ImageNotFoundException("Image Not Found")
+                ()-> new ResourceNotFoundException("Image Not Found","Product")
         );
     }
 
@@ -74,7 +78,7 @@ public class ImageService implements IImageService {
     public void updateImage(List<MultipartFile> request, Long id) {
          imageRepository.findById(id)
                 .map(existingImage -> updateExistingImages(request, existingImage))// Update and return images
-                .orElseThrow(() -> new ImageNotFoundException("Image Not Found")); // Throw exception if not found
+                .orElseThrow(() -> new ResourceNotFoundException("Image Not Found","Product")); // Throw exception if not found
     }
 
 
@@ -90,7 +94,7 @@ public class ImageService implements IImageService {
         // Logic to save image to the database
         Image saveImage= null;
         try {
-            existingImage.setTitle(file.getOriginalFilename());
+            existingImage.setname(file.getOriginalFilename());
             existingImage.setImage(new SerialBlob(file.getBytes()));
             String urlImage="/api/v1/images/image/download/";
             String url=urlImage+existingImage.getProduct().getName()+existingImage.getId();
@@ -109,7 +113,7 @@ public class ImageService implements IImageService {
     public void deleteImage(Long id) {
         imageRepository.findById(id).ifPresentOrElse(
                 imageRepository :: delete,
-                ()-> {throw new ImageNotFoundException("Image NOT Found");}
+                ()-> {throw new ResourceNotFoundException("Image NOT Found","Product");}
         );
 
     }

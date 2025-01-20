@@ -1,8 +1,8 @@
 package com.example.demo.serivce.product;
 
-import com.example.demo.exceptions.CategoryNotFoundException;
-import com.example.demo.exceptions.ProductAlreadyExistsException;
-import com.example.demo.exceptions.ProductNotFoundException;
+import com.example.demo.exceptions.ResourceNotFoundException;
+import com.example.demo.exceptions.ResourceAlreadyExistsException;
+import com.example.demo.exceptions.ResourceNotFoundException;
 import com.example.demo.model.dto.ProductDto;
 import com.example.demo.model.entity.Product;
 import com.example.demo.model.mapping.ProductMapper;
@@ -15,10 +15,14 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
 public class ProductService implements IProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
+
+    public ProductService(ProductRepository productRepository, CategoryRepository categoryRepository) {
+        this.productRepository = productRepository;
+        this.categoryRepository = categoryRepository;
+    }
 
     // Add a new product to the repository
     @Override
@@ -26,7 +30,7 @@ public class ProductService implements IProductService {
         // Find product by name; if not found, throw exception
         return Optional.of(productDto).filter(req -> !productRepository.existsByName(req.getName()))
                 .map(this::createProduct)
-                .orElseThrow(()-> new ProductAlreadyExistsException("Product Already Exists"));
+                .orElseThrow(()-> new ResourceAlreadyExistsException("Product Already Exists", "Product"));
     }
 
     // Helper method to create a new Product entity from the productDto and category
@@ -41,7 +45,7 @@ public class ProductService implements IProductService {
     public ProductDto getProductById(Long id) {
         return productRepository.findById(id)
                 .map(ProductMapper::toDto)
-                .orElseThrow(() -> new ProductNotFoundException("Product Not Found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Product Not Found","Product"));
     }
 
     // return all products from the repository
@@ -57,7 +61,7 @@ public class ProductService implements IProductService {
     public ProductDto updateProduct(ProductDto productDto, Long id) {
         return productRepository.findById(id)
                 .map(existingProduct -> updateExistingProduct(existingProduct, productDto))
-                .orElseThrow(() -> new ProductNotFoundException("Product Not Found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Product Not Found","Product"));
     }
 
     // Helper method to update product fields from the productDto
@@ -74,7 +78,7 @@ public class ProductService implements IProductService {
                     existingProduct.setCategory(category);
                     productRepository.save(existingProduct);
                     return productDto;
-                }).orElseThrow(()->new CategoryNotFoundException("Category Not Found"));
+                }).orElseThrow(()->new ResourceNotFoundException("Category Not Found","Category"));
     }
 
     // Delete a product by ID, throws exception if not found
@@ -82,7 +86,7 @@ public class ProductService implements IProductService {
     public void deleteProduct(Long id) {
         productRepository.findById(id).ifPresentOrElse(
                 productRepository::delete, // Delete product if found
-                () -> { throw new ProductNotFoundException("Product Not Found"); } // Throw exception if not found
+                () -> { throw new ResourceNotFoundException("Product Not Found","Product"); } // Throw exception if not found
         );
     }
 

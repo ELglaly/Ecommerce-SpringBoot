@@ -6,20 +6,20 @@ import com.example.demo.model.entity.Image;
 public class ImageMapper {
 
     public static Image toEntity(ImageDto imageDto) {
-        return Image.builder()
+        return new Image.Builder()
                 .url(imageDto.getUrl())
                 .id(imageDto.getId())
-                .title(imageDto.getTitle())
+                .name(imageDto.getname())
                 .product(ProductMapper.toEntity(imageDto.getProductDTO()))
                 .image(imageDto.getImage())
                 .build();
     }
 
     public static ImageDto toDto(Image image) {
-        return ImageDto.builder()
+        return new ImageDto.Builder()
                 .url(image.getUrl())
                 .id(image.getId())
-                .title(image.getTitle())
+                .name(image.getname())
                 .productDTO(ProductMapper.toDto(image.getProduct()))
                 .image(image.getImage())
                 .build();

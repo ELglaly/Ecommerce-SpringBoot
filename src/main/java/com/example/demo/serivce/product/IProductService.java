@@ -1,6 +1,6 @@
 package com.example.demo.serivce.product;
 
-import com.example.demo.exceptions.ProductNotFoundException;
+import com.example.demo.exceptions.ResourceNotFoundException;
 import com.example.demo.model.dto.ProductDto;
 import com.example.demo.model.entity.Product;
 import com.example.demo.request.AddProductRequest;

@@ -12,7 +12,7 @@ public class ProductMapper {
 
     public static ProductDto toDto(Product product) {
         
-        return ProductDto.builder()
+        return new ProductDto.Builder()
                 .id(product.getId())
                 .brand(product.getBrand())
                 .description(product.getDescription())
@@ -26,7 +26,7 @@ public class ProductMapper {
 
     public static Product toEntity(ProductDto productDto) {
 
-        return Product.builder()
+        return new Product.Builder()
                 .brand(productDto.getBrand())
                 .description(productDto.getDescription())
                 .id(productDto.getId())
@@ -34,7 +34,6 @@ public class ProductMapper {
                 .price(productDto.getPrice())
                 .quantity(productDto.getQuantity())
                 .category(CategoryMapper.toEntity(productDto.getCategoryDto()))
-                .images(productDto.getImageDto())
                 .build();
     }
 }

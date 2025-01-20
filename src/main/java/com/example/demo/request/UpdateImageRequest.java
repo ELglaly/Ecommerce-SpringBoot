@@ -14,7 +14,7 @@ public class UpdateImageRequest {
     private String url;
     @Lob
     private Blob image;
-    private String title;
+    private String name;
     private Product product;
 
 }
