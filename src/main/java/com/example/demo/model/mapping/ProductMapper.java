@@ -34,6 +34,7 @@ public class ProductMapper {
                 .price(productDto.getPrice())
                 .quantity(productDto.getQuantity())
                 .category(CategoryMapper.toEntity(productDto.getCategoryDto()))
+           //     .images(productDto.getImageDto().stream().map(ImageMapper::toEntity).toList())
                 .build();
     }
 }
