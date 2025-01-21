@@ -11,10 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-
-    @RequestMapping("${api.prefix}/categories")
+@RequestMapping("${api.prefix}/categories")
 public class CategoryController {
-    @Autowired
+
     private final CategoryService categoryService;
 
     public CategoryController(CategoryService categoryService) {
