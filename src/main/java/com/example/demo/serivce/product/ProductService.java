@@ -8,7 +8,10 @@ import com.example.demo.model.entity.Product;
 import com.example.demo.model.mapping.ProductMapper;
 import com.example.demo.repository.CategoryRepository;
 import com.example.demo.repository.ProductRepository;
+import com.example.demo.request.AddProductRequest;
+import com.example.demo.request.UpdateProductRequest;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,33 +21,40 @@ import java.util.Optional;
 public class ProductService implements IProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
+    private final ModelMapper modelMapper;
 
-    public ProductService(ProductRepository productRepository, CategoryRepository categoryRepository) {
+    public ProductService(ProductRepository productRepository, CategoryRepository categoryRepository, ModelMapper modelMapper) {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
+        this.modelMapper = modelMapper;
     }
 
     // Add a new product to the repository
     @Override
-    public ProductDto addProduct(ProductDto productDto) {
+    public ProductDto addProduct(AddProductRequest request) {
         // Find product by name; if not found, throw exception
-        return Optional.of(productDto).filter(req -> !productRepository.existsByName(req.getName()))
-                .map(this::createProduct)
-                .orElseThrow(()-> new ResourceAlreadyExistsException("Product Already Exists", "Product"));
+        if(productRepository.existsByName(request.getName()))
+        {
+            throw new ResourceAlreadyExistsException("Product Already Exists", "Product");
+        }
+        else
+        {
+           return createProduct(request);
+       }
     }
 
     // Helper method to create a new Product entity from the productDto and category
-    private ProductDto createProduct(ProductDto productDto) {
-        Product product = ProductMapper.toEntity(productDto);
+    private ProductDto createProduct(AddProductRequest request) {
+        Product product = modelMapper.map(request,Product.class);
         productRepository.save(product);
-        return productDto;
+        return modelMapper.map(request,ProductDto.class);
     }
 
     // return a product by ID and throws exception if not found
     @Override
     public ProductDto getProductById(Long id) {
         return productRepository.findById(id)
-                .map(ProductMapper::toDto)
+                .map(product ->  modelMapper.map(product,ProductDto.class))
                 .orElseThrow(() -> new ResourceNotFoundException("Product Not Found","Product"));
     }
 
@@ -52,32 +62,33 @@ public class ProductService implements IProductService {
     @Override
     public List<ProductDto> getAllProducts() {
         return productRepository.findAll()
-                .stream().map(ProductMapper::toDto)
+                .stream()
+                .map(product -> modelMapper.map(product, ProductDto.class))  // Mapping Product to ProductDto
                 .toList();
-    }
 
+    }
     // Update an existing product identified by its ID
     @Override
-    public ProductDto updateProduct(ProductDto productDto, Long id) {
+    public ProductDto updateProduct(UpdateProductRequest request, Long id) {
         return productRepository.findById(id)
-                .map(existingProduct -> updateExistingProduct(existingProduct, productDto))
+                .map(product -> updateExistingProduct(product, request))
                 .orElseThrow(() -> new ResourceNotFoundException("Product Not Found","Product"));
     }
 
     // Helper method to update product fields from the productDto
-    private ProductDto updateExistingProduct(Product existingProduct, ProductDto productDto) {
-        existingProduct.setName(productDto.getName());
-        existingProduct.setDescription(productDto.getDescription());
-        existingProduct.setPrice(productDto.getPrice());
-        existingProduct.setQuantity(productDto.getQuantity());
-        existingProduct.setBrand(productDto.getBrand());
+    private ProductDto updateExistingProduct(Product existingProduct, UpdateProductRequest request) {
+        existingProduct.setName(request.getName());
+        existingProduct.setDescription(request.getDescription());
+        existingProduct.setPrice(request.getPrice());
+        existingProduct.setQuantity(request.getQuantity());
+        existingProduct.setBrand(request.getBrand());
 
         // Find and update category if present
-        return Optional.ofNullable(categoryRepository.findByName(productDto.getName()))
+        return Optional.ofNullable(categoryRepository.findByName(request.getName()))
                 .map(category -> {
                     existingProduct.setCategory(category);
                     productRepository.save(existingProduct);
-                    return productDto;
+                    return modelMapper.map(existingProduct,ProductDto.class);
                 }).orElseThrow(()->new ResourceNotFoundException("Category Not Found","Category"));
     }
 
@@ -93,8 +104,8 @@ public class ProductService implements IProductService {
     // return products by their name
     @Override
     public List<ProductDto> getProductsByName(String name) {
-        return productRepository.findByName(name)
-                .stream().map(ProductMapper::toDto)
+        return productRepository.findByNameContaining(name).stream()
+                .map(product -> modelMapper.map (product,ProductDto.class))
                 .toList();
     }
 
@@ -102,7 +113,7 @@ public class ProductService implements IProductService {
     @Override
     public List<ProductDto> getAllProductsByCategory(String category) {
         return productRepository.findByCategoryName(category)
-                .stream().map(ProductMapper::toDto)
+                .stream().map(product -> modelMapper.map (product,ProductDto.class))
                 .toList();
     }
 
@@ -110,7 +121,7 @@ public class ProductService implements IProductService {
     @Override
     public List<ProductDto> getAllProductsByBrand(String brand) {
         return productRepository.findByBrand(brand)
-                .stream().map(ProductMapper::toDto)
+                .stream().map(p -> modelMapper.map (p,ProductDto.class))
                 .toList();
     }
 
@@ -118,7 +129,7 @@ public class ProductService implements IProductService {
     @Override
     public List<ProductDto> getAllProductsByCategoryAndBrand(String category, String brand) {
         return productRepository.findByCategoryNameAndBrand(category, brand)
-                .stream().map(ProductMapper::toDto)
+                .stream().map(p -> modelMapper.map (p,ProductDto.class))
                 .toList();
     }
 
@@ -126,7 +137,7 @@ public class ProductService implements IProductService {
     @Override
     public List<ProductDto> getAllProductsByNameAndCategory(String name, String category) {
         return productRepository.findByNameAndCategoryName(name, category)
-                .stream().map(ProductMapper::toDto)
+                .stream().map(p -> modelMapper.map (p,ProductDto.class))
                 .toList();
     }
 
@@ -134,7 +145,7 @@ public class ProductService implements IProductService {
     @Override
     public List<ProductDto> getAllProductsByBrandAndName(String brand, String name) {
         return productRepository.findByBrandAndName(brand, name).stream()
-                .map(ProductMapper::toDto)
+                .map(p -> modelMapper.map (p,ProductDto.class))
                 .toList();
     }
 
