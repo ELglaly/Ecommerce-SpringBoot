@@ -9,6 +9,9 @@ import com.example.demo.repository.CategoryRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+
+import static org.springframework.data.util.Optionals.ifPresentOrElse;
 
 @Service
 public class CategoryService implements ICategoryService {
@@ -39,10 +42,17 @@ public class CategoryService implements ICategoryService {
     @Override
     public CategoryDto getCategoryByName(String categoryName) {
         // return a category by name and map it to DTO
-        return CategoryMapper.toDto(categoryRepository.findByName(categoryName));
-    }
+        Optional<Category> category = Optional.ofNullable(categoryRepository.findByName(categoryName));
+        if (category.isEmpty()) {
+            throw new ResourceNotFoundException("Category not found", "Category");
+        }
+        else
+        {
+            return CategoryMapper.toDto(category.get());
+        }
 
-    @Override
+    }
+        @Override
     public CategoryDto addCategory(CategoryDto categoryDto) {
         // Check if the category exists by name. If it does, throw exception.
         if (categoryRepository.existsByName(categoryDto.getName())) {
