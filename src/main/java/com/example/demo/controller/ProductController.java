@@ -61,43 +61,43 @@ public class ProductController {
         return ResponseEntity.ok(new ApiResponse(true, "Product deleted successfully"));
     }
 
-    @GetMapping("get/name/{name}")
+    @GetMapping("get/by/name/{name}")
     public ResponseEntity<ApiResponse> getProductsByName(@PathVariable String name) {
         List<ProductDto> products = productService.getProductsByName(name);
         return ResponseEntity.ok(new ApiResponse(products, "Products found by name"));
     }
 
-    @GetMapping("/get/category/{category}")
+    @GetMapping("/get/by/category/{category}")
     public ResponseEntity<ApiResponse> getAllProductsByCategory(@PathVariable String category) {
         List<ProductDto> products = productService.getAllProductsByCategory(category);
         return ResponseEntity.ok(new ApiResponse(products, "Products found by category"));
     }
 
-    @GetMapping("/get/brand/{brand}")
+    @GetMapping("/get/by/brand/{brand}")
     public ResponseEntity<ApiResponse> getAllProductsByBrand(@PathVariable String brand) {
         List<ProductDto> products = productService.getAllProductsByBrand(brand);
         return ResponseEntity.ok(new ApiResponse(products, "Products found by brand"));
     }
 
-    @GetMapping("/get/category/{category}/brand/{brand}")
+    @GetMapping("/get/by/category/{category}/brand/{brand}")
     public ResponseEntity<ApiResponse> getAllProductsByCategoryAndBrand(@PathVariable String category, @PathVariable String brand) {
         List<ProductDto> products = productService.getAllProductsByCategoryAndBrand(category, brand);
         return ResponseEntity.ok(new ApiResponse(products, "Products found by category and brand"));
     }
 
-    @GetMapping("/get/name/{name}/category/{category}")
+    @GetMapping("/get/by/name/{name}/category/{category}")
     public ResponseEntity<ApiResponse> getAllProductsByNameAndCategory(@PathVariable String name, @PathVariable String category) {
         List<ProductDto> products = productService.getAllProductsByNameAndCategory(name, category);
         return ResponseEntity.ok(new ApiResponse(products, "Products found by name and category"));
     }
 
-    @GetMapping("/get/name/{name}/brand/{brand}")
+    @GetMapping("/get/by/name/{name}/brand/{brand}")
     public ResponseEntity<ApiResponse> getAllProductsByNameAndBrand(@PathVariable String name, @PathVariable String brand) {
         List<ProductDto> products = productService.getAllProductsByBrandAndName(brand,name);
         return ResponseEntity.ok(new ApiResponse(products, "Products found by name and brand"));
     }
 
-    @GetMapping("/get/count/category/{category}")
+    @GetMapping("/get/by/count/category/{category}")
     public ResponseEntity<ApiResponse> getProductsCountByCategory(@PathVariable String category) {
         int count = productService.getProductsCountByCategory(category);
         return ResponseEntity.ok(new ApiResponse(count, "Product count by category"));

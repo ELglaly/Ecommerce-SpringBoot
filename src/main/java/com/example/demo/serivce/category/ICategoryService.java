@@ -12,8 +12,8 @@ public interface ICategoryService {
     CategoryDto getCategoryById(Long id);
     List<CategoryDto> getAllCategories();
     CategoryDto getCategoryByName(String categoryName);
-    CategoryDto addCategory(CategoryDto category);
-    CategoryDto updateCategory(CategoryDto category, Long id);
+    CategoryDto addCategory(AddCategoryRequest category);
+    CategoryDto updateCategory(UpdateCategoryRequest category, Long id);
     void deleteCategory(Long id);
     Long getCategoryCount();
 }

@@ -1,6 +1,7 @@
 package com.example.demo.model.dto;
 
 
+import com.example.demo.exceptions.InvalidFieldException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -25,6 +26,8 @@ public class ImageDto {
     @Size(min = 1, max = 255, message = "name must be between 1 and 255 characters")
     private String name;
 
+    private String type;
+
     @NotNull(message = "Product cannot be null")
     @Valid
     private ProductDto productDTO;
@@ -33,7 +36,6 @@ public class ImageDto {
 
     private ImageDto (Builder builder)
     {
-         this.id = builder.id;
          this.url = builder.url;
          this.image = builder.image;
          this.name = builder.name;
@@ -42,15 +44,13 @@ public class ImageDto {
 
     public static class Builder
     {
-        private Long id;
+
         private String url;
         private Blob image;
         private String name;
+        private String type;
         private ProductDto productDTO;
-        public Builder id(Long id) {
-            this.id = id;
-            return this;
-        }
+
 
         public Builder url(String url) {
             this.url = url;
@@ -66,6 +66,12 @@ public class ImageDto {
             this.name = name;
             return this;
         }
+        public Builder type(String type) {
+            if(!type.equalsIgnoreCase("jpa") && !type.equalsIgnoreCase("png") )
+                throw new InvalidFieldException(type + ". Allowed values are 'jpa' or 'png'.");
+            this.type = type;
+            return this;
+        }
 
         public Builder productDTO(ProductDto productDTO) {
             this.productDTO = productDTO;
@@ -78,17 +84,13 @@ public class ImageDto {
         }
 
     }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public String getUrl() {
         return url;
+    }
+
+    public String getType()
+    {
+        return type;
     }
 
     public void setUrl(String url) {

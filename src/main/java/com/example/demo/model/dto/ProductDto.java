@@ -4,6 +4,7 @@ import jakarta.validation.constraints.*;
 
 
 import java.math.BigDecimal;
+import java.util.List;
 
 
 public class ProductDto {
@@ -37,6 +38,9 @@ public class ProductDto {
     @Valid
     private CategoryDto categoryDto;
 
+    @Valid
+    private List<ImageDto> ImageDto;
+
 
 
     public ProductDto(Builder builder) {
@@ -47,6 +51,7 @@ public class ProductDto {
         this.price = builder.price;
         this.quantity = builder.quantity;
         this.categoryDto = builder.categoryDto;
+        this.ImageDto=builder.ImageDto;
 
     }
 
@@ -58,6 +63,7 @@ public class ProductDto {
         private BigDecimal price;
         private int quantity;
         private CategoryDto categoryDto;
+        private List<ImageDto> ImageDto;
         public Builder id(Long id) {
             this.id = id;
             return this;
@@ -89,6 +95,10 @@ public class ProductDto {
         public ProductDto build() {
             return new ProductDto(this);
 
+        }
+        public Builder ImageDto(List<ImageDto> ImageDto) {
+            this.ImageDto = ImageDto;
+            return this;
         }
     }
 
@@ -147,6 +157,12 @@ public class ProductDto {
 
     public void setCategoryDto(CategoryDto categoryDto) {
         this.categoryDto = categoryDto;
+    }
+    public List<ImageDto> getImageDto() {
+        return ImageDto;
+    }
+    public void setImageDto(List<ImageDto> imageDto) {
+        this.ImageDto = imageDto;
     }
 
 }

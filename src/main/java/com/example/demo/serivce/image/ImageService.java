@@ -1,16 +1,18 @@
 package com.example.demo.serivce.image;
 
 
+import com.example.demo.constants.ApiConstants;
 import com.example.demo.exceptions.ResourceNotFoundException;
 import com.example.demo.exceptions.ResourceNotFoundException;
 import com.example.demo.model.dto.ImageDto;
 import com.example.demo.model.entity.Image;
 import com.example.demo.model.entity.Product;
-import com.example.demo.model.mapping.ImageMapper;
+
 import com.example.demo.repository.ImageRepository;
 import com.example.demo.repository.ProductRepository;
 
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,10 +27,12 @@ import java.util.List;
 public class ImageService implements IImageService {
     private final ImageRepository imageRepository;
     private final ProductRepository productRepository;
+    private final ModelMapper modelMapper;
 
-    public ImageService(ImageRepository imageRepository, ProductRepository productRepository) {
+    public ImageService(ImageRepository imageRepository, ProductRepository productRepository, ModelMapper modelMapper) {
         this.imageRepository = imageRepository;
         this.productRepository = productRepository;
+        this.modelMapper = modelMapper;
     }
 
     @Override
@@ -40,35 +44,34 @@ public class ImageService implements IImageService {
     private List<ImageDto> createImage(List<MultipartFile> request, Product product) {
         List<ImageDto> imagesDto =new ArrayList<>();
           request.forEach(file -> {
-              imagesDto.add(ImageMapper.toDto(saveImage(file,product)));
+              Image image = saveImage(file,product);
+              ImageDto imageDto = modelMapper.map(image, ImageDto.class);
+              imagesDto.add(imageDto);
           } );
         return imagesDto;
     }
 
     private Image saveImage(MultipartFile file, Product product)  {
         // Logic to save image to the database
-        Image saveImage= null;
         try {
-            String urlImage="/api/v1/images/image/download/";
+            String urlImage= ApiConstants.URL_IMAGES;
             Image image=new Image.Builder()
                     .image(new SerialBlob(file.getBytes()))
                     .product(product).name(file.getOriginalFilename())
                     .build();
             String url=urlImage+image.getProduct().getName()+image.getId();
             image.setUrl(url);
-            saveImage = imageRepository.save(image);
-            saveImage.setUrl(url+saveImage.getProduct().getName()+saveImage.getId());
-            imageRepository.save(saveImage);
+            image = imageRepository.save(image);
+            return image;
         } catch (SQLException | IOException e) {
             throw new RuntimeException(e);
         }
-        return saveImage;
     }
 
     @Override
     public ImageDto getImage(Long id) {
         return imageRepository.findById(id)
-                .map(ImageMapper::toDto)
+                .map(image -> modelMapper.map(image, ImageDto.class))
                 .orElseThrow(
                 ()-> new ResourceNotFoundException("Image Not Found","Product")
         );
@@ -85,27 +88,26 @@ public class ImageService implements IImageService {
     private List<ImageDto> updateExistingImages(List<MultipartFile> request, Image existingImage) {
         List<ImageDto> imagesDto = new ArrayList<>();
         request.forEach(file -> {
-            imagesDto.add(ImageMapper.toDto(saveImage(file,existingImage)));
+            Image image = saveUpdatedImage(file,existingImage);
+            imagesDto.add(modelMapper.map(image, ImageDto.class));
         });
          return imagesDto;
     }
 
-    private Image saveImage(MultipartFile file, Image existingImage)  {
+    private Image saveUpdatedImage(MultipartFile file, Image existingImage)  {
         // Logic to save image to the database
         Image saveImage= null;
         try {
             existingImage.setname(file.getOriginalFilename());
             existingImage.setImage(new SerialBlob(file.getBytes()));
-            String urlImage="/api/v1/images/image/download/";
+            String urlImage=ApiConstants.URL_IMAGES;
             String url=urlImage+existingImage.getProduct().getName()+existingImage.getId();
             existingImage.setUrl(url);
-            saveImage = imageRepository.save(existingImage);
-            saveImage.setUrl(url+saveImage.getProduct().getName()+saveImage.getId());
-            imageRepository.save(saveImage);
+            existingImage = imageRepository.save(existingImage);
+            return existingImage;
         } catch (SQLException | IOException e) {
             throw new RuntimeException(e);
         }
-        return saveImage;
     }
 
 
@@ -120,26 +122,28 @@ public class ImageService implements IImageService {
 
     @Override
     public ImageDto getImageByUrl(String url) {
-        return ImageMapper.toDto(imageRepository.getImageByUrl(url));
+
+        return modelMapper.map(imageRepository.getImageByUrl(url), ImageDto.class);
     }
 
 
     @Override
     public List<ImageDto> getAllImages() {
         return imageRepository.findAll()
-                .stream().map(ImageMapper::toDto)
+                .stream().map(image -> modelMapper.map(image, ImageDto.class))
                 .toList();
     }
 
     @Override
     public List<ImageDto> getImagesByProduct(String productName) {
         return imageRepository.findImageByProductName(productName).stream()
-                .map(ImageMapper::toDto)
+                .map(image -> modelMapper.map(image, ImageDto.class))
                 .toList();
     }
 
     @Override
     public Long getImageCountByProduct(String productName) {
+
         return imageRepository.countByProductName(productName);
     }
 }

@@ -2,6 +2,8 @@ package com.example.demo.controller;
 
 import com.example.demo.constants.*;
 import com.example.demo.model.dto.CategoryDto;
+import com.example.demo.request.AddCategoryRequest;
+import com.example.demo.request.UpdateCategoryRequest;
 import com.example.demo.response.ApiResponse;
 import com.example.demo.serivce.category.CategoryService;
 import jakarta.validation.Valid;
@@ -23,8 +25,8 @@ public class CategoryController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<ApiResponse> addCategory(@RequestBody @Valid CategoryDto categoryDto) {
-        CategoryDto category = categoryService.addCategory(categoryDto);
+    public ResponseEntity<ApiResponse> addCategory(@RequestBody @Valid AddCategoryRequest request) {
+        CategoryDto category = categoryService.addCategory(request);
         System.out.println(category.toString());
         return ResponseEntity.ok(new ApiResponse(category,"Added Successfully!"));
     }
@@ -54,9 +56,9 @@ public class CategoryController {
     }
 
     @PutMapping ("/update/{id}")
-    public ResponseEntity<CategoryDto> updateCategory(@PathVariable Long id, @RequestBody @Valid CategoryDto categoryDto) {
-        categoryDto = categoryService.updateCategory(categoryDto,id);
-        return ResponseEntity.ok(categoryDto);
+    public ResponseEntity<ApiResponse> updateCategory(@PathVariable Long id, @RequestBody @Valid UpdateCategoryRequest request) {
+        CategoryDto categoryDto = categoryService.updateCategory(request,id);
+        return ResponseEntity.ok(new ApiResponse(categoryDto,"Category deleted!"));
     }
 
 

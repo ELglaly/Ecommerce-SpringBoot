@@ -4,30 +4,31 @@ import com.example.demo.exceptions.ResourceAlreadyExistsException;
 import com.example.demo.exceptions.ResourceNotFoundException;
 import com.example.demo.model.dto.CategoryDto;
 import com.example.demo.model.entity.Category;
-import com.example.demo.model.mapping.CategoryMapper;
 import com.example.demo.repository.CategoryRepository;
+import com.example.demo.request.AddCategoryRequest;
+import com.example.demo.request.UpdateCategoryRequest;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-
-import static org.springframework.data.util.Optionals.ifPresentOrElse;
-
 @Service
 public class CategoryService implements ICategoryService {
 
     private final CategoryRepository categoryRepository;
+    private final ModelMapper modelMapper;
 
     // Constructor to inject CategoryRepository dependency
-    public CategoryService (CategoryRepository categoryRepository) {
+    public CategoryService (CategoryRepository categoryRepository, ModelMapper modelMapper) {
         this.categoryRepository = categoryRepository;
+        this.modelMapper = modelMapper;
     }
 
     @Override
     public CategoryDto getCategoryById(Long id) {
-        // find category by Id and map it to Dto. If not found, throw exception
+        // find category by ID and map it to Dto. If not found, throw exception
         return categoryRepository.findById(id)
-                .map(CategoryMapper::toDto)
+                .map(c -> modelMapper.map(c,CategoryDto.class))
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found", "Category"));
     }
 
@@ -35,7 +36,7 @@ public class CategoryService implements ICategoryService {
     public List<CategoryDto> getAllCategories() {
         // return all categories, map each to DTO, and return as a list
         return categoryRepository.findAll().stream()
-                .map(CategoryMapper::toDto)
+                .map(c-> modelMapper.map(c, CategoryDto.class))
                 .toList();
     }
 
@@ -48,45 +49,47 @@ public class CategoryService implements ICategoryService {
         }
         else
         {
-            return CategoryMapper.toDto(category.get());
+            return modelMapper.map(category, CategoryDto.class);
         }
 
     }
         @Override
-    public CategoryDto addCategory(CategoryDto categoryDto) {
+    public CategoryDto addCategory(AddCategoryRequest request) {
         // Check if the category exists by name. If it does, throw exception.
-        if (categoryRepository.existsByName(categoryDto.getName())) {
+        if (categoryRepository.existsByName(request.getName())) {
             throw new ResourceAlreadyExistsException("Category Already Exists", "Category");
         } else {
-            return createCategory(categoryDto); // otherwise, create a new category
+            return createCategory(request); // otherwise, create a new category
         }
     }
 
     // Helper method to create and save a new category
-    private CategoryDto createCategory(CategoryDto categoryDto) {
-        return CategoryMapper.toDto(categoryRepository.save(CategoryMapper.toEntity(categoryDto)));
+    private CategoryDto createCategory(AddCategoryRequest request) {
+        Category category = modelMapper.map(request, Category.class);
+        Category savedCategory = categoryRepository.save(category);
+        return modelMapper.map(savedCategory, CategoryDto.class);
     }
 
     @Override
-    public CategoryDto updateCategory(CategoryDto categoryDto, Long id) {
+    public CategoryDto updateCategory(UpdateCategoryRequest request, Long id) {
         // find an existing category by id. if found, update it. otherwise, throw exception.
         return categoryRepository.findById(id)
-                .map(existingCategory -> updateExistingCategory(existingCategory, categoryDto))
+                .map(existingCategory -> updateExistingCategory(existingCategory, request))
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found","Category"));
     }
 
     // Helper method to update an existing category's details
-    private CategoryDto updateExistingCategory(Category existingCategory, CategoryDto categoryDto) {
-        if(existingCategory.getName().equals(categoryDto.getName())) {
+    private CategoryDto updateExistingCategory(Category existingCategory, UpdateCategoryRequest request) {
+        if(existingCategory.getName().equals(request.getName())) {
             throw new ResourceAlreadyExistsException("Category Already Exists", "Category");
         }
         else
         {
-            existingCategory.setName(categoryDto.getName());
-            existingCategory.setDescription(categoryDto.getDescription());
-            existingCategory = categoryRepository.save(existingCategory);
+            existingCategory.setName(request.getName());
+            existingCategory.setDescription(request.getDescription());
+            Category savedCategory = categoryRepository.save(existingCategory);
+            return modelMapper.map(savedCategory, CategoryDto.class); // Return the updated category DTO
         }
-        return CategoryMapper.toDto(existingCategory); // Return the updated category DTO
     }
 
     @Override

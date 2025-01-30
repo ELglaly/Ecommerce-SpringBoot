@@ -2,15 +2,15 @@ package com.example.demo.serivce.product;
 
 import com.example.demo.exceptions.ResourceNotFoundException;
 import com.example.demo.exceptions.ResourceAlreadyExistsException;
-import com.example.demo.exceptions.ResourceNotFoundException;
+import com.example.demo.model.dto.ImageDto;
 import com.example.demo.model.dto.ProductDto;
+import com.example.demo.model.entity.Category;
 import com.example.demo.model.entity.Product;
-import com.example.demo.model.mapping.ProductMapper;
 import com.example.demo.repository.CategoryRepository;
+import com.example.demo.repository.ImageRepository;
 import com.example.demo.repository.ProductRepository;
 import com.example.demo.request.AddProductRequest;
 import com.example.demo.request.UpdateProductRequest;
-import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -21,11 +21,14 @@ import java.util.Optional;
 public class ProductService implements IProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
+    private final ImageRepository imageRepository;
     private final ModelMapper modelMapper;
 
-    public ProductService(ProductRepository productRepository, CategoryRepository categoryRepository, ModelMapper modelMapper) {
+    public ProductService(ProductRepository productRepository, CategoryRepository categoryRepository,
+                          ModelMapper modelMapper, ImageRepository imageRepository) {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
+        this.imageRepository = imageRepository;
         this.modelMapper = modelMapper;
     }
 
@@ -63,7 +66,7 @@ public class ProductService implements IProductService {
     public List<ProductDto> getAllProducts() {
         return productRepository.findAll()
                 .stream()
-                .map(product -> modelMapper.map(product, ProductDto.class))  // Mapping Product to ProductDto
+                .map(this::convertToProductDto)  // Mapping Product to ProductDto
                 .toList();
 
     }
@@ -88,7 +91,7 @@ public class ProductService implements IProductService {
                 .map(category -> {
                     existingProduct.setCategory(category);
                     productRepository.save(existingProduct);
-                    return modelMapper.map(existingProduct,ProductDto.class);
+                    return convertToProductDto(existingProduct);
                 }).orElseThrow(()->new ResourceNotFoundException("Category Not Found","Category"));
     }
 
@@ -105,15 +108,15 @@ public class ProductService implements IProductService {
     @Override
     public List<ProductDto> getProductsByName(String name) {
         return productRepository.findByNameContaining(name).stream()
-                .map(product -> modelMapper.map (product,ProductDto.class))
+                .map(this::convertToProductDto)
                 .toList();
     }
 
     // return all products under a specific category
     @Override
     public List<ProductDto> getAllProductsByCategory(String category) {
-        return productRepository.findByCategoryName(category)
-                .stream().map(product -> modelMapper.map (product,ProductDto.class))
+        return productRepository.findByCategoryName(category).stream()
+                .map(this::convertToProductDto)
                 .toList();
     }
 
@@ -121,7 +124,7 @@ public class ProductService implements IProductService {
     @Override
     public List<ProductDto> getAllProductsByBrand(String brand) {
         return productRepository.findByBrand(brand)
-                .stream().map(p -> modelMapper.map (p,ProductDto.class))
+                .stream() .map(this::convertToProductDto)
                 .toList();
     }
 
@@ -129,7 +132,7 @@ public class ProductService implements IProductService {
     @Override
     public List<ProductDto> getAllProductsByCategoryAndBrand(String category, String brand) {
         return productRepository.findByCategoryNameAndBrand(category, brand)
-                .stream().map(p -> modelMapper.map (p,ProductDto.class))
+                .stream() .map(this::convertToProductDto)
                 .toList();
     }
 
@@ -137,7 +140,7 @@ public class ProductService implements IProductService {
     @Override
     public List<ProductDto> getAllProductsByNameAndCategory(String name, String category) {
         return productRepository.findByNameAndCategoryName(name, category)
-                .stream().map(p -> modelMapper.map (p,ProductDto.class))
+                .stream() .map(this::convertToProductDto)
                 .toList();
     }
 
@@ -145,7 +148,7 @@ public class ProductService implements IProductService {
     @Override
     public List<ProductDto> getAllProductsByBrandAndName(String brand, String name) {
         return productRepository.findByBrandAndName(brand, name).stream()
-                .map(p -> modelMapper.map (p,ProductDto.class))
+                .map(this::convertToProductDto)
                 .toList();
     }
 
@@ -165,5 +168,14 @@ public class ProductService implements IProductService {
     @Override
     public int getProductsCountByName(String name) {
         return productRepository.countByName(name);
+    }
+
+    public ProductDto convertToProductDto(Product product) {
+        ProductDto productDto = modelMapper.map(product,ProductDto.class);
+        List<ImageDto> imageDto = imageRepository.getImageByProductId(product.getId())
+                .stream().map(image -> modelMapper.map(image,ImageDto.class))
+                .toList();
+        productDto.setImageDto(imageDto);
+        return productDto;
     }
 }
