@@ -1,10 +1,8 @@
 package com.example.demo.serivce.product;
 
-import com.example.demo.exceptions.ResourceNotFoundException;
 import com.example.demo.model.dto.ProductDto;
-import com.example.demo.model.entity.Product;
-import com.example.demo.request.AddProductRequest;
-import com.example.demo.request.UpdateProductRequest;
+import com.example.demo.request.product.AddProductRequest;
+import com.example.demo.request.product.UpdateProductRequest;
 
 import java.util.List;
 

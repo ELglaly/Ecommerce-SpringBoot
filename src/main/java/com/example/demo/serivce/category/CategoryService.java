@@ -5,8 +5,8 @@ import com.example.demo.exceptions.ResourceNotFoundException;
 import com.example.demo.model.dto.CategoryDto;
 import com.example.demo.model.entity.Category;
 import com.example.demo.repository.CategoryRepository;
-import com.example.demo.request.AddCategoryRequest;
-import com.example.demo.request.UpdateCategoryRequest;
+import com.example.demo.request.category.AddCategoryRequest;
+import com.example.demo.request.category.UpdateCategoryRequest;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 

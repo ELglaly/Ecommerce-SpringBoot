@@ -4,13 +4,12 @@ import com.example.demo.exceptions.ResourceNotFoundException;
 import com.example.demo.exceptions.ResourceAlreadyExistsException;
 import com.example.demo.model.dto.ImageDto;
 import com.example.demo.model.dto.ProductDto;
-import com.example.demo.model.entity.Category;
 import com.example.demo.model.entity.Product;
 import com.example.demo.repository.CategoryRepository;
 import com.example.demo.repository.ImageRepository;
 import com.example.demo.repository.ProductRepository;
-import com.example.demo.request.AddProductRequest;
-import com.example.demo.request.UpdateProductRequest;
+import com.example.demo.request.product.AddProductRequest;
+import com.example.demo.request.product.UpdateProductRequest;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
