@@ -2,13 +2,11 @@ package com.example.demo.controller;
 
 import com.example.demo.constants.*;
 import com.example.demo.model.dto.CategoryDto;
-import com.example.demo.request.AddCategoryRequest;
-import com.example.demo.request.UpdateCategoryRequest;
+import com.example.demo.request.category.AddCategoryRequest;
+import com.example.demo.request.category.UpdateCategoryRequest;
 import com.example.demo.response.ApiResponse;
 import com.example.demo.serivce.category.CategoryService;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
