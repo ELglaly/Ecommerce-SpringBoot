@@ -1,4 +1,8 @@
 package com.example.demo.repository;
 
-public class CartItemRepository {
+import com.example.demo.model.entity.CartItem;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface CartItemRepository extends JpaRepository<CartItem, Long> {
+    void deleteAllByCartId(Long id);
 }
