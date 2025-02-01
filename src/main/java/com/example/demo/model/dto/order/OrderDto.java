@@ -1,9 +1,8 @@
-package com.example.demo.model.dto;
+package com.example.demo.model.dto.order;
 
 import com.example.demo.enums.OrderStatus;
+import com.example.demo.model.dto.UserDto;
 import com.example.demo.model.entity.OrderItem;
-import com.example.demo.model.entity.User;
-import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
