@@ -1,5 +1,6 @@
 package com.example.demo.model.dto.cart;
 
+import com.example.demo.model.dto.UserDto;
 import com.example.demo.model.entity.CartItem;
 import com.example.demo.model.entity.User;
 
@@ -11,8 +12,8 @@ public class CartDto {
     private Long id;
     private BigDecimal totalPrice;
     private int totalAmount=0;
-    private Set<CartItem> items;
-    private User user;
+    private Set<CartItemDto> items;
+    private UserDto user;
 
 
     public Long getId() {
@@ -39,19 +40,19 @@ public class CartDto {
         this.totalAmount = totalAmount;
     }
 
-    public Set<CartItem> getItems() {
+    public Set<CartItemDto> getItems() {
         return items;
     }
 
-    public void setItems(Set<CartItem> items) {
+    public void setItems(Set<CartItemDto> items) {
         this.items = items;
     }
 
-    public User getUser() {
+    public UserDto getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(UserDto user) {
         this.user = user;
     }
 }

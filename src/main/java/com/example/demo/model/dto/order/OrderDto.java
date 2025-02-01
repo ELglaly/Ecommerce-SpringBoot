@@ -15,7 +15,7 @@ public class OrderDto {
     private LocalDate orderDate;
     private BigDecimal orderTotalPrice;
     private OrderStatus orderStatus;
-    private Set<OrderItem> orderItems=new HashSet<>();
+    private Set<OrderItemDto> orderItems=new HashSet<>();
     private UserDto user;
 
     public UserDto getUser() {
@@ -34,11 +34,11 @@ public class OrderDto {
         this.orderId = orderId;
     }
 
-    public Set<OrderItem> getOrderItems() {
+    public Set<OrderItemDto> getOrderItems() {
         return orderItems;
     }
 
-    public void setOrderItems(Set<OrderItem> orderItems) {
+    public void setOrderItems(Set<OrderItemDto> orderItems) {
         this.orderItems = orderItems;
     }
 
