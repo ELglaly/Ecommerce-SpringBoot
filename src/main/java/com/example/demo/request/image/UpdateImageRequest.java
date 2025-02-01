@@ -1,9 +1,7 @@
-package com.example.demo.request;
+package com.example.demo.request.image;
 
 
 import com.example.demo.model.dto.ProductDto;
-import com.example.demo.model.entity.Product;
-import jakarta.persistence.Lob;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

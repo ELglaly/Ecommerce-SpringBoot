@@ -1,8 +1,7 @@
-package com.example.demo.request;
+package com.example.demo.request.product;
 
 
 import com.example.demo.model.dto.CategoryDto;
-import com.example.demo.model.entity.Category;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;

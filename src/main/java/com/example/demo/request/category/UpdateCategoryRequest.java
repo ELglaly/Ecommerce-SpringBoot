@@ -1,4 +1,4 @@
-package com.example.demo.request;
+package com.example.demo.request.category;
 
 import com.example.demo.model.dto.ProductDto;
 import jakarta.validation.Valid;
@@ -7,8 +7,6 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Getter;
 
 import java.util.List;
     @AllArgsConstructor
