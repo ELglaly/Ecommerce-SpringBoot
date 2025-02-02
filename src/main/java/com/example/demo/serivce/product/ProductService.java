@@ -2,6 +2,7 @@ package com.example.demo.serivce.product;
 
 import com.example.demo.exceptions.ResourceNotFoundException;
 import com.example.demo.exceptions.ResourceAlreadyExistsException;
+import com.example.demo.mapper.ProductMapper;
 import com.example.demo.model.dto.ImageDto;
 import com.example.demo.model.dto.ProductDto;
 import com.example.demo.model.entity.Product;
@@ -10,6 +11,8 @@ import com.example.demo.repository.ImageRepository;
 import com.example.demo.repository.ProductRepository;
 import com.example.demo.request.product.AddProductRequest;
 import com.example.demo.request.product.UpdateProductRequest;
+import com.example.demo.validator.IProductValidator;
+import com.example.demo.validator.ProductValidator;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -22,41 +25,39 @@ public class ProductService implements IProductService {
     private final CategoryRepository categoryRepository;
     private final ImageRepository imageRepository;
     private final ModelMapper modelMapper;
+    private final ProductMapper productMapper;
+    private final IProductValidator productValidator;
 
     public ProductService(ProductRepository productRepository, CategoryRepository categoryRepository,
-                          ModelMapper modelMapper, ImageRepository imageRepository) {
+                          ModelMapper modelMapper, ImageRepository imageRepository,
+                          ProductMapper productMapper, IProductValidator productValidator) {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
         this.imageRepository = imageRepository;
         this.modelMapper = modelMapper;
+        this.productMapper = productMapper;
+        this.productValidator = productValidator;
     }
-
     // Add a new product to the repository
     @Override
     public ProductDto addProduct(AddProductRequest request) {
-        // Find product by name; if not found, throw exception
-        if(productRepository.existsByName(request.getName()))
-        {
-            throw new ResourceAlreadyExistsException("Product Already Exists", "Product");
-        }
-        else
-        {
+           // Find product by name; if not found, throw exception
+           productValidator.validateProductDoesNotExist(request.getName());
            return createProduct(request);
-       }
     }
 
     // Helper method to create a new Product entity from the productDto and category
     private ProductDto createProduct(AddProductRequest request) {
-        Product product = modelMapper.map(request,Product.class);
-        productRepository.save(product);
-        return modelMapper.map(request,ProductDto.class);
+        Product product = productMapper.toEntity(request);
+        product = productRepository.save(product);
+        return productMapper.toDto(product);
     }
 
     // return a product by ID and throws exception if not found
     @Override
     public ProductDto getProductById(Long id) {
         return productRepository.findById(id)
-                .map(product ->  modelMapper.map(product,ProductDto.class))
+                .map(productMapper::toDto)
                 .orElseThrow(() -> new ResourceNotFoundException("Product Not Found","Product"));
     }
 
@@ -65,7 +66,7 @@ public class ProductService implements IProductService {
     public List<ProductDto> getAllProducts() {
         return productRepository.findAll()
                 .stream()
-                .map(this::convertToProductDto)  // Mapping Product to ProductDto
+                .map(productMapper::toDto)  // Mapping Product to ProductDto
                 .toList();
 
     }
@@ -90,7 +91,7 @@ public class ProductService implements IProductService {
                 .map(category -> {
                     existingProduct.setCategory(category);
                     productRepository.save(existingProduct);
-                    return convertToProductDto(existingProduct);
+                    return productMapper.toDto(existingProduct);
                 }).orElseThrow(()->new ResourceNotFoundException("Category Not Found","Category"));
     }
 
@@ -107,7 +108,7 @@ public class ProductService implements IProductService {
     @Override
     public List<ProductDto> getProductsByName(String name) {
         return productRepository.findByNameContaining(name).stream()
-                .map(this::convertToProductDto)
+                .map(productMapper::toDto)
                 .toList();
     }
 
@@ -115,7 +116,7 @@ public class ProductService implements IProductService {
     @Override
     public List<ProductDto> getAllProductsByCategory(String category) {
         return productRepository.findByCategoryName(category).stream()
-                .map(this::convertToProductDto)
+                .map(productMapper::toDto)
                 .toList();
     }
 
@@ -123,7 +124,8 @@ public class ProductService implements IProductService {
     @Override
     public List<ProductDto> getAllProductsByBrand(String brand) {
         return productRepository.findByBrand(brand)
-                .stream() .map(this::convertToProductDto)
+                .stream()
+                .map(productMapper::toDto)
                 .toList();
     }
 
@@ -131,7 +133,8 @@ public class ProductService implements IProductService {
     @Override
     public List<ProductDto> getAllProductsByCategoryAndBrand(String category, String brand) {
         return productRepository.findByCategoryNameAndBrand(category, brand)
-                .stream() .map(this::convertToProductDto)
+                .stream()
+                .map(productMapper::toDto)
                 .toList();
     }
 
@@ -139,7 +142,8 @@ public class ProductService implements IProductService {
     @Override
     public List<ProductDto> getAllProductsByNameAndCategory(String name, String category) {
         return productRepository.findByNameAndCategoryName(name, category)
-                .stream() .map(this::convertToProductDto)
+                .stream()
+                .map(productMapper::toDto)
                 .toList();
     }
 
@@ -147,7 +151,7 @@ public class ProductService implements IProductService {
     @Override
     public List<ProductDto> getAllProductsByBrandAndName(String brand, String name) {
         return productRepository.findByBrandAndName(brand, name).stream()
-                .map(this::convertToProductDto)
+                .map(productMapper::toDto)
                 .toList();
     }
 
@@ -169,12 +173,4 @@ public class ProductService implements IProductService {
         return productRepository.countByName(name);
     }
 
-    public ProductDto convertToProductDto(Product product) {
-        ProductDto productDto = modelMapper.map(product,ProductDto.class);
-        List<ImageDto> imageDto = imageRepository.getImageByProductId(product.getId())
-                .stream().map(image -> modelMapper.map(image,ImageDto.class))
-                .toList();
-        productDto.setImageDto(imageDto);
-        return productDto;
-    }
 }
