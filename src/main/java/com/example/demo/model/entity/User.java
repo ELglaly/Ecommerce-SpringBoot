@@ -1,105 +1,157 @@
 package com.example.demo.model.entity;
 
-
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.*;
+import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Set;
 
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
-
+@Table(name = "users")
 public class User {
-
+    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotBlank
     private String firstName;
+
+    @NotBlank
     private String lastName;
-    @DateTimeFormat
+
+    @Past
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date birthDate;
+
+    @NotBlank
+    @Column(unique = true)
     private String username;
+
+    @NotBlank
+    @Size(min = 8, max = 20)
     private String password;
+
     @Email
     @NotBlank
+    @Column(unique = true)
     private String email;
 
-    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
-    private Set<PhoneNumber> phoneNumber;
-    @OneToOne(mappedBy = "user",cascade = CascadeType.ALL)
+    @Getter
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<PhoneNumber> phoneNumber = new HashSet<>();
+
+    @Getter
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Address address;
 
-
+    @Getter
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Order> orders;
+    private Set<Order> orders = new HashSet<>();
 
-    public Cart getCart() {
-        return cart;
-    }
-
-    public void setCart(Cart cart) {
-        this.cart = cart;
-    }
-
+    @Getter
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Cart cart;
 
-    public Address getAddress() {
-        return address;
+
+
+    private User(Builder builder) {
+        this.firstName = builder.firstName;
+        this.lastName = builder.lastName;
+        this.birthDate = builder.birthDate;
+        this.username = builder.username;
+        this.password = builder.password;
+        this.email = builder.email;
+        this.phoneNumber = builder.phoneNumber;
+        this.address = builder.address;
+        this.cart = builder.cart;
     }
 
-    public void setAddress(Address address) {
-        this.address = address;
+    public static class Builder {
+        private String firstName;
+        private String lastName;
+        private Date birthDate;
+        private String username;
+        private String password;
+        private String email;
+        private Set<PhoneNumber> phoneNumber = new HashSet<>();
+        private Address address;
+        private Set<Order> orders = new HashSet<>();
+        private Cart cart;
+
+        public Builder firstName(String firstName) {
+            this.firstName = firstName;
+            return this;
+        }
+        public Builder lastName(String lastName) {
+            this.lastName = lastName;
+            return this;
+        }
+        public Builder birthDate(Date birthDate) {
+            this.birthDate = birthDate;
+            return this;
+        }
+        public Builder username(String username) {
+            this.username = username;
+            return this;
+        }
+        public Builder password(String password) {
+            this.password = password;
+            return this;
+        }
+        public Builder email(String email) {
+            this.email = email;
+            return this;
+        }
+        public Builder phoneNumber(Set<PhoneNumber> phoneNumber) {
+            this.phoneNumber = phoneNumber;
+            return this;
+        }
+        public Builder address(Address address) {
+            this.address = address;
+            return this;
+        }
+        public Builder orders(Set<Order> orders) {
+            this.orders = orders;
+            return this;
+        }
+        public Builder cart(Cart cart) {
+            this.cart = cart;
+            return this;
+        }
+        public User build() {
+            return new User(this);
+        }
+
     }
 
-    public Set<PhoneNumber> getPhoneNumber() {
-        return phoneNumber;
+    public @NotBlank String getFirstName() {
+        return firstName;
     }
 
-    public void setPhoneNumber(Set<PhoneNumber> phoneNumber) {
-        this.phoneNumber = phoneNumber;
+    public @NotBlank String getLastName() {
+        return lastName;
     }
 
-    public Long getId() {
-        return id;
+    public @Past Date getBirthDate() {
+        return birthDate;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public @NotBlank String getUsername() {
+        return username;
+    }
+
+    public @NotBlank @Size(min = 8, max = 20) String getPassword() {
+        return password;
     }
 
     public @Email @NotBlank String getEmail() {
         return email;
-    }
-
-    public void setEmail(@Email @NotBlank String email) {
-        this.email = email;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public Set<Order> getOrders() {
-        return orders;
-    }
-
-    public void setOrders(Set<Order> orders) {
-        this.orders = orders;
     }
 }

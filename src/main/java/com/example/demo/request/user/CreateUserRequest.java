@@ -7,7 +7,7 @@ import jakarta.validation.constraints.*;
 
 import java.util.List;
 
-git public class CreateUserRequest {
+public class CreateUserRequest {
 
     @NotNull
     @NotBlank(message= "Must Be valid username")
