@@ -140,10 +140,4 @@ public class ImageService implements IImageService {
                 .map(image -> modelMapper.map(image, ImageDto.class))
                 .toList();
     }
-
-    @Override
-    public Long getImageCountByProduct(String productName) {
-
-        return imageRepository.countByProductName(productName);
-    }
 }
