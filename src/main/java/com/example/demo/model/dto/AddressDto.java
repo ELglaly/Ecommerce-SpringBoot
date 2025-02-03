@@ -1,4 +1,4 @@
 package com.example.demo.model.dto;
 
-public class AdressDto {
+public class AddressDto {
 }
