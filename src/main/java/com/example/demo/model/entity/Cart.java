@@ -1,6 +1,8 @@
 package com.example.demo.model.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,7 +21,10 @@ public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Positive
+    @Transient
     private BigDecimal totalPrice;
+    @PositiveOrZero
     private int totalAmount=0;
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -41,24 +46,11 @@ public class Cart {
         items.add(item);
         item.setCart(this);
         setTotalAmount();
-        updateTotalPrice();
     }
     public void removeItem(CartItem item) {
         items.remove(item);
         item.setCart(null);
         setTotalAmount();
-        updateTotalPrice();
-    }
-
-    public void updateTotalPrice() {
-        this.totalPrice = items.stream().map(items ->{
-            BigDecimal unitPrice = items.getUnitPrice();
-                    if(unitPrice==null)
-                    {
-                        return BigDecimal.ZERO;
-                    }
-                   return unitPrice.multiply(new BigDecimal(items.getQuantity()));
-                }).reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     public void setTotalAmount() {

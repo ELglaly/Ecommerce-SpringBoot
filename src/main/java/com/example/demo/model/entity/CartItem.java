@@ -18,7 +18,9 @@ public class CartItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private int quantity;
+    @Transient
     private BigDecimal totalPrice;
+    @Transient
     private BigDecimal unitPrice;
 
     @ManyToOne

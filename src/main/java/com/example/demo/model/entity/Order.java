@@ -8,9 +8,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 
 import java.math.BigDecimal;
@@ -29,6 +27,7 @@ public class Order {
     @NotNull
     private  LocalDate orderDate;
     @PositiveOrZero
+    @Transient
     private  BigDecimal orderTotalPrice;
     @NotNull
     @Enumerated(EnumType.STRING)
@@ -62,7 +61,6 @@ public class Order {
     }
 
     public static class Builder{
-        private final Order order = new Order();
         private BigDecimal orderTotalPrice;
         private Set<OrderItem> orderItems=new HashSet<>();
         private User user;
@@ -80,16 +78,18 @@ public class Order {
             return this;
         }
         public Order build(){
-            return order;
+            return new Order(this);
         }
+    }
+
+
+
+    public @NotNull LocalDate getOrderDate() {
+        return orderDate;
     }
 
     public Long getOrderId() {
         return orderId;
-    }
-
-    public @NotNull LocalDate getOrderDate() {
-        return orderDate;
     }
 
     public @PositiveOrZero BigDecimal getOrderTotalPrice() {

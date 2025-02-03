@@ -18,7 +18,6 @@ public class Address {
     private String zip;
     private String country;
 
-
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;

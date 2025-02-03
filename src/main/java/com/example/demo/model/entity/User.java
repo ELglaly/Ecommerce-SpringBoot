@@ -1,5 +1,5 @@
 package com.example.demo.model.entity;
-
+import com.example.demo.serivce.user.observer.UserObserver;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
@@ -42,6 +42,9 @@ public class User {
     @NotBlank
     @Column(unique = true)
     private String email;
+
+    @Transient
+    private Set<UserObserver> observers = new HashSet<>();
 
     @Getter
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -153,5 +156,44 @@ public class User {
 
     public @Email @NotBlank String getEmail() {
         return email;
+    }
+
+
+    public void setFirstName(@NotBlank String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setLastName(@NotBlank String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setBirthDate(@Past Date birthDate) {
+        this.birthDate = birthDate;
+    }
+
+    public void setUsername(@NotBlank String username) {
+        this.username = username;
+    }
+
+    public void setPassword(@NotBlank @Size(min = 8, max = 20) String password) {
+        this.password = password;
+    }
+
+    public void setEmail(@Email @NotBlank String email) {
+        this.email = email;
+    }
+
+    public Set<UserObserver> getObservers() {
+        return observers;
+    }
+
+    public void addObserver(UserObserver observer) {
+        observers.add(observer);
+    }
+    public void removeObserver(UserObserver observer) {
+        observers.remove(observer);
+    }
+    private void notifyObservers() {
+        observers.forEach(observer -> observer.update(this));
     }
 }

@@ -141,4 +141,12 @@ public class Product {
     public void setId(Long id) {
         this.id = id;
     }
+
+    public List<Image> getImages() {
+        return images;
+    }
+
+    public void setImages(List<Image> images) {
+        this.images = images;
+    }
 }
