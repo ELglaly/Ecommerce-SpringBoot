@@ -77,8 +77,6 @@ public class UserService implements IUserService {
         if (request.getUsername() != null) {
             existingUser.setUsername(request.getUsername());
         }
-
-
         existingUser = userRepository.save(existingUser);
         return convertToUserDto(existingUser);
     }

@@ -6,14 +6,16 @@ import com.example.demo.model.dto.cart.CartDto;
 import com.example.demo.model.dto.order.OrderDto;
 import com.example.demo.model.dto.order.OrderItemDto;
 import com.example.demo.model.entity.Order;
-import com.example.demo.model.entity.OrderItem;
-import com.example.demo.model.entity.Product;
+import com.example.demo.model.entity.User;
 import com.example.demo.repository.OrderRepository;
 import com.example.demo.repository.ProductRepository;
+import com.example.demo.repository.UserRepository;
 import com.example.demo.serivce.cart.CartService;
+import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
@@ -25,46 +27,34 @@ public class OrderService implements IOrderService {
     private final ProductRepository productRepository;
     private final CartService cartService;
     private final ModelMapper modelMapper;
+    private final IOrderFactory orderFactory;
+    private final UserRepository userRepository;
 
     public OrderService(OrderRepository orderRepository, ProductRepository productRepository,
-                        ModelMapper modelMapper, CartService cartService) {
+                        ModelMapper modelMapper, CartService cartService, IOrderFactory orderFactory, UserRepository userRepository) {
         this.orderRepository = orderRepository;
         this.productRepository = productRepository;
         this.cartService = cartService;
         this.modelMapper = modelMapper;
+        this.orderFactory = orderFactory;
+        this.userRepository = userRepository;
     }
 
+
+    @Transactional
     @Override
     public OrderDto placeOrder(Long userId) {
-        CartDto cartdto = cartService.getCartByUserId(userId);
-        Order order = createOrder(cartdto);
+        CartDto cartDto = cartService.getCartByUserId(userId);
+        if (cartDto == null || cartDto.getItems().isEmpty()) {
+            throw new IllegalArgumentException("Cart is empty");
+        }
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found", "User"));
+
+        Order order = orderFactory.createOrder(cartDto, user);
+        order = orderRepository.save(order);
         return ConvertToOrderDto(order);
     }
-
-    private Order createOrder(CartDto cart) {
-        Order order = new Order();
-        order.setOrderItems(createOrderItems(cart,order));
-        order.setOrderDate(LocalDate.now());
-        order.setOrderStatus(OrderStatus.PENDING);
-        order = orderRepository.save(order);
-        return order;
-    }
-
-    private Set<OrderItem> createOrderItems(CartDto cart, Order order) {
-        return cart.getItems().stream().map(
-                cartItem -> {
-                    Product product = modelMapper.map(cartItem.getProduct(), Product.class);
-                    product.setQuantity(product.getQuantity()- cartItem.getQuantity());
-                    productRepository.save(product);
-                    return new OrderItem(
-                            cartItem.getQuantity(),
-                            product,
-                            order,
-                            product.getPrice());
-                }
-        ).collect(Collectors.toSet());
-    }
-
     @Override
     public OrderDto getOrderById(Long orderId) {
         return orderRepository.findById(orderId).map(this::ConvertToOrderDto)
@@ -83,6 +73,11 @@ public class OrderService implements IOrderService {
         return orderRepository.findByOrderStatusAndUserId(status,userId)
                 .stream().map(this::ConvertToOrderDto)
                 .toList();
+    }
+
+    @Override
+    public BigDecimal getTotalAmount(CartDto cart) {
+        return null;
     }
 
     private OrderDto ConvertToOrderDto(Order order) {
