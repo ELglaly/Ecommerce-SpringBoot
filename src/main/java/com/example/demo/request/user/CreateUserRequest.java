@@ -75,4 +75,5 @@ public class CreateUserRequest {
     public void setAddress(@Valid @NotNull Address address) {
         this.address = address;
     }
+
 }
