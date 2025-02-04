@@ -1,9 +1,11 @@
 package com.example.demo.model.dto.order;
 
 import com.example.demo.model.dto.ProductDto;
+import lombok.Data;
 
 import java.math.BigDecimal;
 
+@Data
 public class OrderItemDto {
 
     private Long id;
@@ -57,43 +59,6 @@ public class OrderItemDto {
         public OrderItemDto build() {
             return new OrderItemDto(this);
         }
-    }
-
-    // Getters and setters
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
-
-    public BigDecimal getUnitePrice() {
-        return unitePrice;
-    }
-
-    public void setUnitePrice(BigDecimal unitePrice) {
-        this.unitePrice = unitePrice;
-    }
-
-    public BigDecimal getTotalPrice() {
-        return totalPrice;
-    }
-
-    public void setTotalPrice(BigDecimal totalPrice) {
-        this.totalPrice = totalPrice;
-    }
-
-    public OrderDto getOrderId() {
-        return orderDto;
     }
 
 }

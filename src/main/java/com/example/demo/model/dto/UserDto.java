@@ -14,6 +14,7 @@ import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
 public class UserDto {
     private Long id;
 
@@ -38,8 +39,6 @@ public class UserDto {
     private AddressDto address;
     private Set<OrderDto> orders;
     private CartDto cart;
-
-
 
 
     private UserDto(Builder builder) {

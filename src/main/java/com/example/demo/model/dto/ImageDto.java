@@ -7,10 +7,11 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import lombok.Data;
 
 import java.sql.Blob;
 
-
+@Data
 public class ImageDto {
 
     private Long id;
@@ -39,6 +40,7 @@ public class ImageDto {
          this.url = builder.url;
          this.image = builder.image;
          this.name = builder.name;
+         this.type = builder.type;
          this.productDTO = builder.productDTO;
     }
 
@@ -67,8 +69,6 @@ public class ImageDto {
             return this;
         }
         public Builder type(String type) {
-            if(!type.equalsIgnoreCase("jpa") && !type.equalsIgnoreCase("png") )
-                throw new InvalidFieldException(type + ". Allowed values are 'jpa' or 'png'.");
             this.type = type;
             return this;
         }
@@ -83,41 +83,5 @@ public class ImageDto {
             return new ImageDto(this);
         }
 
-    }
-    public String getUrl() {
-        return url;
-    }
-
-    public String getType()
-    {
-        return type;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public Blob getImage() {
-        return image;
-    }
-
-    public void setImage(Blob image) {
-        this.image = image;
-    }
-
-    public String getname() {
-        return name;
-    }
-
-    public void setname(String name) {
-        this.name = name;
-    }
-
-    public ProductDto getProductDTO() {
-        return productDTO;
-    }
-
-    public void setProductDTO(ProductDto productDTO) {
-        this.productDTO = productDTO;
     }
 }

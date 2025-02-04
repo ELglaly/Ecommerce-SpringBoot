@@ -3,16 +3,13 @@ package com.example.demo.model.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
 
 
-
+@Data
 public class CategoryDto {
 
     private Long id;
@@ -26,7 +23,6 @@ public class CategoryDto {
     @NotBlank(message = "Description cannot be Empty")
     @Size(min = 5, max = 500, message = "Description must be between 5 and 500 characters")
     private String description;
-    @Valid
     private List<ProductDto> productsDto;
 
 
@@ -64,35 +60,4 @@ public class CategoryDto {
         }
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public List<ProductDto> getProductsDto() {
-        return productsDto;
-    }
-
-    public void setProductsDto(List<ProductDto> productsDto) {
-        this.productsDto = productsDto;
-    }
 }
