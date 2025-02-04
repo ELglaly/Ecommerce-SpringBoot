@@ -35,12 +35,17 @@ public class OrderItem {
         // Set default totalPrice if not set
         totalPrice = unitPrice.multiply(BigDecimal.valueOf(quantity)); // Set default order status
     }
+    @PrePersist
+    public void prePersist() {
+        // Set unitePrice to current date
+        unitPrice = product.getPrice();  // Set default date as current date
+        // Set default totalPrice if not set
+        totalPrice = unitPrice.multiply(BigDecimal.valueOf(quantity)); // Set default order status
+    }
 
     // Builder pattern constructor to create instances
     private OrderItem(Builder builder) {
         this.quantity = builder.quantity;
-        this.unitPrice = builder.unitePrice;
-        this.totalPrice = builder.totalPrice;
         this.order = builder.order;
         this.product = builder.product;
     }
@@ -48,23 +53,11 @@ public class OrderItem {
     // Static builder class
     public static class Builder {
         private int quantity;
-        private BigDecimal unitePrice;
-        private BigDecimal totalPrice;
         private Product product;
         private Order order;
 
         public Builder quantity(int quantity) {
             this.quantity = quantity;
-            return this;
-        }
-
-        public Builder unitePrice(BigDecimal unitePrice) {
-            this.unitePrice = unitePrice;
-            return this;
-        }
-
-        public Builder totalPrice(BigDecimal totalPrice) {
-            this.totalPrice = totalPrice;
             return this;
         }
 
