@@ -9,6 +9,9 @@ import java.sql.Blob;
 @Entity
 @Table(name="Images")
 @NoArgsConstructor
+@AllArgsConstructor
+@Setter
+@Getter
 public class Image {
 
     @Id
@@ -65,43 +68,4 @@ public class Image {
         }
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public Blob getImage() {
-        return image;
-    }
-
-    public void setImage(Blob image) {
-        this.image = image;
-    }
-
-    public String getname() {
-        return name;
-    }
-
-    public void setname(String name) {
-        this.name = name;
-    }
-
-    public Product getProduct() {
-        return product;
-    }
-
-    public void setProduct(Product product) {
-        this.product = product;
-    }
 }

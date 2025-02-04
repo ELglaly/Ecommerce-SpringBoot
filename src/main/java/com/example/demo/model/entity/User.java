@@ -12,7 +12,8 @@ import java.util.Set;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@Setter
+@Getter
 @Entity
 @Table(name = "users")
 public class User {
@@ -65,9 +66,6 @@ public class User {
     )
     private Collection<Role> roles;
 
-    public Collection<Role> getRoles() {
-        return roles;
-    }
 
 
     private User(Builder builder) {
@@ -138,100 +136,5 @@ public class User {
             return new User(this);
         }
 
-    }
-
-    public @NotBlank String getFirstName() {
-        return firstName;
-    }
-
-    public @NotBlank String getLastName() {
-        return lastName;
-    }
-
-    public @Past Date getBirthDate() {
-        return birthDate;
-    }
-
-    public @NotBlank String getUsername() {
-        return username;
-    }
-
-    public @NotBlank @Size(min = 8, max = 20) String getPassword() {
-        return password;
-    }
-
-    public @Email @NotBlank String getEmail() {
-        return email;
-    }
-
-
-    public void setFirstName(@NotBlank String firstName) {
-        this.firstName = firstName;
-    }
-
-    public void setLastName(@NotBlank String lastName) {
-        this.lastName = lastName;
-    }
-
-    public void setBirthDate(@Past Date birthDate) {
-        this.birthDate = birthDate;
-    }
-
-    public void setUsername(@NotBlank String username) {
-        this.username = username;
-    }
-
-    public void setPassword(@NotBlank @Size(min = 8, max = 20) String password) {
-        this.password = password;
-    }
-
-    public void setEmail(@Email @NotBlank String email) {
-        this.email = email;
-    }
-
-    public Set<UserObserver> getObservers() {
-        return observers;
-    }
-
-    public Address getAddress() {
-        return address;
-    }
-
-    public void setAddress(Address address) {
-        this.address = address;
-    }
-
-    public Set<PhoneNumber> getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(Set<PhoneNumber> phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public Set<Order> getOrders() {
-        return orders;
-    }
-
-    public void setOrders(Set<Order> orders) {
-        this.orders = orders;
-    }
-
-    public Cart getCart() {
-        return cart;
-    }
-
-    public void setCart(Cart cart) {
-        this.cart = cart;
-    }
-
-    public void addObserver(UserObserver observer) {
-        observers.add(observer);
-    }
-    public void removeObserver(UserObserver observer) {
-        observers.remove(observer);
-    }
-    private void notifyObservers() {
-        observers.forEach(observer -> observer.update(this));
     }
 }

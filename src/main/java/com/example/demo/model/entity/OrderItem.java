@@ -1,14 +1,13 @@
 package com.example.demo.model.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
 
 @Entity
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 public class OrderItem {
@@ -17,7 +16,7 @@ public class OrderItem {
     private Long id;
     private int quantity;
     @Transient
-    private BigDecimal unitePrice;
+    private BigDecimal unitPrice;
     @Transient
     private BigDecimal totalPrice;
 
@@ -29,10 +28,18 @@ public class OrderItem {
     @JoinColumn(name = "product_id")
     private Product product;
 
+    @PostLoad
+    public void postLoad() {
+        // Set unitePrice to current date
+        unitPrice = product.getPrice();  // Set default date as current date
+        // Set default totalPrice if not set
+        totalPrice = unitPrice.multiply(BigDecimal.valueOf(quantity)); // Set default order status
+    }
+
     // Builder pattern constructor to create instances
     private OrderItem(Builder builder) {
         this.quantity = builder.quantity;
-        this.unitePrice = builder.unitePrice;
+        this.unitPrice = builder.unitePrice;
         this.totalPrice = builder.totalPrice;
         this.order = builder.order;
         this.product = builder.product;

@@ -8,7 +8,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 
 import java.math.BigDecimal;
@@ -18,7 +18,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
+@Setter
+@Getter
 @Table(name = "orders")
 public class Order {
     @Id
@@ -47,7 +50,6 @@ public class Order {
         if (orderDate == null) {
             orderDate = LocalDate.now();  // Set default date as current date
         }
-
         // Set default orderStatus if not set
         if (orderStatus == null) {
             orderStatus = OrderStatus.PENDING;  // Set default order status
@@ -82,37 +84,4 @@ public class Order {
         }
     }
 
-
-
-    public @NotNull LocalDate getOrderDate() {
-        return orderDate;
-    }
-
-    public Long getOrderId() {
-        return orderId;
-    }
-
-    public @PositiveOrZero BigDecimal getOrderTotalPrice() {
-        return orderTotalPrice;
-    }
-
-    public @NotNull OrderStatus getOrderStatus() {
-        return orderStatus;
-    }
-
-    public Set<OrderItem> getOrderItems() {
-        if (orderItems == null) {
-            throw new InvalidFieldException("orderItems is null");
-        }
-        return orderItems;
-    }
-
-    public Set<OrderItem> setOrderItems(Set<OrderItem> orderItems) {
-        this.orderItems = orderItems;
-        return orderItems;
-    }
-
-    public User getUser() {
-        return user;
-    }
 }
