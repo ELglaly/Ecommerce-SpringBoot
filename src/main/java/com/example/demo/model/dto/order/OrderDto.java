@@ -105,7 +105,7 @@ public class OrderDto {
             return this;
         }
         public OrderDto build() {
-            OrderDto orderDto = new OrderDto();
+             return new OrderDto(this);
         }
     }
 
