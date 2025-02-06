@@ -2,12 +2,15 @@ package com.example.demo.serivce.category;
 
 import com.example.demo.exceptions.ResourceAlreadyExistsException;
 import com.example.demo.exceptions.ResourceNotFoundException;
+import com.example.demo.mapper.CategoryMapper;
+import com.example.demo.mapper.ICategoryMapper;
 import com.example.demo.model.dto.CategoryDto;
 import com.example.demo.model.entity.Category;
 import com.example.demo.repository.CategoryRepository;
 import com.example.demo.request.category.AddCategoryRequest;
 import com.example.demo.request.category.UpdateCategoryRequest;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,18 +20,20 @@ public class CategoryService implements ICategoryService {
 
     private final CategoryRepository categoryRepository;
     private final ModelMapper modelMapper;
+    private final ICategoryMapper categoryMapper;
 
     // Constructor to inject CategoryRepository dependency
-    public CategoryService (CategoryRepository categoryRepository, ModelMapper modelMapper) {
+    public CategoryService (CategoryRepository categoryRepository, ModelMapper modelMapper, ICategoryMapper categoryMapper) {
         this.categoryRepository = categoryRepository;
         this.modelMapper = modelMapper;
+        this.categoryMapper = categoryMapper;
     }
 
     @Override
     public CategoryDto getCategoryById(Long id) {
         // find category by ID and map it to Dto. If not found, throw exception
         return categoryRepository.findById(id)
-                .map(c -> modelMapper.map(c,CategoryDto.class))
+                .map(categoryMapper::toDto)
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found", "Category"));
     }
 
@@ -36,7 +41,7 @@ public class CategoryService implements ICategoryService {
     public List<CategoryDto> getAllCategories() {
         // return all categories, map each to DTO, and return as a list
         return categoryRepository.findAll().stream()
-                .map(c-> modelMapper.map(c, CategoryDto.class))
+                .map(categoryMapper::toDto)
                 .toList();
     }
 
@@ -49,7 +54,7 @@ public class CategoryService implements ICategoryService {
         }
         else
         {
-            return modelMapper.map(category, CategoryDto.class);
+            return  categoryMapper.toDto(category.get());
         }
 
     }
@@ -65,9 +70,9 @@ public class CategoryService implements ICategoryService {
 
     // Helper method to create and save a new category
     private CategoryDto createCategory(AddCategoryRequest request) {
-        Category category = modelMapper.map(request, Category.class);
+        Category category =  categoryMapper.toEntityFromAddRequest(request);
         Category savedCategory = categoryRepository.save(category);
-        return modelMapper.map(savedCategory, CategoryDto.class);
+        return categoryMapper.toDto(savedCategory);
     }
 
     @Override
@@ -85,10 +90,11 @@ public class CategoryService implements ICategoryService {
         }
         else
         {
-            existingCategory.setName(request.getName());
-            existingCategory.setDescription(request.getDescription());
-            Category savedCategory = categoryRepository.save(existingCategory);
-            return modelMapper.map(savedCategory, CategoryDto.class); // Return the updated category DTO
+
+            Category savedCategory = categoryMapper.toEntityFromUpdateRequest(request);
+            savedCategory.setId(existingCategory.getId());
+            categoryRepository.save(savedCategory);
+            return categoryMapper.toDto(savedCategory);// Return the updated category DTO
         }
     }
 
