@@ -1,11 +1,18 @@
 package com.example.demo.model.entity;
 
-import com.example.demo.model.dto.CategoryDto;
-import com.example.demo.model.dto.ProductDto;
-import jakarta.persistence.*;
-import lombok.*;
-
 import java.util.List;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
 
 @AllArgsConstructor
@@ -23,6 +30,10 @@ public class Category {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name ="category_id", referencedColumnName = "id")
     private List<Product> products;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name ="category_id", referencedColumnName = "id")
+    private List<Image> Images;
 
 
     public Category(Builder builder) {

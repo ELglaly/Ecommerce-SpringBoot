@@ -1,7 +1,4 @@
 package com.example.demo.model.dto;
-
-import com.fasterxml.jackson.annotation.JsonInclude;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
@@ -25,12 +22,15 @@ public class CategoryDto {
     private String description;
     private List<ProductDto> productsDto;
 
+    private List<ImageDto> imagesDto;
+
 
     public CategoryDto(Builder builder) {
         this.id = builder.id;
         this.name = builder.name;
         this.description = builder.description;
         this.productsDto = builder.productsDto;
+        this.imagesDto = builder.imagesDto;
     }
     public CategoryDto() { }
 
@@ -39,6 +39,7 @@ public class CategoryDto {
         private String name;
         private String description;
         private List<ProductDto> productsDto;
+        private List<ImageDto> imagesDto;
         public Builder id(Long id) {
             this.id = id;
             return this;
@@ -53,6 +54,10 @@ public class CategoryDto {
         }
         public Builder productsDto(List<ProductDto> productsDto) {
             this.productsDto = productsDto;
+            return this;
+        }
+        public Builder imagesDto(List<ImageDto> imagesDto) {
+            this.imagesDto = imagesDto;
             return this;
         }
         public CategoryDto build() {

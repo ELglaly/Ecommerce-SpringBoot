@@ -22,38 +22,37 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
-    @PostMapping("/add")
+    @PostMapping()
     public ResponseEntity<ApiResponse> addCategory(@RequestBody @Valid AddCategoryRequest request) {
         CategoryDto category = categoryService.addCategory(request);
-        System.out.println(category.toString());
         return ResponseEntity.ok(new ApiResponse(category,"Added Successfully!"));
     }
 
-    @GetMapping ("/get/{name}")
-    public ResponseEntity<ApiResponse> getCategoryByName(@PathVariable String name) {
+    @GetMapping ("/search/")
+    public ResponseEntity<ApiResponse> getCategoryByName(@RequestParam String name) {
         CategoryDto categoryDto = categoryService.getCategoryByName(name);
         return ResponseEntity.ok(new ApiResponse(categoryDto,"Category found!"));
     }
 
-    @GetMapping("/getAll")
+    @GetMapping()
     public ResponseEntity<ApiResponse> getAllCategory() {
 
         List<CategoryDto> categoryDtos = categoryService.getAllCategories();
         return ResponseEntity.ok(new ApiResponse(categoryDtos,"Category found!") );
     }
 
-    @GetMapping("/getCount")
+    @GetMapping("/count")
     public ResponseEntity<ApiResponse> getCategoryCount() {
         return ResponseEntity.ok(new ApiResponse(categoryService.getCategoryCount(),"Category found!"));
     }
 
-    @DeleteMapping("delete/{id}")
+    @DeleteMapping()
     public ResponseEntity<ApiResponse> deleteCategory(@PathVariable Long id) {
         categoryService.deleteCategory(id);
         return ResponseEntity.ok(new ApiResponse(true,"Category deleted!"));
     }
 
-    @PutMapping ("/update/{id}")
+    @PutMapping ()
     public ResponseEntity<ApiResponse> updateCategory(@PathVariable Long id, @RequestBody @Valid UpdateCategoryRequest request) {
         CategoryDto categoryDto = categoryService.updateCategory(request,id);
         return ResponseEntity.ok(new ApiResponse(categoryDto,"Category deleted!"));
