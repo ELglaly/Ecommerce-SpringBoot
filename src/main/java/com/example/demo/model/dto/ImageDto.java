@@ -33,6 +33,9 @@ public class ImageDto {
     @Valid
     private ProductDto productDTO;
 
+    @Valid
+    private CategoryDto categoryDTO;
+
 
 
     private ImageDto (Builder builder)
@@ -42,6 +45,7 @@ public class ImageDto {
          this.name = builder.name;
          this.type = builder.type;
          this.productDTO = builder.productDTO;
+         this.categoryDTO = builder.categoryDTO;
     }
 
     public static class Builder
@@ -52,6 +56,7 @@ public class ImageDto {
         private String name;
         private String type;
         private ProductDto productDTO;
+        private CategoryDto categoryDTO;
 
 
         public Builder url(String url) {
@@ -77,7 +82,10 @@ public class ImageDto {
             this.productDTO = productDTO;
             return this;
         }
-
+        public Builder categoryDTO(CategoryDto categoryDTO) {
+            this.categoryDTO=categoryDTO;
+            return this;
+        }
         public ImageDto build()
         {
             return new ImageDto(this);
