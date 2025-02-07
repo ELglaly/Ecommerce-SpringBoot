@@ -12,6 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
@@ -30,7 +31,7 @@ public class AddCategoryRequest {
     @Size(min = 5, max = 500, message = "Description must be between 5 and 500 characters")
     private String description;
 
-    @Valid
-    private List<AddImageRequest> images;
+
+    private List<AddImageRequest> images=new ArrayList<>();
 
 }
