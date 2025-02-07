@@ -20,10 +20,10 @@ public class CategoryService implements ICategoryService {
 
     private final CategoryRepository categoryRepository;
     private final ModelMapper modelMapper;
-    private final ICategoryMapper categoryMapper;
+    private final CategoryMapper categoryMapper;
 
     // Constructor to inject CategoryRepository dependency
-    public CategoryService (CategoryRepository categoryRepository, ModelMapper modelMapper, ICategoryMapper categoryMapper) {
+    public CategoryService (CategoryRepository categoryRepository, ModelMapper modelMapper, CategoryMapper categoryMapper) {
         this.categoryRepository = categoryRepository;
         this.modelMapper = modelMapper;
         this.categoryMapper = categoryMapper;
