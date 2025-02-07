@@ -47,7 +47,7 @@ public class OrderFactory implements IOrderFactory {
     private Set<OrderItem>  createOrderItems(CartDto cart,Order order) {
         return cart.getItems().stream().map(
                 cartItem -> {
-                    Product product = productMapper.toEntity(cartItem.getProduct());
+                    Product product = productMapper.toEntityFromDto(cartItem.getProduct());
                     if (product.getQuantity() < cartItem.getQuantity()) {
                         throw new InvalidFieldException("Insufficient product quantity");
                     }
@@ -57,8 +57,6 @@ public class OrderFactory implements IOrderFactory {
                             .order(order)
                             .product(product)
                             .quantity(cartItem.getQuantity())
-                            .totalPrice(cartItem.getTotalPrice())
-                            .unitePrice(cartItem.getUnitPrice())
                             .build();
                 }
         ).collect(Collectors.toSet());

@@ -8,13 +8,14 @@ import com.example.demo.model.dto.UserDto;
 import com.example.demo.model.entity.Order;
 import com.example.demo.model.entity.OrderItem;
 import com.example.demo.model.entity.User;
+import com.example.demo.request.order.AddOrderRequest;
 import org.springframework.stereotype.Component;
 
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
-public class OrderMapper {
+public class OrderMapper implements IOrderMapper {
 
     private final IProductMapper productMapper;
     private final IUserMapper userMapper;
@@ -44,5 +45,15 @@ public class OrderMapper {
                 .user(userDto)
                 .build();
 
+    }
+
+    @Override
+    public Order toEntityFromAddRequest(AddOrderRequest addRequest) {
+        return null;
+    }
+
+    @Override
+    public Order toEntityFromDto(OrderDto dto) {
+        return null;
     }
 }

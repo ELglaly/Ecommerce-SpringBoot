@@ -1,14 +1,14 @@
 package com.example.demo.mapper.order;
 
+import org.springframework.stereotype.Component;
+
 import com.example.demo.mapper.IProductMapper;
-import com.example.demo.mapper.OrderMapper;
 import com.example.demo.model.dto.order.OrderItemDto;
 import com.example.demo.model.entity.OrderItem;
-import org.springframework.stereotype.Component;
 
 @Component
 public class OrderItemMapper implements IOrderItemMapper {
-    private IProductMapper productMapper;
+    private final IProductMapper productMapper;
 
     public OrderItemMapper(IProductMapper productMapper) {
         this.productMapper = productMapper;
@@ -19,8 +19,13 @@ public class OrderItemMapper implements IOrderItemMapper {
                 .id(orderItem.getId())
                 .quantity(orderItem.getQuantity())
                 .totalPrice(orderItem.getTotalPrice())
-                .unitePrice(orderItem.getUnitePrice())
+                .unitePrice(orderItem.getUnitPrice())
                 .productDto(productMapper.toDto(orderItem.getProduct()))
                 .build();
+    }
+
+    @Override
+    public OrderItem toEntityFromDto(OrderItemDto dto) {
+        return null;
     }
 }
