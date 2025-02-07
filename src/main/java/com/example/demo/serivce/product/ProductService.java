@@ -48,7 +48,7 @@ public class ProductService implements IProductService {
 
     // Helper method to create a new Product entity from the productDto and category
     private ProductDto createProduct(AddProductRequest request) {
-        Product product = productMapper.toEntity(request);
+        Product product = productMapper.toEntityFromAddRequest(request);
         product = productRepository.save(product);
         return productMapper.toDto(product);
     }
