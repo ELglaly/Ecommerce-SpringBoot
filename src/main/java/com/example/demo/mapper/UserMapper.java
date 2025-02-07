@@ -1,7 +1,13 @@
 package com.example.demo.mapper;
 
+import com.example.demo.model.dto.ProductDto;
 import com.example.demo.model.dto.UserDto;
+import com.example.demo.model.entity.Product;
 import com.example.demo.model.entity.User;
+import com.example.demo.request.product.AddProductRequest;
+import com.example.demo.request.product.UpdateProductRequest;
+import com.example.demo.request.user.CreateUserRequest;
+import com.example.demo.request.user.UpdateUserRequest;
 import org.springframework.stereotype.Component;
 
 
@@ -29,5 +35,20 @@ public class UserMapper implements IUserMapper
                 .address(addressMapper.toDto(user.getAddress()))
                 .phoneNumbers(phoneNumberMapper.toDto(user.getPhoneNumber()))
                 .build();
+    }
+
+    @Override
+    public User toEntityFromAddRequest(CreateUserRequest addRequest) {
+        return null;
+    }
+
+    @Override
+    public User toEntityFromDto(UserDto dto) {
+        return null;
+    }
+
+    @Override
+    public User toEntityFromUpdateRequest(UpdateUserRequest updateRequest) {
+        return null;
     }
 }
