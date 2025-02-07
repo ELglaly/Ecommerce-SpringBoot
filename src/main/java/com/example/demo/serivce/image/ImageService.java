@@ -55,7 +55,7 @@ public class ImageService implements IImageService {
         // Logic to save image to the database
         try {
             String urlImage= ApiConstants.URL_IMAGES;
-            Image image=new Image.Builder()
+            Image image= Image.builder()
                     .image(new SerialBlob(file.getBytes()))
                     .product(product).name(file.getOriginalFilename())
                     .build();
@@ -98,7 +98,7 @@ public class ImageService implements IImageService {
         // Logic to save image to the database
         Image saveImage= null;
         try {
-            existingImage.setname(file.getOriginalFilename());
+            existingImage.setName(file.getOriginalFilename());
             existingImage.setImage(new SerialBlob(file.getBytes()));
             String urlImage=ApiConstants.URL_IMAGES;
             String url=urlImage+existingImage.getProduct().getName()+existingImage.getId();

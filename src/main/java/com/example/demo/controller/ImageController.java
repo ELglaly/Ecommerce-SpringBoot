@@ -19,42 +19,42 @@ public class ImageController {
         this.imageService = imageService;
     }
 
-    @GetMapping("/upload/{productId}")
-    public ResponseEntity<ApiResponse> addImages(@PathVariable("productId") Long productId,
+    @PostMapping("/{productId}")
+    public ResponseEntity<ApiResponse> addImages(@PathVariable Long productId,
                                               @RequestParam List<MultipartFile> file) {
         List<ImageDto> imageDtos =imageService.addImage(file,productId);
 
         return ResponseEntity.ok(new ApiResponse(imageDtos,"Added Successfully"));
     }
 
-    @GetMapping("get/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<ApiResponse> getImageById(@PathVariable Long id) {
         ImageDto imageDto = imageService.getImage(id);
         return ResponseEntity.ok(new ApiResponse(imageDto, "Image Retrieved Successfully"));
     }
 
 
-    @PutMapping("/update/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<ApiResponse> updateImage(@PathVariable Long id,
                                                            @RequestParam("files") List<MultipartFile> files) {
         imageService.updateImage(files, id);
         return ResponseEntity.ok(new ApiResponse("Updated Successfully", "Success"));
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse> deleteImage(@PathVariable Long id) {
         imageService.deleteImage(id);
         return ResponseEntity.ok(new ApiResponse("Deleted Successfully", "Success"));
     }
 
-    @GetMapping("/getAll")
+    @GetMapping()
     public ResponseEntity<ApiResponse> getAllImages() {
         List<ImageDto> imageDtos = imageService.getAllImages();
         return ResponseEntity.ok(new ApiResponse(imageDtos, "All Images Retrieved Successfully"));
     }
 
-    @GetMapping("get/product/{productName}")
-    public ResponseEntity<ApiResponse> getImagesByProduct(@PathVariable String productName) {
+    @GetMapping("/productName")
+    public ResponseEntity<ApiResponse> getImagesByProduct(@RequestParam String productName) {
         List<ImageDto> imageDtos = imageService.getImagesByProduct(productName);
         return ResponseEntity.ok(new ApiResponse(imageDtos, "Images Retrieved Successfully"));
     }
