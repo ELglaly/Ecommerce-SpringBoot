@@ -22,7 +22,7 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
-    @PostMapping()
+    @PostMapping("/add")
     public ResponseEntity<ApiResponse> addCategory(@RequestBody @Valid AddCategoryRequest request) {
         CategoryDto category = categoryService.addCategory(request);
         return ResponseEntity.ok(new ApiResponse(category,"Added Successfully!"));
@@ -46,16 +46,17 @@ public class CategoryController {
         return ResponseEntity.ok(new ApiResponse(categoryService.getCategoryCount(),"Category found!"));
     }
 
-    @DeleteMapping()
+    @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse> deleteCategory(@PathVariable Long id) {
         categoryService.deleteCategory(id);
         return ResponseEntity.ok(new ApiResponse(true,"Category deleted!"));
     }
 
-    @PutMapping ()
+    @PutMapping ("/{id}")
     public ResponseEntity<ApiResponse> updateCategory(@PathVariable Long id, @RequestBody @Valid UpdateCategoryRequest request) {
-        CategoryDto categoryDto = categoryService.updateCategory(request,id);
-        return ResponseEntity.ok(new ApiResponse(categoryDto,"Category deleted!"));
+            CategoryDto categoryDto = categoryService.updateCategory(request,id);
+            return ResponseEntity.ok(new ApiResponse(categoryDto,"Category Updated!"));
+
     }
 
 

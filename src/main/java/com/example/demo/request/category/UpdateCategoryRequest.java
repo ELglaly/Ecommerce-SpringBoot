@@ -29,7 +29,7 @@ import java.util.List;
         @Size(min = 5, max = 500, message = "Description must be between 5 and 500 characters")
         private String description;
 
-        @Valid
+
         private List<UpdateImageRequest> images;
 
     }
