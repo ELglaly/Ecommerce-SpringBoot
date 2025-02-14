@@ -8,7 +8,7 @@ public class ResourceNotFoundException extends AppException {
 
     public ResourceNotFoundException(String message, String resourceName) {
         super(message);
-        super.setErrorCode(resourceName.toUpperCase()+"_ALREADY_EXISTS");
+        super.setErrorCode(resourceName.toUpperCase()+"_NOT_FOUND");
         super.setStatus(HttpStatus.NOT_FOUND);
     }
 }

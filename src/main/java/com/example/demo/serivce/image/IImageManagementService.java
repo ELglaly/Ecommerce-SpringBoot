@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface IImageManagementService {
     List<ImageDto> addImage(List<MultipartFile> image, Long productId);
-    void updateImage(List<MultipartFile> image, Long id);
+    List<ImageDto> updateImage(List<MultipartFile> image, Long id);
     void deleteImage(Long id);
 }
