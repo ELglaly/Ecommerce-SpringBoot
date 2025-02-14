@@ -22,7 +22,7 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
-    @PostMapping("/add")
+    @PostMapping()
     public ResponseEntity<ApiResponse> addCategory(@RequestBody @Valid AddCategoryRequest request) {
         CategoryDto category = categoryService.addCategory(request);
         return ResponseEntity.ok(new ApiResponse(category,"Added Successfully!"));

@@ -85,12 +85,11 @@ public class CategoryService implements ICategoryService {
 
     // Helper method to update an existing category's details
     private CategoryDto updateExistingCategory(Category existingCategory, UpdateCategoryRequest request) {
-        if(existingCategory.getName().equals(request.getName())) {
+        if(categoryRepository.countByName(request.getName())>1) {
             throw new ResourceAlreadyExistsException("Category Already Exists", "Category");
         }
         else
         {
-
             Category savedCategory = categoryMapper.toEntityFromUpdateRequest(request);
             savedCategory.setId(existingCategory.getId());
             categoryRepository.save(savedCategory);
