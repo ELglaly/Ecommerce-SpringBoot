@@ -19,7 +19,7 @@ public class ImageController {
         this.imageService = imageService;
     }
 
-    @PostMapping("/{productId}")
+    @PostMapping("/product/{productId}")
     public ResponseEntity<ApiResponse> addImages(@PathVariable Long productId,
                                               @RequestParam List<MultipartFile> file) {
         List<ImageDto> imageDtos =imageService.addImage(file,productId);
@@ -27,21 +27,20 @@ public class ImageController {
         return ResponseEntity.ok(new ApiResponse(imageDtos,"Added Successfully"));
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/product/{id}")
     public ResponseEntity<ApiResponse> getImageById(@PathVariable Long id) {
         ImageDto imageDto = imageService.getImage(id);
         return ResponseEntity.ok(new ApiResponse(imageDto, "Image Retrieved Successfully"));
     }
 
-
-    @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse> updateImage(@PathVariable Long id,
-                                                           @RequestParam("files") List<MultipartFile> files) {
-        imageService.updateImage(files, id);
+    @PutMapping("/product/{productId}")
+    public ResponseEntity<ApiResponse> updateImage(@PathVariable Long productId,
+                                                           @RequestParam List<MultipartFile> files) {
+        imageService.updateImage(files, productId);
         return ResponseEntity.ok(new ApiResponse("Updated Successfully", "Success"));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/product/{id}")
     public ResponseEntity<ApiResponse> deleteImage(@PathVariable Long id) {
         imageService.deleteImage(id);
         return ResponseEntity.ok(new ApiResponse("Deleted Successfully", "Success"));
@@ -53,7 +52,7 @@ public class ImageController {
         return ResponseEntity.ok(new ApiResponse(imageDtos, "All Images Retrieved Successfully"));
     }
 
-    @GetMapping("/productName")
+    @GetMapping("/productName/{productName}")
     public ResponseEntity<ApiResponse> getImagesByProduct(@RequestParam String productName) {
         List<ImageDto> imageDtos = imageService.getImagesByProduct(productName);
         return ResponseEntity.ok(new ApiResponse(imageDtos, "Images Retrieved Successfully"));
