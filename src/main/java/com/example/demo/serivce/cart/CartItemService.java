@@ -80,16 +80,10 @@ public class CartItemService implements ICartItemService {
             // If the cartItem  exists, update its quantity by adding the new quantity
             cartItem.setQuantity(quantity + cartItem.getQuantity());
         }
-
-        // Calculate the total price for the CartItem based on its unit price and quantity
-        cartItem.setTotalPrice();
-
         // Add the CartItem to the cart
         cart.addItem(cartItem);
 
     }
-
-
 
     @Override
     @Transactional
@@ -122,7 +116,6 @@ public class CartItemService implements ICartItemService {
                 .ifPresent(item -> {
                     item.setQuantity(quantity);
                     item.setUnitPrice(item.getProduct().getPrice());
-                    item.setTotalPrice();
                 });
 
         cartRepository.save(cart);

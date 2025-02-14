@@ -1,6 +1,8 @@
 package com.example.demo.serivce.cart;
 
 import com.example.demo.exceptions.ResourceNotFoundException;
+import com.example.demo.mapper.cart.CartItemMapper;
+import com.example.demo.mapper.cart.CartMapper;
 import com.example.demo.model.dto.UserDto;
 import com.example.demo.model.dto.cart.CartDto;
 import com.example.demo.model.dto.cart.CartItemDto;
@@ -20,21 +22,21 @@ import java.util.stream.Collectors;
 public class CartService implements ICartService {
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
-    private final ModelMapper modelMapper;
-    public CartService(CartRepository cartRepository, CartItemRepository cartItemRepository, ModelMapper modelMapper) {
+    private final CartMapper cartMapper;
+    public CartService(CartRepository cartRepository, CartItemRepository cartItemRepository, CartMapper cartMapper) {
         this.cartRepository = cartRepository;
         this.cartItemRepository = cartItemRepository;
-        this.modelMapper = modelMapper;
+        this.cartMapper = cartMapper;
     }
 
     @Override
     public CartDto getCartById(Long id) {
-        return cartRepository.findById(id).map(this::convertToCartDto)
+        return cartRepository.findById(id).map(cartMapper::toDto)
                 .orElseThrow(() -> new ResourceNotFoundException("Cart not Found", "Cart"));
     }
     public CartDto getCartByUserId(Long userId) {
         return Optional.ofNullable(cartRepository.findByUserId(userId))
-                .map(this::convertToCartDto)
+                .map(cartMapper::toDto)
                 .orElseThrow(() -> new ResourceNotFoundException("Cart not Found", "Cart"));
 
     }
@@ -53,16 +55,5 @@ public class CartService implements ICartService {
         return cart.getItems().stream()
                 .map(CartItemDto::getTotalPrice)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
-    }
-
-    private CartDto convertToCartDto(Cart cart) {
-        CartDto cartDto = modelMapper.map(cart, CartDto.class);
-        Set<CartItemDto> cartItem= cart.getItems().stream().map(item ->
-                modelMapper.map(item, CartItemDto.class))
-                        .collect(Collectors.toSet());
-        cartDto.setItems(cartItem);
-        UserDto userDto = modelMapper.map(cart.getUser(), UserDto.class);
-        cartDto.setUser(userDto);
-        return cartDto;
     }
 }
