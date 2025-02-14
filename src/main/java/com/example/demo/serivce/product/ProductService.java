@@ -3,8 +3,10 @@ package com.example.demo.serivce.product;
 import com.example.demo.exceptions.ResourceNotFoundException;
 import com.example.demo.exceptions.ResourceAlreadyExistsException;
 import com.example.demo.mapper.ProductMapper;
+import com.example.demo.model.dto.CategoryDto;
 import com.example.demo.model.dto.ImageDto;
 import com.example.demo.model.dto.ProductDto;
+import com.example.demo.model.entity.Category;
 import com.example.demo.model.entity.Product;
 import com.example.demo.repository.CategoryRepository;
 import com.example.demo.repository.ImageRepository;
@@ -43,12 +45,19 @@ public class ProductService implements IProductService {
     public ProductDto addProduct(AddProductRequest request) {
            // Find product by name; if not found, throw exception
            productValidator.validateProductDoesNotExist(request.getName());
-           return createProduct(request);
+           Category category= categoryExist(request);
+           return createProduct(request,category);
+    }
+
+    private Category categoryExist(AddProductRequest request) {
+        return Optional.ofNullable(categoryRepository.findByName(request.getCategory()))
+                .orElseThrow(()-> new ResourceNotFoundException("Category Not Found",request.getName()));
     }
 
     // Helper method to create a new Product entity from the productDto and category
-    private ProductDto createProduct(AddProductRequest request) {
+    private ProductDto createProduct(AddProductRequest request, Category category) {
         Product product = productMapper.toEntityFromAddRequest(request);
+        product.setCategory(category);
         product = productRepository.save(product);
         return productMapper.toDto(product);
     }
@@ -58,10 +67,9 @@ public class ProductService implements IProductService {
     public ProductDto getProductById(Long id) {
         return productRepository.findById(id)
                 .map(productMapper::toDto)
-                .orElseThrow(() -> new ResourceNotFoundException("Product Not Found","Product"));
+                .orElseThrow(() -> new ResourceNotFoundException("Product Not Found", "Product"));
     }
-
-    // return all products from the repository
+        // return all products from the repository
     @Override
     public List<ProductDto> getAllProducts() {
         return productRepository.findAll()
@@ -80,19 +88,17 @@ public class ProductService implements IProductService {
 
     // Helper method to update product fields from the productDto
     private ProductDto updateExistingProduct(Product existingProduct, UpdateProductRequest request) {
-        existingProduct.setName(request.getName());
-        existingProduct.setDescription(request.getDescription());
-        existingProduct.setPrice(request.getPrice());
-        existingProduct.setQuantity(request.getQuantity());
-        existingProduct.setBrand(request.getBrand());
+         Product updatedProduct=productMapper.toEntityFromUpdateRequest(request);
+         updatedProduct.setId(existingProduct.getId());
+         updatedProduct.setImages(existingProduct.getImages());
 
         // Find and update category if present
-        return Optional.ofNullable(categoryRepository.findByName(request.getName()))
-                .map(category -> {
-                    existingProduct.setCategory(category);
-                    productRepository.save(existingProduct);
-                    return productMapper.toDto(existingProduct);
-                }).orElseThrow(()->new ResourceNotFoundException("Category Not Found","Category"));
+        Category category= Optional.ofNullable(categoryRepository.findByName(request.getCategory()))
+                .orElseThrow(()->new ResourceNotFoundException("Category Not Found","Category"));
+
+        updatedProduct.setCategory(category);
+        productRepository.save(updatedProduct);
+        return productMapper.toDto(updatedProduct);
     }
 
     // Delete a product by ID, throws exception if not found

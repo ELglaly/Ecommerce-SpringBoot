@@ -7,6 +7,7 @@ import com.example.demo.request.product.AddProductRequest;
 import com.example.demo.request.product.UpdateProductRequest;
 import com.example.demo.response.ApiResponse;
 import com.example.demo.serivce.product.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,8 +27,8 @@ public class ProductController {
     /**
      * Create a new product.
      */
-    @PostMapping
-    public ResponseEntity<ApiResponse> createProduct(@RequestBody AddProductRequest addProductRequest) {
+    @PostMapping()
+    public ResponseEntity<ApiResponse> createProduct(@RequestBody @Valid AddProductRequest addProductRequest) {
         ProductDto productDto = productService.addProduct(addProductRequest);
         return ResponseEntity.ok(new ApiResponse(productDto, "Product created successfully"));
     }
@@ -38,9 +39,6 @@ public class ProductController {
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse> getProductById(@PathVariable Long id) {
         ProductDto productDto = productService.getProductById(id);
-        if (productDto == null) {
-            throw new ResourceNotFoundException("Product not found", "Product");
-        }
         return ResponseEntity.ok(new ApiResponse(productDto, "Product found"));
     }
 

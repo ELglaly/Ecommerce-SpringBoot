@@ -1,5 +1,6 @@
 package com.example.demo.mapper;
 
+import com.example.demo.model.dto.CategoryDto;
 import com.example.demo.model.dto.ImageDto;
 import com.example.demo.model.dto.ProductDto;
 import com.example.demo.model.entity.Product;
@@ -25,14 +26,13 @@ public class ProductMapper implements IProductMapper {
     public ProductDto toDto(Product product) {
 
         ProductDto productDto = modelMapper.map(product, ProductDto.class);
-
         if (product.getImages() != null) {
             List<ImageDto> imageDto = product.getImages().stream()
                     .map(image -> modelMapper.map(image, ImageDto.class))
                     .collect(Collectors.toList());
             productDto.setImageDto(imageDto);
         }
-
+        productDto.setCategoryDto(modelMapper.map(product.getCategory(), CategoryDto.class));
         return productDto;
     }
 
