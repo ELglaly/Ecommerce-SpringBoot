@@ -6,11 +6,13 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class UpdateProductRequest {
     @NotNull(message = "Name cannot be null")
     @NotBlank(message = "Name cannot be empty")
@@ -37,57 +39,7 @@ public class UpdateProductRequest {
     private int quantity;
 
     @NotNull(message = "Category cannot be null")
-    @Valid
-    private CategoryDto categoryDto;
+    private String category;
 
 
-    public @NotNull(message = "Name cannot be null") @NotBlank(message = "Name cannot be empty") @Size(min = 2, max = 100, message = "Name must be between 2 and 100 characters") String getName() {
-        return name;
-    }
-
-    public void setName(@NotNull(message = "Name cannot be null") @NotBlank(message = "Name cannot be empty") @Size(min = 2, max = 100, message = "Name must be between 2 and 100 characters") String name) {
-        this.name = name;
-    }
-
-    public @NotNull(message = "Brand cannot be null") @NotBlank(message = "Brand cannot be empty") @Size(min = 2, max = 50, message = "Brand must be between 2 and 50 characters") String getBrand() {
-        return brand;
-    }
-
-    public void setBrand(@NotNull(message = "Brand cannot be null") @NotBlank(message = "Brand cannot be empty") @Size(min = 2, max = 50, message = "Brand must be between 2 and 50 characters") String brand) {
-        this.brand = brand;
-    }
-
-    public @NotNull(message = "Description cannot be null") @NotBlank(message = "Description cannot be Empty") @Size(min = 5, max = 500, message = "Description must be between 5 and 500 characters") String getDescription() {
-        return description;
-    }
-
-    public void setDescription(@NotNull(message = "Description cannot be null") @NotBlank(message = "Description cannot be Empty") @Size(min = 5, max = 500, message = "Description must be between 5 and 500 characters") String description) {
-        this.description = description;
-    }
-
-    public @NotNull(message = "Price cannot be null") @DecimalMin(value = "0.01", message = "Price must be greater than 0") @Digits(integer = 10, fraction = 2, message = "Price must have up to 2 decimal places") BigDecimal getPrice() {
-        return price;
-    }
-
-    public void setPrice(@NotNull(message = "Price cannot be null") @DecimalMin(value = "0.01", message = "Price must be greater than 0") @Digits(integer = 10, fraction = 2, message = "Price must have up to 2 decimal places") BigDecimal price) {
-        this.price = price;
-    }
-
-    @Min(value = 1, message = "Quantity must be at least 1")
-    @Max(value = 10000, message = "Quantity cannot exceed 10,000")
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(@Min(value = 1, message = "Quantity must be at least 1") @Max(value = 10000, message = "Quantity cannot exceed 10,000") int quantity) {
-        this.quantity = quantity;
-    }
-
-    public @NotNull(message = "Category cannot be null") @Valid CategoryDto getCategoryDto() {
-        return categoryDto;
-    }
-
-    public void setCategoryDto(@NotNull(message = "Category cannot be null") @Valid CategoryDto categoryDto) {
-        this.categoryDto = categoryDto;
-    }
 }
