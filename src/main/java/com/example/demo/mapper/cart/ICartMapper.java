@@ -10,6 +10,5 @@ import com.example.demo.request.cart.UpdateCartRequest;
 
 public interface ICartMapper extends IDtoToEntityMapper<Cart, CartDto>
     , IEntityToDtoMapper<Cart, CartDto>
-    , IUpdateRequestToEntityMapper<Cart, UpdateCartRequest>
 {
 }

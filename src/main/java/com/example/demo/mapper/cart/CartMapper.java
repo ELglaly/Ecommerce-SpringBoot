@@ -9,10 +9,8 @@ import com.example.demo.request.cart.UpdateCartRequest;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.lang.management.OperatingSystemMXBean;
+import java.util.*;
 
 @Component
 public class CartMapper implements ICartMapper {
@@ -25,28 +23,26 @@ public class CartMapper implements ICartMapper {
     @Override
     public Cart toEntityFromDto(CartDto dto) {
         Cart cart = modelMapper.map(dto, Cart.class);
-        //TODO : CartItemMapper
-        return null;
+        Optional.ofNullable(dto.getItems()).ifPresent(items -> {
+            Set<CartItem> cartItems = new HashSet<>();
+            items.forEach(item -> {
+                cartItems.add(cartItemMapper.toEntityFromDto(item));
+            });
+            cart.setItems(cartItems);
+        });
+        return cart;
     }
 
     @Override
     public CartDto toDto(Cart entity) {
-        CartDto dto = modelMapper.map(entity, CartDto.class);
-        List<CartItemDto> cartItemDto =new ArrayList<>();
-        entity.getItems().forEach(item -> {
-            cartItemDto.add(cartItemMapper.toDto(item));
+        CartDto cartDto = modelMapper.map(entity, CartDto.class);
+        Optional.ofNullable(entity.getItems()).ifPresent(items -> {
+            Set<CartItemDto> itemDtos = new HashSet<>();
+            items.forEach(item -> {
+                itemDtos.add (cartItemMapper.toDto(item));
+            });
+            cartDto.setItems(itemDtos);
         });
-        return dto;
-    }
-
-    @Override
-    public Cart toEntityFromUpdateRequest(UpdateCartRequest updateRequest) {
-        Cart cart = modelMapper.map(updateRequest, Cart.class);
-        Set<CartItem> cartItem =new HashSet<>();
-        updateRequest.getItems().forEach(item -> {
-            cartItem.add(cartItemMapper.toEntityFromUpdateRequest(item));
-        });
-        cart.setItems(cartItem);
-        return cart;
+        return cartDto;
     }
 }
