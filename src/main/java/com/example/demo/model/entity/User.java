@@ -22,10 +22,10 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
+
     private String firstName;
 
-    @NotBlank
+
     private String lastName;
 
     @Past
@@ -37,7 +37,6 @@ public class User {
     private String username;
 
     @NotBlank
-    @Size(min = 8, max = 20)
     private String password;
 
     @Email
@@ -49,13 +48,13 @@ public class User {
     private Set<UserObserver> observers = new HashSet<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<PhoneNumber> phoneNumber = new HashSet<>();
+    private Set<PhoneNumber> phoneNumber;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Address address;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Order> orders = new HashSet<>();
+    private Set<Order> orders;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Cart cart;
@@ -136,5 +135,9 @@ public class User {
             return new User(this);
         }
 
+    }
+
+    public void AddPhoneNumber(PhoneNumber phoneNumber) {
+        this.phoneNumber.add(phoneNumber);
     }
 }
