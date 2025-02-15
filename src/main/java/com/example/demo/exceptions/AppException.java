@@ -1,23 +1,17 @@
 package com.example.demo.exceptions;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.http.HttpStatus;
 
-public class AppException extends RuntimeException {
-    private String errorCode;
+@Getter
+@Setter
+public class AppException extends RuntimeException{
     private HttpStatus status;
+    private String errorCode;
     public AppException(String message) {
         super(message);
     }
-    public String getErrorCode() {
-        return errorCode;
-    }
-    public void setErrorCode(String errorCode) {
-        this.errorCode = errorCode;
-    }
-    public HttpStatus getStatus() {
-        return status;
-    }
-    public void setStatus(HttpStatus status) {
-        this.status = status;
-    }
 }
+
+

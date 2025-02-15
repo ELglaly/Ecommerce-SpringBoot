@@ -1,10 +1,10 @@
 package com.example.demo.exceptions.image;
 
-import com.example.demo.exceptions.CustomRuntimeException;
+import com.example.demo.exceptions.AppException;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(org.springframework.http.HttpStatus.NOT_FOUND)
-public class ImageNotFoundException extends CustomRuntimeException {
+public class ImageNotFoundException extends AppException {
     public ImageNotFoundException(String message) {
         super(message);
         this.setErrorCode("IMAGE_NOT_FOUND");
