@@ -15,7 +15,7 @@ public class CartItem {
     private Long id;
     private int quantity;
     @Transient
-    private BigDecimal totalPrice;
+    private BigDecimal totalPrice=BigDecimal.ZERO;
     @Transient
     private BigDecimal unitPrice;
 
@@ -27,15 +27,9 @@ public class CartItem {
     @JoinColumn(name = "card_id")
     private Cart cart;
 
+
     @PostLoad
     public void postLoad() {
-        // Set unitePrice to current date
-        unitPrice = product.getPrice();  // Set default date as current date
-        // Set default totalPrice if not set
-        totalPrice = unitPrice.multiply(BigDecimal.valueOf(quantity)); // Set default order status
-    }
-    @PrePersist
-    public void prePersist() {
         // Set unitePrice to current date
         unitPrice = product.getPrice();  // Set default date as current date
         // Set default totalPrice if not set

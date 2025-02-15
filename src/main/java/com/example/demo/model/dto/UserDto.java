@@ -16,6 +16,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Data
 public class UserDto {
+
     private Long id;
 
     @NotBlank
@@ -37,8 +38,6 @@ public class UserDto {
 
     private Set<PhoneNumberDto> phoneNumbers;
     private AddressDto address;
-    private Set<OrderDto> orders;
-    private CartDto cart;
 
 
     private UserDto(Builder builder) {
@@ -50,8 +49,6 @@ public class UserDto {
         this.email = builder.email;
         this.phoneNumbers = builder.phoneNumbers;
         this.address = builder.address;
-        this.orders = builder.orders;
-        this.cart = builder.cart;
     }
     public static class Builder{
         private Long id;
