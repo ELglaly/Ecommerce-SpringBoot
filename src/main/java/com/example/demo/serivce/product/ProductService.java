@@ -1,10 +1,9 @@
 package com.example.demo.serivce.product;
 
-import com.example.demo.exceptions.ResourceNotFoundException;
-import com.example.demo.exceptions.ResourceAlreadyExistsException;
+import com.example.demo.exceptions.category.CategoryNotFoundException;
+import com.example.demo.exceptions.product.ProductAlreadyExistsException;
+import com.example.demo.exceptions.product.ProductNotFoundException;
 import com.example.demo.mapper.ProductMapper;
-import com.example.demo.model.dto.CategoryDto;
-import com.example.demo.model.dto.ImageDto;
 import com.example.demo.model.dto.ProductDto;
 import com.example.demo.model.entity.Category;
 import com.example.demo.model.entity.Product;
@@ -14,7 +13,6 @@ import com.example.demo.repository.ProductRepository;
 import com.example.demo.request.product.AddProductRequest;
 import com.example.demo.request.product.UpdateProductRequest;
 import com.example.demo.validator.IProductValidator;
-import com.example.demo.validator.ProductValidator;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -25,33 +23,26 @@ import java.util.Optional;
 public class ProductService implements IProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
-    private final ImageRepository imageRepository;
-    private final ModelMapper modelMapper;
     private final ProductMapper productMapper;
-    private final IProductValidator productValidator;
 
     public ProductService(ProductRepository productRepository, CategoryRepository categoryRepository,
-                          ModelMapper modelMapper, ImageRepository imageRepository,
-                          ProductMapper productMapper, IProductValidator productValidator) {
+                          ProductMapper productMapper) {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
-        this.imageRepository = imageRepository;
-        this.modelMapper = modelMapper;
         this.productMapper = productMapper;
-        this.productValidator = productValidator;
     }
     // Add a new product to the repository
     @Override
     public ProductDto addProduct(AddProductRequest request) {
-           // Find product by name; if not found, throw exception
-           productValidator.validateProductDoesNotExist(request.getName());
+        Optional.ofNullable(productRepository.findByName(request.getName()))
+                .orElseThrow(()-> new ProductAlreadyExistsException("product already exists"));
            Category category= categoryExist(request);
            return createProduct(request,category);
     }
 
     private Category categoryExist(AddProductRequest request) {
         return Optional.ofNullable(categoryRepository.findByName(request.getCategory()))
-                .orElseThrow(()-> new ResourceNotFoundException("Category Not Found",request.getName()));
+                .orElseThrow(()-> new CategoryNotFoundException("Category Not Found"));
     }
 
     // Helper method to create a new Product entity from the productDto and category
@@ -64,10 +55,13 @@ public class ProductService implements IProductService {
 
     // return a product by ID and throws exception if not found
     @Override
-    public ProductDto getProductById(Long id) {
+    public ProductDto getProductDtoById(Long id) {
+        return productMapper.toDto(getProductById(id));
+    }
+    @Override
+    public Product getProductById(Long id) {
         return productRepository.findById(id)
-                .map(productMapper::toDto)
-                .orElseThrow(() -> new ResourceNotFoundException("Product Not Found", "Product"));
+                .orElseThrow(() -> new ProductNotFoundException("Product Not Found"));
     }
         // return all products from the repository
     @Override
@@ -83,7 +77,7 @@ public class ProductService implements IProductService {
     public ProductDto updateProduct(UpdateProductRequest request, Long id) {
         return productRepository.findById(id)
                 .map(product -> updateExistingProduct(product, request))
-                .orElseThrow(() -> new ResourceNotFoundException("Product Not Found","Product"));
+                .orElseThrow(() -> new ProductNotFoundException("Product Not Found"));
     }
 
     // Helper method to update product fields from the productDto
@@ -94,7 +88,7 @@ public class ProductService implements IProductService {
 
         // Find and update category if present
         Category category= Optional.ofNullable(categoryRepository.findByName(request.getCategory()))
-                .orElseThrow(()->new ResourceNotFoundException("Category Not Found","Category"));
+                .orElseThrow(()->new CategoryNotFoundException("Category Not Found"));
 
         updatedProduct.setCategory(category);
         productRepository.save(updatedProduct);
@@ -106,7 +100,7 @@ public class ProductService implements IProductService {
     public void deleteProduct(Long id) {
         productRepository.findById(id).ifPresentOrElse(
                 productRepository::delete, // Delete product if found
-                () -> { throw new ResourceNotFoundException("Product Not Found","Product"); } // Throw exception if not found
+                () -> { throw new ProductNotFoundException("Product Not Found"); } // Throw exception if not found
         );
     }
 

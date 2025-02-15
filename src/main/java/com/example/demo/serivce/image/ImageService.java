@@ -2,7 +2,9 @@ package com.example.demo.serivce.image;
 
 
 import com.example.demo.constants.ApiConstants;
-import com.example.demo.exceptions.ResourceNotFoundException;
+import com.example.demo.exceptions.image.ImageNotFoundException;
+import com.example.demo.exceptions.product.ProductAlreadyExistsException;
+import com.example.demo.exceptions.product.ProductNotFoundException;
 import com.example.demo.mapper.ImageMapper;
 import com.example.demo.model.dto.ImageDto;
 import com.example.demo.model.entity.Image;
@@ -37,7 +39,7 @@ public class ImageService implements IImageService {
     public List<ImageDto> addImage(List<MultipartFile> request, Long productId) {
         return productRepository.findById(productId)
                 .map(product -> createImage(request, product))
-                .orElseThrow(() -> new ResourceNotFoundException("Product not found","Product"));
+                .orElseThrow(() -> new ProductNotFoundException("Product not found"));
     }
     private List<ImageDto> createImage(List<MultipartFile> request, Product product) {
         List<ImageDto> imagesDto =new ArrayList<>();
@@ -71,14 +73,14 @@ public class ImageService implements IImageService {
         return imageRepository.findById(id)
                 .map(imageMapper::toDto)
                 .orElseThrow(
-                ()-> new ResourceNotFoundException("Image Not Found","Product")
+                ()-> new ProductNotFoundException("Image Not Found")
         );
     }
 
     @Override
     public List<ImageDto> updateImage(List<MultipartFile> request, Long productId) {
         Product product= productRepository.findById(productId)
-                .orElseThrow(() -> new ResourceNotFoundException("Product not found","Product"));
+                .orElseThrow(() -> new ProductNotFoundException("Product not found"));
          imageRepository.deleteByProductId(productId);
          List<ImageDto> imagesDto =new ArrayList<>();
         request.forEach(file -> {
@@ -94,7 +96,7 @@ public class ImageService implements IImageService {
     public void deleteImage(Long id) {
         imageRepository.findById(id).ifPresentOrElse(
                 imageRepository :: delete,
-                ()-> {throw new ResourceNotFoundException("Image NOT Found","Product");}
+                ()-> {throw new ProductNotFoundException("Image NOT Found");}
         );
 
     }
@@ -104,7 +106,7 @@ public class ImageService implements IImageService {
 
         return Optional.ofNullable(imageRepository.getImageByUrl(url))
                 .map(imageMapper::toDto)
-                .orElseThrow(()-> new ResourceNotFoundException("Image Not Found","image"));
+                .orElseThrow(()-> new ImageNotFoundException("Image Not Found"));
     }
 
 

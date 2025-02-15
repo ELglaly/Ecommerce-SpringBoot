@@ -1,11 +1,13 @@
 package com.example.demo.serivce.product;
 
 import com.example.demo.model.dto.ProductDto;
+import com.example.demo.model.entity.Product;
 
 import java.util.List;
 
 public interface IProductSearchService {
-    ProductDto getProductById(Long id);
+    ProductDto getProductDtoById(Long id);
+    Product getProductById(Long id);
     List<ProductDto> getAllProducts();
     List<ProductDto> getProductsByName(String name);
     List<ProductDto> getAllProductsByCategory(String category);

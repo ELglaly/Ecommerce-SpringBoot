@@ -1,7 +1,8 @@
 package com.example.demo.serivce.order;
 
 import com.example.demo.enums.OrderStatus;
-import com.example.demo.exceptions.ResourceNotFoundException;
+import com.example.demo.exceptions.OrderNotFoundException;
+import com.example.demo.exceptions.user.UserNotFoundException;
 import com.example.demo.model.dto.cart.CartDto;
 import com.example.demo.model.dto.order.OrderDto;
 import com.example.demo.model.dto.order.OrderItemDto;
@@ -16,9 +17,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -44,12 +43,12 @@ public class OrderService implements IOrderService {
     @Transactional
     @Override
     public OrderDto placeOrder(Long userId) {
-        CartDto cartDto = cartService.getCartByUserId(userId);
+        CartDto cartDto = cartService.getCartDtoByUserId(userId);
         if (cartDto == null || cartDto.getItems().isEmpty()) {
             throw new IllegalArgumentException("Cart is empty");
         }
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found", "User"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         Order order = orderFactory.createOrder(cartDto, user);
         order = orderRepository.save(order);
@@ -58,7 +57,7 @@ public class OrderService implements IOrderService {
     @Override
     public OrderDto getOrderById(Long orderId) {
         return orderRepository.findById(orderId).map(this::ConvertToOrderDto)
-                .orElseThrow(() -> new ResourceNotFoundException("Order not found", "Order"));
+                .orElseThrow(() -> new OrderNotFoundException("Order not found"));
     }
 
     @Override

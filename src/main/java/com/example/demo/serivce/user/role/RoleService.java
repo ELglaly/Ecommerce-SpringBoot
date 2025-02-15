@@ -1,7 +1,7 @@
 package com.example.demo.serivce.user.role;
 
-import com.example.demo.exceptions.ResourceAlreadyExistsException;
-import com.example.demo.exceptions.ResourceNotFoundException;
+import com.example.demo.exceptions.user.RoleAlreadyExistsException;
+import com.example.demo.exceptions.user.RoleNotFoundException;
 import com.example.demo.model.entity.Role;
 import com.example.demo.repository.RoleRepository;
 import org.springframework.stereotype.Service;
@@ -15,7 +15,7 @@ public class RoleService implements IRoleService {
     @Override
     public Role getRole(String roleName) {
         return Optional.ofNullable(roleRepository.findByName(roleName))
-                .orElseThrow(()-> new ResourceNotFoundException("Role nod found", roleName));
+                .orElseThrow(()-> new RoleNotFoundException("Role nod found "+ roleName));
     }
 
     @Override
@@ -23,7 +23,7 @@ public class RoleService implements IRoleService {
         Optional.ofNullable(roleRepository.findByName(role.getName()))
                 .ifPresentOrElse(
                         (existingRole) -> {
-                            throw new ResourceNotFoundException("Role not found: " , role.getName());
+                            throw new RoleAlreadyExistsException("Role Exists : "+ role.getName());
                         },
                         () -> roleRepository.save(role) // Must be a Runnable (a lambda with no arguments)
                 );
@@ -36,7 +36,7 @@ public class RoleService implements IRoleService {
         Optional.ofNullable(roleRepository.findByName(roleName))
                 .ifPresentOrElse(
                         (existingRole) -> {
-                            throw new ResourceAlreadyExistsException("Role exists: " , roleName);
+                            throw new RoleNotFoundException("Role not found: " + roleName);
                         },
                         () -> roleRepository.deleteByName(roleName) // Must be a Runnable (a lambda with no arguments)
                 );

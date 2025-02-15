@@ -1,9 +1,11 @@
 package com.example.demo.serivce.cart;
 
 
-import com.example.demo.exceptions.ResourceNotFoundException;
+import com.example.demo.exceptions.CartNotFoundException;
 import com.example.demo.exceptions.ValidationException;
-import com.example.demo.model.dto.cart.CartDto;
+import com.example.demo.exceptions.product.ProductNotFoundException;
+import com.example.demo.mapper.cart.CartItemMapper;
+import com.example.demo.mapper.cart.ICartItemMapper;
 import com.example.demo.model.dto.cart.CartItemDto;
 import com.example.demo.model.entity.Cart;
 import com.example.demo.model.entity.CartItem;
@@ -11,31 +13,35 @@ import com.example.demo.model.entity.Product;
 import com.example.demo.repository.CartItemRepository;
 import com.example.demo.repository.CartRepository;
 import com.example.demo.repository.ProductRepository;
+import com.example.demo.serivce.product.IProductService;
 import com.example.demo.serivce.product.ProductService;
 import org.modelmapper.ModelMapper;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.math.BigDecimal;
-import java.util.Optional;
 
 @Service
 public class CartItemService implements ICartItemService {
     private final CartItemRepository cartItemRepository;
     private final CartService cartService;
     private final ProductService productService;
-    private final ModelMapper modelMapper;
     private final CartRepository cartRepository;
     private final ProductRepository productRepository;
+    private final CartItemService cartItemService;
+    private final CartItemMapper cartItemMapper;
 
     public CartItemService(CartItemRepository cartItemRepository, CartService cartService,
-                           ProductService productService, ModelMapper modelMapper, CartRepository cartRepository, ProductRepository productRepository) {
+                           ProductService productService, ModelMapper modelMapper,
+                           CartRepository cartRepository,
+                           ProductRepository productRepository,CartItemService cartItemService,
+                           CartItemMapper cartItemMapper) {
         this.cartItemRepository = cartItemRepository;
         this.cartService = cartService;
         this.productService = productService;
-        this.modelMapper = modelMapper;
         this.cartRepository = cartRepository;
         this.productRepository = productRepository;
+        this.cartItemService=cartItemService;
+        this.cartItemMapper=cartItemMapper;
     }
 
     @Override
@@ -44,12 +50,11 @@ public class CartItemService implements ICartItemService {
         if (quantity <= 0) {
             throw new ValidationException("Quantity must be greater than 0");
         }
-
         // Fetch cart and product
         Cart cart = cartRepository.findById(cartId)
-                .orElseThrow(() -> new ResourceNotFoundException("Cart not found", "Cart"));
+                .orElseThrow(() -> new CartNotFoundException("CartItem not found"));
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new ResourceNotFoundException("Product not found", "Product"));
+                .orElseThrow(() -> new ProductNotFoundException("Product not found"));
 
         // Validate product stock
         if (product.getQuantity() < quantity) {
@@ -87,17 +92,9 @@ public class CartItemService implements ICartItemService {
 
     @Override
     @Transactional
-    public void deleteItemFromCart(Long cartId, Long productId) {
-        Cart cart = cartRepository.findById(cartId)
-                .orElseThrow(() -> new ResourceNotFoundException("Cart not found", "Cart"));
-
-        CartItem item = cart.getItems().stream()
-                .filter(cartItem -> cartItem.getProduct().getId().equals(productId))
-                .findFirst()
-                .orElseThrow(() -> new ResourceNotFoundException("Product not found in cart", "CartItem"));
-
-        cart.removeItem(item);
-        cartRepository.save(cart);
+    public void deleteItemFromCart(Long cartId,Long itemId) {
+        CartItem cartItem= getCartItem(cartId,itemId);
+        cartItemRepository.delete(cartItem);
     }
 
     @Override
@@ -108,7 +105,7 @@ public class CartItemService implements ICartItemService {
         }
 
         Cart cart = cartRepository.findById(cartId)
-                .orElseThrow(() -> new ResourceNotFoundException("Cart not found", "Cart"));
+                .orElseThrow(() -> new CartNotFoundException("CartItem not found"));
 
         cart.getItems().stream()
                 .filter(item -> item.getProduct().getId().equals(productId))
@@ -122,15 +119,16 @@ public class CartItemService implements ICartItemService {
     }
 
     @Override
-    public CartItemDto getCartItem(Long cartId, Long productId) {
+    public CartItemDto getCartDtoItem(Long cartId, Long itemId) {
+        return cartItemMapper.toDto(getCartItem(cartId,itemId));
+    }
+    public CartItem getCartItem(Long cartId, Long itemId) {
         Cart cart = cartRepository.findById(cartId)
-                .orElseThrow(() -> new ResourceNotFoundException("Cart not found", "Cart"));
+                .orElseThrow(() -> new CartNotFoundException("CartItem not found"));
 
-        CartItem cartItem = cart.getItems().stream()
-                .filter(item -> item.getProduct().getId().equals(productId))
+        return cart.getItems().stream()
+                .filter(item -> item.getId().equals(itemId))
                 .findFirst()
-                .orElseThrow(() -> new ResourceNotFoundException("Product not found in cart", "CartItem"));
-
-        return modelMapper.map(cartItem, CartItemDto.class);
+                .orElseThrow(() -> new ProductNotFoundException("item not found in cart"));
     }
 }
