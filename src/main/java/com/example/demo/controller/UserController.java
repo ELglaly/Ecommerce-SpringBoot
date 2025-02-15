@@ -27,7 +27,7 @@ public class UserController {
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse> getUserById(@PathVariable Long id) {
         try {
-            UserDto userDto = userService.getUserById(id);
+            UserDto userDto = userService.getUserDtoById(id);
             return ResponseEntity.ok(new ApiResponse(userDto, "User found"));
         } catch (IllegalArgumentException e) {
             throw new RuntimeException(e);
@@ -53,12 +53,10 @@ public class UserController {
     }
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse> updateUser(@PathVariable Long id, @RequestBody @Valid UpdateUserRequest request) {
-        try {
+
             UserDto userDto = userService.updateUser(id, request);
             return ResponseEntity.ok(new ApiResponse(userDto, "User updated successfully"));
-        } catch (IllegalArgumentException e) {
-            throw new RuntimeException(e);
-        }
+
     }
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse> deleteUser(@PathVariable Long id) {

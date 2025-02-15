@@ -1,7 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.constants.ApiConstants;
-import com.example.demo.exceptions.ResourceNotFoundException;
+import com.example.demo.exceptions.product.ProductNotFoundException;
 import com.example.demo.model.dto.ProductDto;
 import com.example.demo.request.product.AddProductRequest;
 import com.example.demo.request.product.UpdateProductRequest;
@@ -38,7 +38,7 @@ public class ProductController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse> getProductById(@PathVariable Long id) {
-        ProductDto productDto = productService.getProductById(id);
+        ProductDto productDto = productService.getProductDtoById(id);
         return ResponseEntity.ok(new ApiResponse(productDto, "Product found"));
     }
 
@@ -58,7 +58,7 @@ public class ProductController {
     public ResponseEntity<ApiResponse> updateProduct(@PathVariable Long id, @RequestBody UpdateProductRequest updateProductRequest) {
         ProductDto updatedProduct = productService.updateProduct(updateProductRequest, id);
         if (updatedProduct == null) {
-            throw new ResourceNotFoundException("Product not found", "Product");
+            throw new ProductNotFoundException("Product not found");
         }
         return ResponseEntity.ok(new ApiResponse(updatedProduct, "Product updated successfully"));
     }
