@@ -8,11 +8,9 @@ import java.math.BigDecimal;
 public class AddCartItemRequest {
 
     private int quantity;
-    private BigDecimal totalPrice;
-    private BigDecimal unitPrice;
 
-    private ProductDto product;
+    private Long productId;
 
-    private CartDto cart;
+    private Long UserId;
 
 }
