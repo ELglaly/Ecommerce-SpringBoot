@@ -2,8 +2,9 @@ package com.example.demo.mapper;
 
 import com.example.demo.model.dto.PhoneNumberDto;
 import com.example.demo.model.entity.PhoneNumber;
+import com.example.demo.request.user.AddPhoneNumberRequest;
+import com.example.demo.request.user.UpdatePhoneNumberRequest;
 import org.modelmapper.ModelMapper;
-import org.springframework.boot.Banner;
 import org.springframework.stereotype.Component;
 
 import java.util.Set;
@@ -17,16 +18,22 @@ public class PhoneNumberMapper implements IPhoneNumberMapper {
     }
 
     @Override
-    public Set<PhoneNumberDto> toDto(Set<PhoneNumber> phoneNumber) {
-        return phoneNumber.stream()
-                .map(phoneNumber1 -> modelMapper.map(phoneNumber1,PhoneNumberDto.class))
-                .collect(Collectors.toSet());
+    public PhoneNumberDto toDto(PhoneNumber phoneNumber) {
+        return modelMapper.map(phoneNumber,PhoneNumberDto.class);
     }
 
     @Override
-    public Set<PhoneNumber> toEntityFromDto(Set<PhoneNumberDto> dto) {
-        return dto.stream()
-                .map(phoneNumber1 -> modelMapper.map(dto,PhoneNumber.class))
-                .collect(Collectors.toSet());
+    public PhoneNumber toEntityFromDto( PhoneNumberDto dto) {
+        return modelMapper.map(dto,PhoneNumber.class);
+    }
+
+    @Override
+    public  PhoneNumber toEntityFromAddRequest(AddPhoneNumberRequest addRequest) {
+        return modelMapper.map(addRequest,PhoneNumber.class);
+    }
+
+    @Override
+    public PhoneNumber toEntityFromUpdateRequest(UpdatePhoneNumberRequest updateRequest) {
+        return modelMapper.map(updateRequest,PhoneNumber.class);
     }
 }
