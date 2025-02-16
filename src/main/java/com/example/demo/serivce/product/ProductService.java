@@ -3,6 +3,7 @@ package com.example.demo.serivce.product;
 import com.example.demo.exceptions.category.CategoryNotFoundException;
 import com.example.demo.exceptions.product.ProductAlreadyExistsException;
 import com.example.demo.exceptions.product.ProductNotFoundException;
+import com.example.demo.mapper.IProductMapper;
 import com.example.demo.mapper.ProductMapper;
 import com.example.demo.model.dto.ProductDto;
 import com.example.demo.model.entity.Category;
@@ -23,10 +24,10 @@ import java.util.Optional;
 public class ProductService implements IProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
-    private final ProductMapper productMapper;
+    private final IProductMapper productMapper;
 
     public ProductService(ProductRepository productRepository, CategoryRepository categoryRepository,
-                          ProductMapper productMapper) {
+                          IProductMapper productMapper) {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
         this.productMapper = productMapper;

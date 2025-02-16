@@ -12,6 +12,7 @@ import com.example.demo.repository.OrderRepository;
 import com.example.demo.repository.ProductRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.serivce.cart.CartService;
+import com.example.demo.serivce.cart.ICartService;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -24,13 +25,13 @@ import java.util.stream.Collectors;
 public class OrderService implements IOrderService {
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
-    private final CartService cartService;
+    private final ICartService cartService;
     private final ModelMapper modelMapper;
     private final IOrderFactory orderFactory;
     private final UserRepository userRepository;
 
     public OrderService(OrderRepository orderRepository, ProductRepository productRepository,
-                        ModelMapper modelMapper, CartService cartService, IOrderFactory orderFactory, UserRepository userRepository) {
+                        ModelMapper modelMapper, ICartService cartService, IOrderFactory orderFactory, UserRepository userRepository) {
         this.orderRepository = orderRepository;
         this.productRepository = productRepository;
         this.cartService = cartService;

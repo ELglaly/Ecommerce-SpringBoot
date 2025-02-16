@@ -57,6 +57,16 @@ public class UserService implements IUserService {
     }
 
     @Override
+    public UserDto login(String usernameOrEmail, String password) {
+        User user = Optional.ofNullable(userRepository.findByUsernameOrEmail(usernameOrEmail, usernameOrEmail))
+                .orElseThrow(() -> new UserNotFoundException("User with username or email " + usernameOrEmail + " not found"));
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new UserNotFoundException("Invalid password");
+        }
+        return userMapper.toDto(user);
+    }
+
+    @Override
     public UserDto createUser(CreateUserRequest request) {
         validateUserDoesNotExist(request.getEmail(), request.getUsername());
         User user = userMapper.toEntityFromAddRequest(request);

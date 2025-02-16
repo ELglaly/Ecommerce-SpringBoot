@@ -14,6 +14,7 @@ import com.example.demo.repository.CartRepository;
 import com.example.demo.serivce.product.IProductService;
 import com.example.demo.serivce.user.IUserService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.Optional;
@@ -54,11 +55,12 @@ public class CartService implements ICartService {
     }
 
     @Override
-    public void clearCart(Long userId) {
-        CartDto cart = getCartDtoByUserId(userId);
+    @Transactional
+    public void clearCart(Long cartId) {
+        Cart cart = getCartById(cartId);
         cartItemRepository.deleteAllByCartId(cart.getId());
         cart.getItems().clear();
-        cartRepository.deleteById(cart.getId());
+        cartRepository.save(cart);
     }
 
     @Override
@@ -72,11 +74,10 @@ public class CartService implements ICartService {
         boolean itemExists = cart.getItems()
                 .stream()
                 .filter(cartItem -> cartItem.getProduct().getId().equals(productId))
-                .peek(cartItem -> cartItem.setQuantity(cartItem.getQuantity()+amount)) // Update the quantity of matching items
-                .findAny() // Check if any matching item exists
-                .isPresent(); // Returns true if at least one matching item was found
+                .peek(cartItem -> cartItem.setQuantity(cartItem.getQuantity()+amount))
+                .findAny()
+                .isPresent();
 
-         // If no matching item exists, add a new CartItem to the cart
         if (!itemExists) {
             CartItem newCartItem = new CartItem.Builder()
                     .cart(cart)
@@ -84,20 +85,12 @@ public class CartService implements ICartService {
                     .quantity(amount)
                     .build();
             cart.addItem(newCartItem);
-            // Set the user for the cart
             User user = userService.getUserById(userId);
             cart.setUser(user);
         }
-        //updateCartQuantity(cart,amount);
-       // updateTotalPrice(cart,product.getPrice(),amount);
         cartRepository.save(cart);
     }
 
-
-    private void updateCartQuantity(Cart cart, int amount) {
-        cart.setTotalAmount(cart.getTotalAmount()+amount);
-
-    }
     private void updateTotalPrice(Cart cart, BigDecimal price, int newQuantity) {
         // Handle null totalPrice by initializing it to BigDecimal.ZERO
         BigDecimal currentTotalPrice = cart.getTotalPrice() != null ? cart.getTotalPrice() : BigDecimal.ZERO;

@@ -8,4 +8,5 @@ public interface IUserSearchService {
     User getUserById(Long id);
     UserDto getUserByEmail(String email);
     UserDto getUserByUsername(String username);
+    UserDto login(String usernameOrEmail, String password);
 }

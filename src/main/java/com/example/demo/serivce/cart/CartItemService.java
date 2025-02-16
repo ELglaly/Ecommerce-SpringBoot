@@ -23,24 +23,22 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class CartItemService implements ICartItemService {
     private final CartItemRepository cartItemRepository;
-    private final CartService cartService;
-    private final ProductService productService;
+    private final ICartService cartService;
+    private final IProductService productService;
     private final CartRepository cartRepository;
     private final ProductRepository productRepository;
-    private final CartItemService cartItemService;
-    private final CartItemMapper cartItemMapper;
+    private final ICartItemMapper cartItemMapper;
 
-    public CartItemService(CartItemRepository cartItemRepository, CartService cartService,
-                           ProductService productService, ModelMapper modelMapper,
+    public CartItemService(CartItemRepository cartItemRepository, ICartService cartService,
+                           IProductService productService, ModelMapper modelMapper,
                            CartRepository cartRepository,
-                           ProductRepository productRepository,CartItemService cartItemService,
-                           CartItemMapper cartItemMapper) {
+                           ProductRepository productRepository ,
+                           ICartItemMapper cartItemMapper) {
         this.cartItemRepository = cartItemRepository;
         this.cartService = cartService;
         this.productService = productService;
         this.cartRepository = cartRepository;
         this.productRepository = productRepository;
-        this.cartItemService=cartItemService;
         this.cartItemMapper=cartItemMapper;
     }
 
@@ -68,21 +66,19 @@ public class CartItemService implements ICartItemService {
     }
 
     private void createOrUpdateCartItem(Cart cart, Product product, int quantity, Long productId) {
-        // Find the CartItem in the cart for the given product ID
+
         CartItem cartItem = cart.getItems().stream()
-                .filter(item -> item.getProduct().getId().equals(productId)) // Filter items by product ID
-                .findFirst() // Get the first matching item (if any)
-                .orElse(new CartItem()); // If no matching item is found, create a new CartItem
+                .filter(item -> item.getProduct().getId().equals(productId))
+                .findFirst()
+                .orElse(new CartItem());
 
         // If the cartItem is new
         if (cartItem.getId() == null) {
-            // Set the product, quantity, cart, and unit price for the new CartItem
             cartItem.setProduct(product);
             cartItem.setQuantity(quantity);
             cartItem.setCart(cart);
             cartItem.setUnitPrice(product.getPrice());
         } else {
-            // If the cartItem  exists, update its quantity by adding the new quantity
             cartItem.setQuantity(quantity + cartItem.getQuantity());
         }
         // Add the CartItem to the cart
@@ -94,7 +90,10 @@ public class CartItemService implements ICartItemService {
     @Transactional
     public void deleteItemFromCart(Long cartId,Long itemId) {
         CartItem cartItem= getCartItem(cartId,itemId);
+        Cart cart = cartService.getCartById(cartId);
+        cart.removeItem(cartItem);
         cartItemRepository.delete(cartItem);
+        cartRepository.save(cart);
     }
 
     @Override
