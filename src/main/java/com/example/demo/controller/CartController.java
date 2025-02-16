@@ -16,9 +16,9 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping(ApiConstants.CART_ENDPOINT)
 public class CartController {
-    private final CartService cartService;
-    private final CartItemService cartItemService;
-    public CartController(CartService cartService, CartItemService cartItemService)
+    private final ICartService cartService;
+    private final ICartItemService cartItemService;
+    public CartController(ICartService cartService, ICartItemService cartItemService)
     {
         this.cartService = cartService;
         this.cartItemService=cartItemService;
@@ -28,15 +28,15 @@ public class CartController {
         CartDto cartDto =cartService.getCartDtoById(cartId);
         return ResponseEntity.ok(new ApiResponse (cartDto,"Cart Retravied Successfully"));
     }
-    @DeleteMapping
+    @DeleteMapping("/{cartId}")
     public ResponseEntity<ApiResponse> clearCart(@PathVariable Long cartId) {
         cartService.clearCart(cartId);
         return ResponseEntity.ok(new ApiResponse (null,"Cart Retravied Successfully"));
     }
     @DeleteMapping("/item/{itemId}/{cartId}")
     public ResponseEntity<ApiResponse> removeItem(@PathVariable Long itemId, @PathVariable Long cartId ) {
-        cartItemService.deleteItemFromCart(cartId   ,itemId);
-        return ResponseEntity.ok(new ApiResponse (null,"Cart Retravied Successfully"));
+        cartItemService.deleteItemFromCart(cartId ,itemId);
+        return ResponseEntity.ok(new ApiResponse (null,"item removed Successfully"));
     }
     // add product as a cartitem to cart with userid
     @PostMapping("/{userId}")

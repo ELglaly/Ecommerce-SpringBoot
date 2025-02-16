@@ -6,6 +6,7 @@ import com.example.demo.request.category.AddCategoryRequest;
 import com.example.demo.request.category.UpdateCategoryRequest;
 import com.example.demo.response.ApiResponse;
 import com.example.demo.serivce.category.CategoryService;
+import com.example.demo.serivce.category.ICategoryService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,9 +17,9 @@ import java.util.List;
 @RequestMapping(ApiConstants.CATEGORY_ENDPOINT)
 public class CategoryController {
 
-    private final CategoryService categoryService;
+    private final ICategoryService categoryService;
 
-    public CategoryController(CategoryService categoryService) {
+    public CategoryController(ICategoryService categoryService) {
         this.categoryService = categoryService;
     }
 

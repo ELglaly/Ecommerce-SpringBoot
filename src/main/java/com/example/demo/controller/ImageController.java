@@ -4,6 +4,7 @@ package com.example.demo.controller;
 import com.example.demo.constants.ApiConstants;
 import com.example.demo.model.dto.ImageDto;
 import com.example.demo.response.ApiResponse;
+import com.example.demo.serivce.image.IImageService;
 import com.example.demo.serivce.image.ImageService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,8 +15,8 @@ import java.util.List;
 @RestController
 @RequestMapping(ApiConstants.IMAGE_ENDPOINT)
 public class ImageController {
-    private final ImageService imageService;
-    public ImageController(ImageService imageService) {
+    private final IImageService imageService;
+    public ImageController(IImageService imageService) {
         this.imageService = imageService;
     }
 

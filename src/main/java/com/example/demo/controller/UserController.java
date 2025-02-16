@@ -4,6 +4,7 @@ import com.example.demo.model.dto.UserDto;
 import com.example.demo.request.user.CreateUserRequest;
 import com.example.demo.request.user.UpdateUserRequest;
 import com.example.demo.response.ApiResponse;
+import com.example.demo.serivce.user.IUserService;
 import com.example.demo.serivce.user.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -14,16 +15,12 @@ import static com.example.demo.constants.ApiConstants.USER_ENDPOINT;
 @RestController
 @RequestMapping(USER_ENDPOINT)
 public class UserController {
-    private final UserService userService;
-    public UserController(UserService userService) {
+    private final IUserService userService;
+    public UserController(IUserService userService) {
         this.userService = userService;
     }
 
-    @PostMapping
-    public ResponseEntity<ApiResponse> createUser(@RequestBody @Valid CreateUserRequest request) {
-        UserDto userDto = userService.createUser(request);
-        return ResponseEntity.ok(new ApiResponse(userDto, "User created successfully"));
-    }
+
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse> getUserById(@PathVariable Long id) {
         try {
