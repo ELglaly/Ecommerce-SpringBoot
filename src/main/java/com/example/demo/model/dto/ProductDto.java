@@ -1,6 +1,7 @@
 package com.example.demo.model.dto;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,7 +10,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Data
-@NoArgsConstructor
+@Builder
 public class ProductDto {
 
     private Long id;
@@ -46,63 +47,5 @@ public class ProductDto {
 
 
 
-    public ProductDto(Builder builder) {
-        this.id = builder.id;
-        this.name = builder.name;
-        this.brand = builder.brand;
-        this.description = builder.description;
-        this.price = builder.price;
-        this.quantity = builder.quantity;
-        this.categoryDto = builder.categoryDto;
-        this.ImageDto=builder.ImageDto;
-
-    }
-
-    public static class Builder {
-        private Long id;
-        private String name;
-        private String brand;
-        private String description;
-        private BigDecimal price;
-        private int quantity;
-        private CategoryDto categoryDto;
-        private List<ImageDto> ImageDto;
-        public Builder id(Long id) {
-            this.id = id;
-            return this;
-        }
-        public Builder name(String name) {
-            this.name = name;
-            return this;
-        }
-        public Builder brand(String brand) {
-            this.brand = brand;
-            return this;
-        }
-        public Builder description(String description) {
-            this.description = description;
-            return this;
-        }
-        public Builder price(BigDecimal price) {
-            this.price = price;
-            return this;
-        }
-        public Builder quantity(int quantity) {
-            this.quantity = quantity;
-            return this;
-        }
-        public Builder categoryDto(CategoryDto categoryDto) {
-            this.categoryDto = categoryDto;
-            return this;
-        }
-        public ProductDto build() {
-            return new ProductDto(this);
-
-        }
-        public Builder ImageDto(List<ImageDto> ImageDto) {
-            this.ImageDto = ImageDto;
-            return this;
-        }
-    }
 
 }

@@ -7,11 +7,13 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import lombok.Builder;
 import lombok.Data;
 
 import java.sql.Blob;
 
 @Data
+@Builder
 public class ImageDto {
 
     private Long id;
@@ -37,59 +39,4 @@ public class ImageDto {
     private CategoryDto categoryDTO;
 
 
-
-    private ImageDto (Builder builder)
-    {
-         this.url = builder.url;
-         this.image = builder.image;
-         this.name = builder.name;
-         this.type = builder.type;
-         this.productDTO = builder.productDTO;
-         this.categoryDTO = builder.categoryDTO;
-    }
-
-    public static class Builder
-    {
-
-        private String url;
-        private Blob image;
-        private String name;
-        private String type;
-        private ProductDto productDTO;
-        private CategoryDto categoryDTO;
-
-
-        public Builder url(String url) {
-            this.url = url;
-            return this;
-        }
-
-        public Builder image(Blob image) {
-            this.image = image;
-            return this;
-        }
-
-        public Builder name(String name) {
-            this.name = name;
-            return this;
-        }
-        public Builder type(String type) {
-            this.type = type;
-            return this;
-        }
-
-        public Builder productDTO(ProductDto productDTO) {
-            this.productDTO = productDTO;
-            return this;
-        }
-        public Builder categoryDTO(CategoryDto categoryDTO) {
-            this.categoryDTO=categoryDTO;
-            return this;
-        }
-        public ImageDto build()
-        {
-            return new ImageDto(this);
-        }
-
-    }
 }

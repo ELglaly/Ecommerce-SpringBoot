@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -18,7 +19,7 @@ import java.util.Set;
 public class OrderDto {
 
     private Long orderId;
-    private LocalDate orderDate;
+    private LocalDateTime orderDate;
     private BigDecimal orderTotalPrice;
     private OrderStatus orderStatus;
     private Set<OrderItemDto> orderItems=new HashSet<>();
@@ -27,7 +28,7 @@ public class OrderDto {
 
     public static class Builder {
         private Long orderId;
-        private LocalDate orderDate;
+        private LocalDateTime orderDate;
         private BigDecimal orderTotalPrice;
         private OrderStatus orderStatus;
         private Set<OrderItemDto> orderItems;
@@ -36,7 +37,7 @@ public class OrderDto {
             this.orderId = orderId;
             return this;
         }
-        public Builder orderDate(LocalDate orderDate) {
+        public Builder orderDate(LocalDateTime orderDate) {
             this.orderDate = orderDate;
             return this;
         }

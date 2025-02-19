@@ -7,6 +7,7 @@ import java.util.List;
 
 
 @Data
+@Builder
 public class CategoryDto {
 
     private Long id;
@@ -23,46 +24,5 @@ public class CategoryDto {
     private List<ProductDto> productsDto;
 
     private List<ImageDto> imagesDto;
-
-
-    public CategoryDto(Builder builder) {
-        this.id = builder.id;
-        this.name = builder.name;
-        this.description = builder.description;
-        this.productsDto = builder.productsDto;
-        this.imagesDto = builder.imagesDto;
-    }
-    public CategoryDto() { }
-
-    public static class Builder {
-        private Long id;
-        private String name;
-        private String description;
-        private List<ProductDto> productsDto;
-        private List<ImageDto> imagesDto;
-        public Builder id(Long id) {
-            this.id = id;
-            return this;
-        }
-        public Builder name(String name) {
-            this.name = name;
-            return this;
-        }
-        public Builder description(String description) {
-            this.description = description;
-            return this;
-        }
-        public Builder productsDto(List<ProductDto> productsDto) {
-            this.productsDto = productsDto;
-            return this;
-        }
-        public Builder imagesDto(List<ImageDto> imagesDto) {
-            this.imagesDto = imagesDto;
-            return this;
-        }
-        public CategoryDto build() {
-            return new CategoryDto(this);
-        }
-    }
 
 }
