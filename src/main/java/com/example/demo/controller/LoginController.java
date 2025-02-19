@@ -7,10 +7,7 @@ import com.example.demo.response.ApiResponse;
 import com.example.demo.serivce.user.IUserService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(ApiConstants.LOGIN)
@@ -22,9 +19,9 @@ public class LoginController {
 
     // TODO: Implement login endpoint
     // implement login endpoint
-   @GetMapping()
+   @PostMapping
     public ResponseEntity<ApiResponse> login(@RequestBody @Valid LoginRequest loginRequest) {
-        UserDto userDto = userService.login(loginRequest.getUsernameOrEmail(), loginRequest.getPassword());
+        String userDto = userService.login(loginRequest);
         return ResponseEntity.ok(new ApiResponse(userDto, "Login successful"));
     }
     // TODO: Implement logout endpoint

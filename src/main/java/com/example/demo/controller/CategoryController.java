@@ -9,6 +9,7 @@ import com.example.demo.serivce.category.CategoryService;
 import com.example.demo.serivce.category.ICategoryService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,6 +25,7 @@ public class CategoryController {
     }
 
     @PostMapping()
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse> addCategory(@RequestBody @Valid AddCategoryRequest request) {
         CategoryDto category = categoryService.addCategory(request);
         return ResponseEntity.ok(new ApiResponse(category,"Added Successfully!"));
@@ -47,6 +49,7 @@ public class CategoryController {
         return ResponseEntity.ok(new ApiResponse(categoryService.getCategoryCount(),"Category found!"));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse> deleteCategory(@PathVariable Long id) {
         categoryService.deleteCategory(id);
@@ -54,6 +57,7 @@ public class CategoryController {
     }
 
     @PutMapping ("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse> updateCategory(@PathVariable Long id, @RequestBody @Valid UpdateCategoryRequest request) {
             CategoryDto categoryDto = categoryService.updateCategory(request,id);
             return ResponseEntity.ok(new ApiResponse(categoryDto,"Category Updated!"));

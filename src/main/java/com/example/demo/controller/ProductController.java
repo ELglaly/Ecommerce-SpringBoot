@@ -10,6 +10,7 @@ import com.example.demo.serivce.product.IProductService;
 import com.example.demo.serivce.product.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,6 +28,7 @@ public class ProductController {
 
 
     @PostMapping()
+    @PreAuthorize("hasRole('SELLER')")
     public ResponseEntity<ApiResponse> createProduct(@RequestBody @Valid AddProductRequest addProductRequest) {
         ProductDto productDto = productService.addProduct(addProductRequest);
         return ResponseEntity.ok(new ApiResponse(productDto, "Product created successfully"));
@@ -47,6 +49,7 @@ public class ProductController {
 
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('SELLER')")
     public ResponseEntity<ApiResponse> updateProduct(@PathVariable Long id, @RequestBody UpdateProductRequest updateProductRequest) {
         ProductDto updatedProduct = productService.updateProduct(updateProductRequest, id);
         if (updatedProduct == null) {
@@ -57,6 +60,7 @@ public class ProductController {
 
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('SELLER')")
     public ResponseEntity<ApiResponse> deleteProduct(@PathVariable Long id) {
         productService.deleteProduct(id);
         return ResponseEntity.ok(new ApiResponse(true, "Product deleted successfully"));
