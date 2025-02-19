@@ -8,5 +8,7 @@ public class ApiConstants {
     public static final String CART_ENDPOINT = BASE_API + "/carts";
     public static final String USER_ENDPOINT = BASE_API + "/users";
     public static final String URL_IMAGES = BASE_API + "/images/image/download/";
+    public static final String REGISTER = BASE_API + "/register";
+    public static final String LOGIN = BASE_API + "/login";
     public static final String IMAGE_ENDPOINT = BASE_API + "/images";
 }
