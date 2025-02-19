@@ -7,25 +7,35 @@ import com.example.demo.model.dto.UserDto;
 import com.example.demo.model.entity.User;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.request.user.CreateUserRequest;
+import com.example.demo.request.user.LoginRequest;
 import com.example.demo.request.user.UpdateUserRequest;
+import com.example.demo.security.jwt.JwtService;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
-@EnableTransactionManagement
 @Service
 public class UserService implements IUserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
+    private final JwtService jwtService;
 
-    public UserService(UserRepository userRepository, UserMapper userMapper, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, UserMapper userMapper,
+                       PasswordEncoder passwordEncoder,
+                       AuthenticationManager authenticationManager,JwtService jwtService) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.passwordEncoder = passwordEncoder;
+        this.authenticationManager = authenticationManager;
+        this.jwtService = jwtService;
     }
 
     @Override
@@ -57,13 +67,19 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public UserDto login(String usernameOrEmail, String password) {
-        User user = Optional.ofNullable(userRepository.findByUsernameOrEmail(usernameOrEmail, usernameOrEmail))
-                .orElseThrow(() -> new UserNotFoundException("User with username or email " + usernameOrEmail + " not found"));
-        if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new UserNotFoundException("Invalid password");
+    public String login(LoginRequest loginRequest) {
+
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginRequest.getUsernameOrEmail(), loginRequest.getPassword())
+        );
+
+        if(authentication.isAuthenticated()) {
+
+            return JwtService.generateToken(loginRequest.getUsernameOrEmail());
+        } else {
+            return "Login Failed";
+
         }
-        return userMapper.toDto(user);
     }
 
     @Override
