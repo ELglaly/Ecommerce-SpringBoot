@@ -1,5 +1,7 @@
 package com.example.demo.mapper.order;
 
+import com.example.demo.model.dto.ProductDto;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 import com.example.demo.mapper.IProductMapper;
@@ -8,10 +10,10 @@ import com.example.demo.model.entity.OrderItem;
 
 @Component
 public class OrderItemMapper implements IOrderItemMapper {
-    private final IProductMapper productMapper;
+    private final ModelMapper modelMapper;
 
-    public OrderItemMapper(IProductMapper productMapper) {
-        this.productMapper = productMapper;
+    public OrderItemMapper(ModelMapper modelMapper) {
+       this.modelMapper = modelMapper;
     }
     @Override
     public OrderItemDto toDto(OrderItem orderItem) {
@@ -20,12 +22,8 @@ public class OrderItemMapper implements IOrderItemMapper {
                 .quantity(orderItem.getQuantity())
                 .totalPrice(orderItem.getTotalPrice())
                 .unitePrice(orderItem.getUnitPrice())
-                .productDto(productMapper.toDto(orderItem.getProduct()))
+                .productDto(modelMapper.map(orderItem.getProduct(), ProductDto.class))
                 .build();
     }
 
-    @Override
-    public OrderItem toEntityFromDto(OrderItemDto dto) {
-        return null;
-    }
 }

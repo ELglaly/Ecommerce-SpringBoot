@@ -7,8 +7,6 @@ import com.example.demo.model.dto.order.OrderDto;
 import com.example.demo.model.entity.Order;
 import com.example.demo.request.order.AddOrderRequest;
 
-public interface IOrderMapper extends IEntityToDtoMapper<Order, OrderDto>,
-        IDtoToEntityMapper<Order, OrderDto>,
-        IAddRequestToEntityMapper<Order, AddOrderRequest>
+public interface IOrderMapper extends IEntityToDtoMapper<Order, OrderDto>
 {
 }

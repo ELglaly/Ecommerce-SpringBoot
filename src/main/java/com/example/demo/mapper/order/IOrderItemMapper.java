@@ -7,8 +7,7 @@ import com.example.demo.model.dto.order.OrderItemDto;
 import com.example.demo.model.entity.OrderItem;
 import org.apache.catalina.mapper.Mapper;
 
-public interface IOrderItemMapper extends IDtoToEntityMapper<OrderItem, OrderItemDto> ,
-        IEntityToDtoMapper<OrderItem, OrderItemDto>
+public interface IOrderItemMapper extends IEntityToDtoMapper<OrderItem, OrderItemDto>
 {
 
 }
