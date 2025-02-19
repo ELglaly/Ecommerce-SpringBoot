@@ -79,6 +79,7 @@ public class User {
         this.cart = builder.cart;
     }
 
+
     public static class Builder {
         private String firstName;
         private String lastName;

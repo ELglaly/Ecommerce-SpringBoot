@@ -8,6 +8,7 @@ import java.util.List;
 
 @Data
 @Builder
+//@AllArgsConstructor(access = AccessLevel.PUBLIC)
 public class CategoryDto {
 
     private Long id;

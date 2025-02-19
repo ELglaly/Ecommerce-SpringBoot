@@ -39,16 +39,25 @@ public class Cart {
     public void addItem(CartItem item) {
         items.add(item);
         item.setCart(this);
+        updateTotals();
     }
+
     public void removeItem(CartItem item) {
         items.remove(item);
         item.setCart(null);
+        updateTotals();
     }
 
+    private void updateTotals() {
+        this.totalPrice = items.stream()
+                .map(CartItem::getTotalPrice)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
 
+        this.totalAmount = items.stream()
+                .mapToInt(CartItem::getQuantity)
+                .sum();
+    }
     @PostLoad
-    @PreUpdate
-    @PrePersist
     public void post()
     {
         totalPrice=BigDecimal.ZERO;
@@ -57,8 +66,7 @@ public class Cart {
                 item -> {
                     totalPrice= totalPrice.add(item.getTotalPrice());
                     totalAmount+= item.getQuantity();
-        });
+                });
     }
-
 
 }

@@ -9,6 +9,9 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Immutable;
+import org.hibernate.annotations.UpdateTimestamp;
 
 
 import java.math.BigDecimal;
@@ -16,43 +19,42 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
-
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
-@Setter
 @Getter
+@Immutable
+@NoArgsConstructor
 @Table(name = "orders")
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long orderId;
-    @NotNull
-    private  LocalDate orderDate;
-    @PositiveOrZero
-    @Transient
-    private  BigDecimal orderTotalPrice;
-    @NotNull
+
+    @CreationTimestamp
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private OrderStatus orderStatus;
 
-    @OneToMany(mappedBy = "order",cascade = CascadeType.ALL,orphanRemoval = true)
-    private Set<OrderItem> orderItems;
+    @Column(name = "order_total_price", nullable = false, precision = 10, scale = 2)
+    private BigDecimal orderTotalPrice;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private  User user;
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true
+            ,fetch = FetchType.LAZY)
+    private Set<OrderItem> orderItems = new HashSet<>();
+
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false,updatable = false)
+    private User user;
 
 
     @PrePersist
     public void prePersist() {
-        // Set orderDate to current date if not already set
-        if (orderDate == null) {
-            orderDate = LocalDate.now();  // Set default date as current date
-        }
-        // Set default orderStatus if not set
-        if (orderStatus == null) {
-            orderStatus = OrderStatus.PENDING;  // Set default order status
+        if (this.orderStatus == null) {
+            this.orderStatus = OrderStatus.PENDING; // Set default order status
         }
     }
 
@@ -60,28 +62,50 @@ public class Order {
         this.orderTotalPrice = builder.orderTotalPrice;
         this.orderItems = builder.orderItems;
         this.user = builder.user;
+        this.createdAt=LocalDateTime.now();
     }
 
+
     public static class Builder{
+        private Long orderId;
         private BigDecimal orderTotalPrice;
         private Set<OrderItem> orderItems=new HashSet<>();
         private User user;
 
+        public Builder orderId(Long orderId) {
+            this.orderId = orderId;
+            return this;
+        }
+
         public Builder orderTotalPrice(BigDecimal orderTotalPrice) {
+            if(orderTotalPrice==null || orderTotalPrice.compareTo(BigDecimal.ZERO)<=0){
+                throw new InvalidFieldException("OrderTotalPrice cannot be null or less than or equal to zero");
+            }
             this.orderTotalPrice = orderTotalPrice;
             return this;
         }
         public Builder user(User user) {
+            if(user==null){
+                throw new InvalidFieldException("User cannot be null");
+            }
             this.user = user;
             return this;
         }
         public Builder orderItems(Set<OrderItem> orderItems) {
+            if(orderItems==null || orderItems.isEmpty()){
+                throw new InvalidFieldException("OrderItems cannot be null or Empty");
+            }
             this.orderItems = orderItems;
             return this;
         }
         public Order build(){
             return new Order(this);
         }
+    }
+
+
+    public void updateStatus(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
     }
 
 }
