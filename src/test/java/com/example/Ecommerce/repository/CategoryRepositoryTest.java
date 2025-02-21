@@ -20,13 +20,12 @@ class CategoryRepositoryTest {
     @Autowired
     private CategoryRepository categoryRepository;
 
-    private Category category1;
     private Category category2;
 
     @BeforeEach
     void setUp() {
         // Create and persist test categories with descriptions
-        category1 = new Category();
+        Category category1 = new Category();
         category1.setName("Electronics");
         category1.setDescription("Category for electronic devices"); // Add description
         entityManager.persist(category1);
@@ -40,7 +39,7 @@ class CategoryRepositoryTest {
     }
 
     @Test
-    void testFindByName() {
+    void testFindByName_ReturnsCategory() {
         // Test finding a category by name
         Optional<Category> foundCategory = Optional.ofNullable(categoryRepository.findByName("Electronics"));
 
@@ -51,7 +50,7 @@ class CategoryRepositoryTest {
     }
 
     @Test
-    void testFindByName_NotFound() {
+    void testFindByName__ReturnsFalse() {
         // Test finding a category by a non-existent name
         Optional<Category> foundCategory = Optional.ofNullable(categoryRepository.findByName("NonExistentCategory"));
 
@@ -60,7 +59,7 @@ class CategoryRepositoryTest {
     }
 
     @Test
-    void testExistsByName() {
+    void testExistsByName_ReturnsTrue() {
         // Test if a category exists by name
         boolean exists = categoryRepository.existsByName("Clothing");
 
@@ -69,7 +68,7 @@ class CategoryRepositoryTest {
     }
 
     @Test
-    void testExistsByName_NotFound() {
+    void testExistsByName_ReturnsFalse() {
         // Test if a category exists by a non-existent name
         boolean exists = categoryRepository.existsByName("NonExistentCategory");
 
@@ -78,7 +77,7 @@ class CategoryRepositoryTest {
     }
 
     @Test
-    void testCountByName() {
+    void testCountByName_ReturnsNumber1() {
         // Test counting categories by name
         long count = categoryRepository.countByName("Electronics");
 
@@ -87,7 +86,7 @@ class CategoryRepositoryTest {
     }
 
     @Test
-    void testCountByName_NotFound() {
+    void testCountByName_Returns0() {
         // Test counting categories by a non-existent name
         long count = categoryRepository.countByName("NonExistentCategory");
 
@@ -96,7 +95,7 @@ class CategoryRepositoryTest {
     }
 
     @Test
-    void testDescriptionField() {
+    void testDescriptionField_ReturnsCategory() {
         // Test the description field of a category
         Optional<Category> foundCategory = Optional.ofNullable(categoryRepository.findByName("Clothing"));
 

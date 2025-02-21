@@ -61,7 +61,7 @@ class RoleRepositoryTest {
     void deleteByName_DoesNothing_WhenRoleNotFound() {
         // Ensure there is only one role before attempting to delete a non-existent one
         long countBefore = roleRepository.count();
-        roleRepository.deleteByName("NON_EXISTENT_ROLE");
+        roleRepository.deleteByName("NON_ROLE");
         long countAfter = roleRepository.count();
 
         assertEquals(countBefore, countAfter);

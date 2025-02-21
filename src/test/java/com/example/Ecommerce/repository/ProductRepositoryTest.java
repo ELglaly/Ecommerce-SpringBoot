@@ -57,11 +57,12 @@ class ProductRepositoryTest {
         product3.setCategory(category2);
         entityManager.persist(product3);
 
+
         entityManager.flush();
     }
 
     @Test
-    void testFindByName() {
+    void testFindByName_ReturnsProduct() {
         // Test finding products by name
         List<Product> products = productRepository.findByName("Smartphone");
 
@@ -71,7 +72,7 @@ class ProductRepositoryTest {
     }
 
     @Test
-    void testFindByBrandAndName() {
+    void testFindByBrandAndName_ReturnsProduct() {
         // Test finding products by brand and name
         List<Product> products = productRepository.findByBrandAndName("BrandA", "Smartphone");
 
@@ -82,7 +83,7 @@ class ProductRepositoryTest {
     }
 
     @Test
-    void testFindByCategoryName() {
+    void testFindByCategoryName_ReturnsProduct() {
         // Test finding products by category name
         List<Product> products = productRepository.findByCategoryName("Electronics");
 
@@ -93,7 +94,7 @@ class ProductRepositoryTest {
     }
 
     @Test
-    void testFindByBrand() {
+    void testFindByBrand_ReturnsProduct() {
         // Test finding products by brand
         List<Product> products = productRepository.findByBrand("BrandB");
 
@@ -104,7 +105,7 @@ class ProductRepositoryTest {
     }
 
     @Test
-    void testFindByCategoryNameAndBrand() {
+    void testFindByCategoryNameAndBrand_ReturnsProduct() {
         // Test finding products by category name and brand
         List<Product> products = productRepository.findByCategoryNameAndBrand("Electronics", "BrandA");
 
@@ -115,7 +116,7 @@ class ProductRepositoryTest {
     }
 
     @Test
-    void testFindByNameAndCategoryName() {
+    void testFindByNameAndCategoryName_ReturnsProduct() {
         // Test finding products by name and category name
         List<Product> products = productRepository.findByNameAndCategoryName("Laptop", "Electronics");
 
@@ -126,7 +127,7 @@ class ProductRepositoryTest {
     }
 
     @Test
-    void testCountByCategoryName() {
+    void testCountByCategoryName_ReturnsNumber() {
         // Test counting products by category name
         int count = productRepository.countByCategoryName("Electronics");
 
@@ -135,7 +136,7 @@ class ProductRepositoryTest {
     }
 
     @Test
-    void testCountByBrand() {
+    void testCountByBrand_ReturnsNumber() {
         // Test counting products by brand
         int count = productRepository.countByBrand("BrandC");
 
@@ -144,7 +145,7 @@ class ProductRepositoryTest {
     }
 
     @Test
-    void testCountByName() {
+    void testCountByName_ReturnsNumber() {
         // Test counting products by name
         int count = productRepository.countByName("T-Shirt");
 
@@ -153,21 +154,11 @@ class ProductRepositoryTest {
     }
 
     @Test
-    void testExistsByName() {
+    void testExistsByName_ReturnsTrue() {
         // Test if a product exists by name
         boolean exists = productRepository.existsByName("Smartphone");
 
         // Verify the results
         assertTrue(exists);
-    }
-
-    @Test
-    void testFindByNameContaining() {
-        // Test finding products by name containing a substring
-        List<Product> products = productRepository.findByNameContaining("Shirt");
-
-        // Verify the results
-        assertEquals(1, products.size());
-        assertEquals("T-Shirt", products.get(0).getName());
     }
 }

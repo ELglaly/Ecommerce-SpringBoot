@@ -63,7 +63,7 @@ class OrderRepositoryTest {
     }
 
     @Test
-    void testFindByUserId() {
+    void testFindByUserId_ReturnsListOfOrder() {
         // Test finding orders by user ID
         List<Order> orders = orderRepository.findByUserId(user1.getId());
 
@@ -74,7 +74,7 @@ class OrderRepositoryTest {
     }
 
     @Test
-    void testFindByOrderStatusAndUserId() {
+    void testFindByOrderStatusAndUserId_ReturnsListOfOrder() {
         // Test finding orders by order status and user ID
         List<Order> orders = orderRepository.findByOrderStatusAndUserId(PENDING, user1.getId());
 
@@ -84,7 +84,7 @@ class OrderRepositoryTest {
     }
 
     @Test
-    void testFindByUserId_NoOrders() {
+    void testFindByUserId__ReturnsListOfOrderNotFound() {
         // Test finding orders for a user with no orders
         List<Order> orders = orderRepository.findByUserId(999L); // Non-existent user ID
 
@@ -93,7 +93,7 @@ class OrderRepositoryTest {
     }
 
     @Test
-    void testFindByOrderStatusAndUserId_NoOrders() {
+    void testFindByOrderStatusAndUserId_ReturnsListOfOrderNotFound() {
         // Test finding orders by order status and user ID for a user with no matching orders
         List<Order> orders = orderRepository.findByOrderStatusAndUserId(OrderStatus.SHIPPED, user2.getId());
 

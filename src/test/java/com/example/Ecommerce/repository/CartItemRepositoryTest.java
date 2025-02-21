@@ -103,7 +103,7 @@ class CartItemRepositoryTest {
     }
 
     @Test
-    void testFindAllByCartId() {
+    void testFindAllByCartId_ReturnsListOfCartItems() {
         List<CartItem> cartItems = cartItemRepository.findAllByCartId(cart.getId());
 
         assertEquals(2, cartItems.size());

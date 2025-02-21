@@ -38,7 +38,7 @@ public class UserRepositoryTest {
 
     // Test Case 1: Save a valid user
     @Test
-    void testSaveUser_ReturnUser() {
+    void testSaveUser_ReturnsUser() {
         User savedUser = userRepository.save(user);
         assertNotNull(savedUser.getId());
         assertEquals("sherif", savedUser.getFirstName());
@@ -49,7 +49,7 @@ public class UserRepositoryTest {
 
     // Test Case 2: Find a user by username
     @Test
-    void testFindByUsername_ReturnUser() {
+    void testFindByUsername_ReturnsUser() {
         entityManager.persist(user);
         User foundUser = userRepository.findByUsername("sherif12");
         assertNotNull(foundUser);
@@ -58,7 +58,7 @@ public class UserRepositoryTest {
 
     // Test Case 3: Find a user by email
     @Test
-    void testFindByEmail_ReturnUser() {
+    void testFindByEmail_ReturnsUser() {
         entityManager.persist(user);
         User foundUser = userRepository.findByEmail("sherif@example.com");
         assertNotNull(foundUser);
@@ -67,7 +67,7 @@ public class UserRepositoryTest {
 
     // Test Case 4: Check if a user exists by username
     @Test
-    void testExistsByUsername_ReturnTrue() {
+    void testExistsByUsername_ReturnsTrue() {
         entityManager.persist(user);
         boolean exists = userRepository.existsByUsername("sherif12");
         assertTrue(exists);
@@ -75,7 +75,7 @@ public class UserRepositoryTest {
 
     // Test Case 5: Check if a user exists by email
     @Test
-    void testExistsByEmail_ReturnTrue() {
+    void testExistsByEmail_ReturnsTrue() {
         entityManager.persist(user);
         boolean exists = userRepository.existsByEmail("sherif@example.com");
         assertTrue(exists);
@@ -83,7 +83,7 @@ public class UserRepositoryTest {
 
     // Test Case 6: Delete a user
     @Test
-    void testDeleteUser_ReturnFalse() {
+    void testDeleteUser_ReturnsFalse() {
         User savedUser = entityManager.persist(user);
         userRepository.delete(savedUser);
         Optional<User> deletedUser = userRepository.findById(savedUser.getId());
@@ -92,7 +92,7 @@ public class UserRepositoryTest {
 
     // Test Case 7: Update a user
     @Test
-    void testUpdateUser_ReturnUpdatedUser() {
+    void testUpdateUser_ReturnsUpdatedUser() {
         User savedUser = entityManager.persist(user);
         savedUser.setFirstName("User");
         savedUser.setLastName("ali");
@@ -106,7 +106,7 @@ public class UserRepositoryTest {
 
     // Test Case 8: Save a user with a duplicate username (should fail)
     @Test
-    void testSaveUserWithDuplicateUsername_ReturnException() {
+    void testSaveUserWithDuplicateUsername_ReturnsException() {
         entityManager.persist(user);
 
         User duplicateUser = new User.Builder()
@@ -124,7 +124,7 @@ public class UserRepositoryTest {
 
     // Test Case 9: Save a user with a duplicate email (should fail)
     @Test
-    void testSaveUserWithDuplicateEmail_ReturnException() {
+    void testSaveUserWithDuplicateEmail_ReturnsException() {
         entityManager.persist(user);
 
         User duplicateUser = new User.Builder()
@@ -141,21 +141,21 @@ public class UserRepositoryTest {
 
     // Test Case 10: Find a user by a non-existent username
     @Test
-    void testFindByNonExistentUsername_ReturnNull() {
+    void testFindByNonExistentUsername_ReturnsNull() {
         User foundUser = userRepository.findByUsername("no");
         assertNull(foundUser);
     }
 
     // Test Case 11: Find a user by a non-existent email
     @Test
-    void testFindByNonExistentEmail_ReturnNull() {
+    void testFindByNonExistentEmail_ReturnsNull() {
         User foundUser = userRepository.findByEmail("no@example.com");
         assertNull(foundUser);
     }
 
     // Test Case 12: Save a user with null fields (should fail)
     @Test
-    void testSaveUserWithNullFields_ReturnException() {
+    void testSaveUserWithNullFields_ReturnsException() {
         User invalidUser = new User.Builder()
                 .username(null) // Null username
                 .password(null) // Null password
@@ -167,7 +167,7 @@ public class UserRepositoryTest {
 
     // Test Case 13: Save a user with an invalid email format (should fail)
     @Test
-    void testSaveUserWithInvalidEmail_ReturnException() {
+    void testSaveUserWithInvalidEmail_ReturnsException() {
         User invalidUser = new User.Builder()
                 .firstName("sherif")
                 .lastName("ashraf")
@@ -182,7 +182,7 @@ public class UserRepositoryTest {
 
     // Test Case 14: Save a user with a future birthdate (should fail)
     @Test
-    void testSaveUserWithFutureBirthDate_ReturnException() {
+    void testSaveUserWithFutureBirthDate_ReturnsException() {
         User invalidUser = new User.Builder()
                 .firstName("sherif")
                 .lastName("ashraf")
@@ -197,7 +197,7 @@ public class UserRepositoryTest {
 
     // Test Case 15: Save a user with a very long username (should fail)
     @Test
-    void testSaveUserWithLongUsername_ReturnException() {
+    void testSaveUserWithLongUsername_ReturnsException() {
         User invalidUser = new User.Builder()
                 .firstName("sherif")
                 .lastName("ashraf")

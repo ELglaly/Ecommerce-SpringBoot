@@ -62,7 +62,7 @@ class ImageRepositoryTest {
     }
 
     @Test
-    void testCountByProductName() {
+    void testCountByProductName_ReturnsNumber() {
         // Test counting images by product name
         long count = imageRepository.countByProductName("Product 1");
 
@@ -71,7 +71,7 @@ class ImageRepositoryTest {
     }
 
     @Test
-    void testFindImageByProductName() {
+    void testFindImageByProductName_ReturnsListOfImages() {
         // Test finding images by product name
         List<Image> images = imageRepository.findImageByProductName("Product 1");
 
@@ -82,7 +82,7 @@ class ImageRepositoryTest {
     }
 
     @Test
-    void testFindByUrl() {
+    void testFindByUrl_ReturnsImage() {
         // Test finding an image by URL
         Optional<Image> foundImage = imageRepository.findByUrl("http://example.com/image1.jpg");
 
@@ -92,7 +92,7 @@ class ImageRepositoryTest {
     }
 
     @Test
-    void testExistsByUrl() {
+    void testExistsByUrl_ReturnsTrue() {
         // Test if an image exists by URL
         boolean exists = imageRepository.existsByUrl("http://example.com/image2.jpg");
 
@@ -101,7 +101,7 @@ class ImageRepositoryTest {
     }
 
     @Test
-    void testFindByProductId() {
+    void testFindByProductId_ReturnsListOfImages() {
         // Test finding images by product ID
         List<Image> images = imageRepository.findByProductId(product1.getId());
 
@@ -112,7 +112,7 @@ class ImageRepositoryTest {
     }
 
     @Test
-    void testDeleteByProductId() {
+    void testDeleteByProductId_ReturnsNothing() {
         // Test deleting images by product ID
         imageRepository.deleteByProductId(product1.getId());
 
