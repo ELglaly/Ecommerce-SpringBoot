@@ -2,6 +2,8 @@ package com.example.Ecommerce.controller;
 
 import com.example.Ecommerce.constants.ApiConstants;
 import com.example.Ecommerce.exceptions.product.ProductNotFoundException;
+import com.example.Ecommerce.mapper.IProductMapper;
+import com.example.Ecommerce.mapper.ProductMapper;
 import com.example.Ecommerce.model.dto.ProductDto;
 import com.example.Ecommerce.model.entity.Product;
 import com.example.Ecommerce.request.product.AddProductRequest;
@@ -20,10 +22,12 @@ import java.util.List;
 public class ProductController {
 
     private final IProductService productService;
+    private final IProductMapper productMapper;
 
     // Constructor for dependency injection
-    public ProductController(IProductService productService) {
+    public ProductController(IProductService productService, IProductMapper productMapper) {
         this.productService = productService;
+        this.productMapper = productMapper;
     }
 
 
@@ -43,7 +47,9 @@ public class ProductController {
 
     @GetMapping
     public ResponseEntity<ApiResponse> getAllProducts() {
-        List<ProductDto> products = productService.getAllProducts();
+        List<ProductDto> products = productService.getAllProducts()
+                .stream()
+                .map(productMapper::toDto).toList();
         return ResponseEntity.ok(new ApiResponse(products, "Products retrieved successfully"));
     }
 
@@ -51,7 +57,7 @@ public class ProductController {
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('SELLER')")
     public ResponseEntity<ApiResponse> updateProduct(@PathVariable Long id, @RequestBody UpdateProductRequest updateProductRequest) {
-        ProductDto updatedProduct = productService.updateProduct(updateProductRequest, id);
+        ProductDto updatedProduct = productMapper.toDto(productService.updateProduct(updateProductRequest, id));
         if (updatedProduct == null) {
             throw new ProductNotFoundException("Product not found");
         }
@@ -69,20 +75,26 @@ public class ProductController {
 
     @GetMapping("/search")
     public ResponseEntity<ApiResponse> getProductsByName(@RequestParam String name) {
-        List<ProductDto> products = productService.getProductsByName(name);
+        List<ProductDto> products = productService.getProductsByName(name)
+                .stream()
+                .map(productMapper::toDto).toList();
         return ResponseEntity.ok(new ApiResponse(products, "Products found by name"));
     }
 
     @GetMapping("/filter/category")
     public ResponseEntity<ApiResponse> getProductsByCategory(@RequestParam String category) {
-        List<ProductDto> products = productService.getAllProductsByCategory(category);
+        List<ProductDto> products = productService.getAllProductsByCategory(category)
+                .stream()
+                .map(productMapper::toDto).toList();
         return ResponseEntity.ok(new ApiResponse(products, "Products found by category"));
     }
 
 
     @GetMapping("/filter/brand")
     public ResponseEntity<ApiResponse> getProductsByBrand(@RequestParam String brand) {
-        List<ProductDto> products = productService.getAllProductsByBrand(brand);
+        List<ProductDto> products = productService.getAllProductsByBrand(brand)
+                .stream()
+                .map(productMapper::toDto).toList();
         return ResponseEntity.ok(new ApiResponse(products, "Products found by brand"));
     }
 
@@ -91,7 +103,9 @@ public class ProductController {
     public ResponseEntity<ApiResponse> getProductsByCategoryAndBrand(
             @RequestParam String category,
             @RequestParam String brand) {
-        List<ProductDto> products = productService.getAllProductsByCategoryAndBrand(category, brand);
+        List<ProductDto> products = productService.getAllProductsByCategoryAndBrand(category, brand)
+                .stream()
+                .map(productMapper::toDto).toList();
         return ResponseEntity.ok(new ApiResponse(products, "Products found by category and brand"));
     }
 
@@ -99,7 +113,9 @@ public class ProductController {
     public ResponseEntity<ApiResponse> getProductsByNameAndCategory(
             @RequestParam String name,
             @RequestParam String category) {
-        List<ProductDto> products = productService.getAllProductsByNameAndCategory(name, category);
+        List<ProductDto> products = productService.getAllProductsByNameAndCategory(name, category)
+                .stream()
+                .map(productMapper::toDto).toList();
         return ResponseEntity.ok(new ApiResponse(products, "Products found by name and category"));
     }
 
@@ -107,7 +123,9 @@ public class ProductController {
     public ResponseEntity<ApiResponse> getProductsByNameAndBrand(
             @RequestParam String name,
             @RequestParam String brand) {
-        List<ProductDto> products = productService.getAllProductsByBrandAndName(brand, name);
+        List<ProductDto> products = productService.getAllProductsByBrandAndName(brand, name)
+                .stream()
+                .map(productMapper::toDto).toList();
         return ResponseEntity.ok(new ApiResponse(products, "Products found by name and brand"));
     }
 

@@ -6,15 +6,18 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.nio.Buffer;
 import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
 @Data
 @NoArgsConstructor
+@Builder
 public class AddCategoryRequest {
 
     @NotNull(message = "Name cannot be null")

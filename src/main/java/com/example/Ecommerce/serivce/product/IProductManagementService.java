@@ -7,6 +7,6 @@ import com.example.Ecommerce.request.product.UpdateProductRequest;
 
 public interface IProductManagementService {
     Product addProduct(AddProductRequest product);
-    ProductDto updateProduct(UpdateProductRequest product, Long id);
+    Product updateProduct(UpdateProductRequest product, Long id);
     void deleteProduct(Long id);
 }
