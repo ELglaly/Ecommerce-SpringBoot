@@ -35,12 +35,19 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .httpBasic(Customizer.withDefaults())
+                .oauth2Login(oauth2 -> oauth2
+                        .defaultSuccessUrl("/api/v1/login/google", true)
+                )
                 //.formLogin(AbstractHttpConfigurer::disable)
                 //.logout(Customizer.withDefaults())// Disable logout (for testing)
-                .authorizeHttpRequests(auth -> auth.requestMatchers("api/v1/register","api/v1/login").permitAll()
+                .authorizeHttpRequests(auth -> auth.requestMatchers("api/v1/register","api/v1/login/**").permitAll()
                         .anyRequest().authenticated()
                 )
-                .sessionManagement(c -> c.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(session -> session
+                        .sessionFixation().migrateSession() // Ensure sessions are managed correctly
+                        .maximumSessions(1) // Allow only one session per user
+                        .expiredUrl("/login") // Redirect to login page if session expires
+                )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
         ;
     // Allow all requests

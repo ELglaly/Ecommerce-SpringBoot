@@ -67,17 +67,13 @@ public class UserService implements IUserService {
 
     @Override
     public String login(LoginRequest loginRequest) {
-
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsernameOrEmail(), loginRequest.getPassword())
         );
-
         if(authentication.isAuthenticated()) {
-
             return JwtService.generateToken(loginRequest.getUsernameOrEmail());
         } else {
             return "Login Failed";
-
         }
     }
 
@@ -85,14 +81,13 @@ public class UserService implements IUserService {
     public UserDto createUser(CreateUserRequest request) {
         validateUserDoesNotExist(request.getEmail(), request.getUsername());
         User user = userMapper.toEntityFromAddRequest(request);
-        System.out.println("user = " + user.toString());
         // Hash password
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user = userRepository.save(user);
         return userMapper.toDto(user);
     }
 
-    private void validateUserDoesNotExist( String email, String username) {
+    private void validateUserDoesNotExist(String email, String username) {
         if (userRepository.existsByEmail(email)) {
             throw new UserAlreadyExistsException("User email " + email + " already exists");
         }

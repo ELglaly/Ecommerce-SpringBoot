@@ -19,6 +19,7 @@ public class CartController {
         this.cartService = cartService;
         this.cartItemService=cartItemService;
     }
+
     @GetMapping("/{cartId}")
     public ResponseEntity<ApiResponse> getCart(@PathVariable Long cartId) {
         CartDto cartDto =cartService.getCartDtoById(cartId);
@@ -41,6 +42,7 @@ public class CartController {
         cartService.addItem(userId,productId,quantity);
         return ResponseEntity.ok(new ApiResponse (null,"Product added to cart successfully"));
     }
+
 
 
 }
