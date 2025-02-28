@@ -34,7 +34,7 @@ public class ProductController {
     @PostMapping()
     @PreAuthorize("hasRole('SELLER')")
     public ResponseEntity<ApiResponse> createProduct(@RequestBody @Valid AddProductRequest addProductRequest) {
-        Product product = productService.addProduct(addProductRequest);
+        ProductDto product = productService.addProduct(addProductRequest);
         return ResponseEntity.ok(new ApiResponse(product, "Product created successfully"));
     }
 
@@ -57,7 +57,7 @@ public class ProductController {
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('SELLER')")
     public ResponseEntity<ApiResponse> updateProduct(@PathVariable Long id, @RequestBody UpdateProductRequest updateProductRequest) {
-        ProductDto updatedProduct = productMapper.toDto(productService.updateProduct(updateProductRequest, id));
+        ProductDto updatedProduct = productService.updateProduct(updateProductRequest, id);
         if (updatedProduct == null) {
             throw new ProductNotFoundException("Product not found");
         }

@@ -36,11 +36,11 @@ public class CartController {
         return ResponseEntity.ok(new ApiResponse (null,"item removed Successfully"));
     }
     // add product as a cartitem to cart with userid
-    @PostMapping("/{userId}")
-    public ResponseEntity<ApiResponse> addProductToCart(@PathVariable Long userId,
+    @PostMapping("/{cartId}")
+    public ResponseEntity<ApiResponse> addProductToCart(@PathVariable Long cartId,
                                                         @RequestParam Long productId, @RequestParam int quantity ) {
-        cartService.addItem(userId,productId,quantity);
-        return ResponseEntity.ok(new ApiResponse (null,"Product added to cart successfully"));
+        CartDto cartDto= cartService.addProductToCart(cartId,productId,quantity);
+        return ResponseEntity.ok(new ApiResponse (cartDto,"Product added to cart successfully"));
     }
 
 

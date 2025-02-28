@@ -22,6 +22,6 @@ public class RegisterController {
         UserDto userDto = userManagementService.createUser(createUserRequest);
         return ResponseEntity.ok(new ApiResponse(userDto, "User created successfully"));
     }
-    // TODO: Implement register with Google endpoint
+
 
 }

@@ -21,7 +21,7 @@ public class CartMapper implements ICartMapper {
     public Cart toEntityFromDto(CartDto dto) {
         Cart cart = modelMapper.map(dto, Cart.class);
         Optional.ofNullable(dto.getItems()).ifPresent(items -> {
-            Set<CartItem> cartItems = new HashSet<>();
+            List<CartItem> cartItems = new ArrayList<>();
             items.forEach(item -> {
                 cartItems.add(cartItemMapper.toEntityFromDto(item));
             });
