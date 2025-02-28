@@ -41,7 +41,7 @@ public class CartItemService implements ICartItemService {
 
     @Override
     @Transactional
-    public void addItemToCart(Long cartId, Long productId, int quantity) {
+    public Cart addItemToCart(Long cartId, Long productId, int quantity) {
         if (quantity <= 0) {
             throw new ValidationException("Quantity must be greater than 0");
         }
@@ -58,12 +58,10 @@ public class CartItemService implements ICartItemService {
 
         // Create or update cart item
         createOrUpdateCartItem(cart, product, quantity, productId);
-
-        cartRepository.save(cart);
+        return cartRepository.save(cart);
     }
 
     private void createOrUpdateCartItem(Cart cart, Product product, int quantity, Long productId) {
-
         CartItem cartItem = cart.getItems().stream()
                 .filter(item -> item.getProduct().getId().equals(productId))
                 .findFirst()
@@ -80,26 +78,24 @@ public class CartItemService implements ICartItemService {
         }
         // Add the CartItem to the cart
         cart.addItem(cartItem);
-
     }
 
     @Override
     @Transactional
-    public void deleteItemFromCart(Long cartId,Long itemId) {
+    public Cart deleteItemFromCart(Long cartId,Long itemId) {
         CartItem cartItem= getCartItem(cartId,itemId);
         Cart cart = cartService.getCartById(cartId);
         cart.removeItem(cartItem);
         cartItemRepository.delete(cartItem);
-        cartRepository.save(cart);
+        return cartRepository.save(cart);
     }
 
     @Override
     @Transactional
-    public void updateItemQuantity(Long cartId, Long productId, int quantity) {
+    public Cart updateItemQuantity(Long cartId, Long productId, int quantity) {
         if (quantity <= 0) {
             throw new ValidationException("Quantity must be greater than 0");
         }
-
         Cart cart = cartRepository.findById(cartId)
                 .orElseThrow(() -> new CartNotFoundException("CartItem not found"));
 
@@ -111,20 +107,21 @@ public class CartItemService implements ICartItemService {
                     item.setUnitPrice(item.getProduct().getPrice());
                 });
 
-        cartRepository.save(cart);
+        return cartRepository.save(cart);
     }
 
     @Override
     public CartItemDto getCartDtoItem(Long cartId, Long itemId) {
         return cartItemMapper.toDto(getCartItem(cartId,itemId));
     }
-    public CartItem getCartItem(Long cartId, Long itemId) {
+    private CartItem getCartItem(Long cartId, Long itemId) {
         Cart cart = cartRepository.findById(cartId)
-                .orElseThrow(() -> new CartNotFoundException("CartItem not found"));
+                .orElseThrow(() -> new CartNotFoundException("Cart not found"));
 
         return cart.getItems().stream()
                 .filter(item -> item.getId().equals(itemId))
                 .findFirst()
                 .orElseThrow(() -> new ProductNotFoundException("item not found in cart"));
     }
+
 }

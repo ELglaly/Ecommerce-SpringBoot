@@ -27,7 +27,7 @@ public class ProductService implements IProductService {
 
     // Add a new product to the repository
     @Override
-    public Product addProduct(AddProductRequest request) {
+    public ProductDto addProduct(AddProductRequest request) {
         Optional.of(productRepository.existsByName(request.getName()))
                 .filter(exists -> exists) // Check if the product exists
                 .ifPresent(exists -> {
@@ -43,11 +43,12 @@ public class ProductService implements IProductService {
     }
 
     // Helper method to create a new Product entity from the productDto and category
-    private Product createProduct(AddProductRequest request, Category category) {
+    private ProductDto createProduct(AddProductRequest request, Category category) {
         Product product = productMapper.toEntityFromAddRequest(request);
         product.setCategory(category);
         product = productRepository.save(product);
-        return product;
+       ProductDto productDto= productMapper.toDto(product);
+       return productDto;
     }
 
     // return a product by ID and throws exception if not found
@@ -70,14 +71,14 @@ public class ProductService implements IProductService {
     }
     // Update an existing product identified by its ID
     @Override
-    public Product updateProduct(UpdateProductRequest request, Long id) {
+    public ProductDto updateProduct(UpdateProductRequest request, Long id) {
         return productRepository.findById(id)
                 .map(product -> updateExistingProduct(product, request))
                 .orElseThrow(() -> new ProductNotFoundException("Product Not Found"));
     }
 
     // Helper method to update product fields from the productDto
-    private Product updateExistingProduct(Product existingProduct, UpdateProductRequest request) {
+    private ProductDto updateExistingProduct(Product existingProduct, UpdateProductRequest request) {
          Product updatedProduct=productMapper.toEntityFromUpdateRequest(request);
          updatedProduct.setId(existingProduct.getId());
          updatedProduct.setImages(existingProduct.getImages());
@@ -88,7 +89,7 @@ public class ProductService implements IProductService {
 
         updatedProduct.setCategory(category);
         productRepository.save(updatedProduct);
-        return updatedProduct;
+        return productMapper.toDto(updatedProduct);
     }
 
     // Delete a product by ID, throws exception if not found

@@ -2,6 +2,7 @@ package com.example.Ecommerce.serivce.user;
 
 import com.example.Ecommerce.exceptions.user.UserNotFoundException;
 import com.example.Ecommerce.exceptions.user.UserAlreadyExistsException;
+import com.example.Ecommerce.mapper.IUserMapper;
 import com.example.Ecommerce.mapper.UserMapper;
 import com.example.Ecommerce.model.dto.UserDto;
 import com.example.Ecommerce.model.entity.User;
@@ -22,12 +23,12 @@ import java.util.Optional;
 public class UserService implements IUserService {
 
     private final UserRepository userRepository;
-    private final UserMapper userMapper;
+    private final IUserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
 
-    public UserService(UserRepository userRepository, UserMapper userMapper,
+    public UserService(UserRepository userRepository, IUserMapper userMapper,
                        PasswordEncoder passwordEncoder,
                        AuthenticationManager authenticationManager,JwtService jwtService) {
         this.userRepository = userRepository;
@@ -100,10 +101,12 @@ public class UserService implements IUserService {
     @Transactional
     public UserDto updateUser(Long id, UpdateUserRequest request) {
         // id for because if the user need to change email -=> check it
-        User existingUser = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("User with ID " + id + " not found"));
-
-        validateUserDoesNotExist(request.getEmail(), request.getUsername(),existingUser.getEmail(),existingUser.getUsername());
+        Optional<User> existingUser = userRepository.findById(id);
+        if(existingUser.isEmpty())
+        {
+            throw new  UserNotFoundException("User with ID " + id + " not found");
+        }
+        validateUserDoesNotExist(request.getEmail(), request.getUsername(),existingUser.get().getEmail(),existingUser.get().getUsername());
         User updatedUser = userMapper.toEntityFromUpdateRequest(request);
         updatedUser.setId(id);
         updatedUser=userRepository.save(updatedUser);

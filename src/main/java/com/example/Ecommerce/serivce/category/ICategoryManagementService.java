@@ -8,4 +8,5 @@ public interface ICategoryManagementService {
     CategoryDto addCategory(AddCategoryRequest category);
     CategoryDto updateCategory(UpdateCategoryRequest category, Long id);
     void deleteCategory(Long id);
+
 }
