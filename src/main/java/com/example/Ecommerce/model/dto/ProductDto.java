@@ -38,10 +38,8 @@ public class ProductDto {
     private int quantity;
 
     @NotNull(message = "Category cannot be null")
-    @Valid
     private CategoryDto categoryDto;
 
-    @Valid
     private List<ImageDto> ImageDto;
 
 

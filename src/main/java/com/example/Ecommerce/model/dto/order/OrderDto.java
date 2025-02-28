@@ -2,6 +2,8 @@ package com.example.Ecommerce.model.dto.order;
 
 import com.example.Ecommerce.enums.OrderStatus;
 import com.example.Ecommerce.model.dto.UserDto;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,6 +13,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Data
 public class OrderDto {
 
