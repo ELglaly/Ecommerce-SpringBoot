@@ -39,19 +39,19 @@ public class SecurityConfig {
                         .defaultSuccessUrl("/api/v1/login/google", true)
                 )
                 //.formLogin(AbstractHttpConfigurer::disable)
-                //.logout(Customizer.withDefaults())// Disable logout (for testing)
+                .logout(Customizer.withDefaults())// Disable logout (for testing)
                 .authorizeHttpRequests(auth -> auth.requestMatchers("api/v1/register","api/v1/login/**").permitAll()
                         .anyRequest().authenticated()
                 )
+
                 .sessionManagement(session -> session
                         .sessionFixation().migrateSession() // Ensure sessions are managed correctly
                         .maximumSessions(1) // Allow only one session per user
                         .expiredUrl("/login") // Redirect to login page if session expires
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                //.authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
         ;
-    // Allow all requests
-
         return http.build();
     }
 
