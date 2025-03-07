@@ -4,9 +4,12 @@ import com.example.Ecommerce.model.dto.UserDto;
 import com.example.Ecommerce.request.user.UpdateUserRequest;
 import com.example.Ecommerce.response.ApiResponse;
 import com.example.Ecommerce.serivce.user.IUserService;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 import static com.example.Ecommerce.constants.ApiConstants.USER_ENDPOINT;
 
@@ -58,6 +61,16 @@ public class UserController {
         try {
             userService.deleteUser(id);
             return ResponseEntity.ok(new ApiResponse(true, "User deleted successfully"));
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    @PutMapping("/activate/{username}")
+    public ResponseEntity<ApiResponse> activateUser(@PathVariable String username, HttpServletResponse response) {
+        try {
+            userService.activateUser(username);
+            //response.sendRedirect("http://localhost:8080/api/v1/login");
+            return ResponseEntity.ok(new ApiResponse(true, "User activated successfully"));
         } catch (IllegalArgumentException e) {
             throw new RuntimeException(e);
         }

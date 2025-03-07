@@ -1,5 +1,6 @@
 package com.example.Ecommerce.serivce.user;
 
+import com.example.Ecommerce.exceptions.user.AccountIsNotActivatedException;
 import com.example.Ecommerce.exceptions.user.UserNotFoundException;
 import com.example.Ecommerce.exceptions.user.UserAlreadyExistsException;
 import com.example.Ecommerce.mapper.IUserMapper;
@@ -71,11 +72,20 @@ public class UserService implements IUserService {
 
     @Override
     public String login(LoginRequest loginRequest) {
+
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsernameOrEmail(), loginRequest.getPassword())
         );
         if(authentication.isAuthenticated()) {
-            return JwtService.generateToken(loginRequest.getUsernameOrEmail());
+            User user = Optional.ofNullable(userRepository.findByUsernameOrEmail(loginRequest.getUsernameOrEmail(), loginRequest.getUsernameOrEmail()))
+                    .orElseThrow(() -> new UserNotFoundException("User with username or email " + loginRequest.getUsernameOrEmail() + " not found"));
+            if (user.isActivated()) {
+                return JwtService.generateToken(user);
+            } else {
+                {
+                    throw new AccountIsNotActivatedException();
+                }
+            }
         } else {
             return "Login Failed";
         }
@@ -88,7 +98,7 @@ public class UserService implements IUserService {
         // Hash password
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user = userRepository.save(user);
-        emailService.sendSimpleMessage(request.getEmail());
+        emailService.sendSimpleMessage(user.getEmail(),user.getUsername());
         return userMapper.toDto(user);
     }
 
@@ -131,8 +141,14 @@ public class UserService implements IUserService {
     public void deleteUser(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User with ID " + id + " not found"));
-
         userRepository.deleteById(id);
+    }
+    @Override
+    public void activateUser(String username) {
+        User user = Optional.ofNullable(userRepository.findByUsername(username))
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+        user.setActivated(true);
+        userRepository.save(user);
     }
 
 }

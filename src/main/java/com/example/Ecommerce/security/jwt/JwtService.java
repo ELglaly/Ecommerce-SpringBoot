@@ -1,5 +1,6 @@
 package com.example.Ecommerce.security.jwt;
 
+import com.example.Ecommerce.model.entity.User;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,8 @@ import java.util.Map;
 
 @Service
 public class JwtService {
+
+
 
     private static String secretKey="";
     public JwtService() {
@@ -30,12 +33,13 @@ public class JwtService {
 
     }
 
-    public static String generateToken(String usernameOrEmail) {
+    public static String generateToken(User user) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put("usernameOrEmail", usernameOrEmail);
+        claims.put("username", user.getUsername());
+     //   claims.put("roles",user.getRoles());
         return Jwts.builder()
                 .claims(claims)
-                .subject(usernameOrEmail)
+                .subject(user.getUsername())
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + 60 * 60 * 10))
                 .signWith(getKey())

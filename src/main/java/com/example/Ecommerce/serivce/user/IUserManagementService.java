@@ -8,4 +8,5 @@ public interface IUserManagementService {
     UserDto createUser(CreateUserRequest request);
     UserDto updateUser(Long id, UpdateUserRequest request);
     void deleteUser(Long id);
+    void activateUser(String username);
 }

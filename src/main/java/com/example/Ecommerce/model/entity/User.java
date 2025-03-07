@@ -28,7 +28,7 @@ public class User {
 
     @Past(message = "Birth date must be in the past")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @Column(nullable = false)
+    @Column(nullable = true)
     private Date birthDate;
 
     @NotBlank(message = "Username is mandatory")
@@ -47,6 +47,16 @@ public class User {
     @Column(unique = true, nullable = false)
     private String email;
 
+    @Column(nullable = false, columnDefinition = "boolean default false")
+    private boolean isActivated = false;
+    @Column(nullable = false, columnDefinition = "boolean default true")
+    private boolean isAccountNonExpired=true; // Account expiration status
+    @Column(nullable = false, columnDefinition = "boolean default true")
+    private boolean isAccountNonLocked=true; // Account lock status
+    @Column(nullable = false, columnDefinition = "boolean default true")
+
+    private boolean isCredentialsNonExpired=true; // Credentials expiration status
+
     @Transient
     private Set<UserObserver> observers = new HashSet<>();
 
@@ -61,6 +71,7 @@ public class User {
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Cart cart;
+
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),

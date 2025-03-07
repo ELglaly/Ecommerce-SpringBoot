@@ -40,17 +40,10 @@ public class SecurityConfig {
                 )
                 //.formLogin(AbstractHttpConfigurer::disable)
                 .logout(Customizer.withDefaults())// Disable logout (for testing)
-                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll()
-
-                )
-
-                .sessionManagement(session -> session
-                        .sessionFixation().migrateSession() // Ensure sessions are managed correctly
-                        .maximumSessions(1) // Allow only one session per user
-                        .expiredUrl("/login") // Redirect to login page if session expires
+                .authorizeHttpRequests(auth -> auth.requestMatchers("/api/v1/login","/api/v1/register","/api/v1/users/activate/**").permitAll()
+                        .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                //.authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
         ;
         return http.build();
     }
