@@ -20,19 +20,19 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class CartItemService implements ICartItemService {
     private final CartItemRepository cartItemRepository;
-    private final ICartService cartService;
+    //private final ICartService cartService;
     private final IProductService productService;
     private final CartRepository cartRepository;
     private final ProductRepository productRepository;
     private final ICartItemMapper cartItemMapper;
 
-    public CartItemService(CartItemRepository cartItemRepository, ICartService cartService,
+    public CartItemService(CartItemRepository cartItemRepository,
                            IProductService productService, ModelMapper modelMapper,
                            CartRepository cartRepository,
                            ProductRepository productRepository ,
                            ICartItemMapper cartItemMapper) {
         this.cartItemRepository = cartItemRepository;
-        this.cartService = cartService;
+       // this.cartService = cartService;
         this.productService = productService;
         this.cartRepository = cartRepository;
         this.productRepository = productRepository;
@@ -84,7 +84,8 @@ public class CartItemService implements ICartItemService {
     @Transactional
     public Cart deleteItemFromCart(Long cartId,Long itemId) {
         CartItem cartItem= getCartItem(cartId,itemId);
-        Cart cart = cartService.getCartById(cartId);
+        Cart cart = cartRepository.findById(cartId)
+                .orElseThrow();
         cart.removeItem(cartItem);
         cartItemRepository.delete(cartItem);
         return cartRepository.save(cart);

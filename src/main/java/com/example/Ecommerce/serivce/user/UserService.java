@@ -11,6 +11,7 @@ import com.example.Ecommerce.request.user.CreateUserRequest;
 import com.example.Ecommerce.request.user.LoginRequest;
 import com.example.Ecommerce.request.user.UpdateUserRequest;
 import com.example.Ecommerce.security.jwt.JwtService;
+import com.example.Ecommerce.serivce.email.EmailService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -22,15 +23,17 @@ import java.util.Optional;
 @Service
 public class UserService implements IUserService {
 
+    private final EmailService emailService;
     private final UserRepository userRepository;
     private final IUserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
 
-    public UserService(UserRepository userRepository, IUserMapper userMapper,
+    public UserService(EmailService emailService, UserRepository userRepository, IUserMapper userMapper,
                        PasswordEncoder passwordEncoder,
-                       AuthenticationManager authenticationManager,JwtService jwtService) {
+                       AuthenticationManager authenticationManager, JwtService jwtService) {
+        this.emailService = emailService;
         this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.passwordEncoder = passwordEncoder;
@@ -85,6 +88,7 @@ public class UserService implements IUserService {
         // Hash password
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user = userRepository.save(user);
+        emailService.sendSimpleMessage(request.getEmail());
         return userMapper.toDto(user);
     }
 

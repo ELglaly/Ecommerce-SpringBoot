@@ -40,8 +40,8 @@ public class SecurityConfig {
                 )
                 //.formLogin(AbstractHttpConfigurer::disable)
                 .logout(Customizer.withDefaults())// Disable logout (for testing)
-                .authorizeHttpRequests(auth -> auth.requestMatchers("api/v1/register","api/v1/login/**").permitAll()
-                        .anyRequest().authenticated()
+                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll()
+
                 )
 
                 .sessionManagement(session -> session

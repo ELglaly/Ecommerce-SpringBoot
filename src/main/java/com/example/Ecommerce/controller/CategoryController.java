@@ -5,6 +5,7 @@ import com.example.Ecommerce.model.dto.CategoryDto;
 import com.example.Ecommerce.request.category.AddCategoryRequest;
 import com.example.Ecommerce.request.category.UpdateCategoryRequest;
 import com.example.Ecommerce.response.ApiResponse;
+import com.example.Ecommerce.serivce.email.EmailService;
 import com.example.Ecommerce.serivce.category.ICategoryService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -18,9 +19,11 @@ import java.util.List;
 public class CategoryController {
 
     private final ICategoryService categoryService;
+    private final   EmailService emailService;
 
-    public CategoryController(ICategoryService categoryService) {
+    public CategoryController(ICategoryService categoryService, EmailService emailService) {
         this.categoryService = categoryService;
+        this.emailService = emailService;
     }
 
     @PostMapping()
