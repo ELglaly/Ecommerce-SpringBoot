@@ -18,7 +18,9 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledIf;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -105,6 +107,7 @@ class ProductManagementServiceTest {
         });
 
         verify(productRepository, times(1)).existsByName(addProductRequest.getName());
+
     }
 
     @Test
@@ -119,6 +122,7 @@ class ProductManagementServiceTest {
         });
         verify(productRepository, times(1)).existsByName(addProductRequest.getName());
         verify(categoryRepository, times(1)).findByName(addProductRequest.getCategory());
+
     }
 
     @Test
@@ -195,6 +199,7 @@ class ProductManagementServiceTest {
         });
         verify(productRepository,times(1)).findById(product.getId());
 
+
     }
     @Test
     void updateProduct_ReturnsCategoryNotFoundException_WhenCategoryNameDoesNotExist()
@@ -221,11 +226,15 @@ class ProductManagementServiceTest {
         assertEquals(product.getCategoryDto().getProductsDto(),result.getCategoryDto().getProductsDto());
     }
     @Test
+   // @RepeatedTest(10)
     void deleteProduct_ReturnsProductNotFoundException_WhenIdNotFound() {
         when(productRepository.findById(product.getId())).thenReturn(Optional.empty());
         assertThrows(ProductNotFoundException.class,()->{
             productService.deleteProduct(product.getId());
         });
         verify(productRepository,times(1)).findById(product.getId());
+
     }
+
+
 }

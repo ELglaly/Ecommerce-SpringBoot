@@ -10,6 +10,7 @@ import com.example.Ecommerce.model.entity.User;
 import com.example.Ecommerce.repository.UserRepository;
 import com.example.Ecommerce.request.user.CreateUserRequest;
 import com.example.Ecommerce.request.user.UpdateUserRequest;
+import com.example.Ecommerce.security.jwt.JwtService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,6 +36,9 @@ class UserManagementServiceTest {
 
     @Mock
     private PasswordEncoder passwordEncoder;
+
+    @Mock
+    private JwtService JwtService;
 
     @InjectMocks
     private UserService userService;
@@ -103,8 +107,9 @@ class UserManagementServiceTest {
         when(userMapper.toEntityFromUpdateRequest(updateUserRequest)).thenReturn(user);
         when(userMapper.toDto(user)).thenReturn(updatedUser);
         when(userRepository.findById(1L)).thenReturn(Optional.ofNullable(user));
+        when(JwtService.extractUserId("token")).thenReturn(1L);
         // Act
-        UserDto result =userService.updateUser(1L,updateUserRequest);
+        UserDto result =userService.updateUser("token",updateUserRequest);
         //Assert
         assertNotNull(result);
         assertEquals(updatedUser,result);
@@ -118,9 +123,10 @@ class UserManagementServiceTest {
     void updateUser_ThrowUserNotFoundException_WhenIdDoesNotExist() {
         //Arrange
         when(userRepository.findById(1L)).thenReturn(Optional.empty());
+        when(JwtService.extractUserId("token")).thenReturn(1L);
         //Act &Assert
         assertThrows(UserNotFoundException.class, ()->{
-            userService.updateUser(1L,updateUserRequest);
+            userService.updateUser("token",updateUserRequest);
         });
         verify(userRepository,times(1)).findById(1L);
     }
@@ -131,9 +137,10 @@ class UserManagementServiceTest {
         //Arrange
         when(userRepository.findById(1L)).thenReturn(Optional.ofNullable(user));
         when(userRepository.existsByUsername(createUserRequest.getUsername())).thenReturn(true);
+        when(JwtService.extractUserId("token")).thenReturn(1L);
         //Act &Assert
         assertThrows(UserAlreadyExistsException.class, ()->{
-            userService.updateUser(1L,updateUserRequest);
+            userService.updateUser("token",updateUserRequest);
         });
         verify(userRepository,times(1)).existsByUsername(createUserRequest.getUsername());
         verify(userRepository,times(1)).findById(1L);
@@ -147,7 +154,7 @@ class UserManagementServiceTest {
         when(userRepository.existsByEmail(updateUserRequest.getEmail())).thenReturn(true);
         //Act &Assert
         assertThrows(UserAlreadyExistsException.class, ()->{
-            userService.updateUser(user.getId(),updateUserRequest);
+            userService.updateUser("token",updateUserRequest);
         });
         verify(userRepository,times(1)).findById(1L);
         verify(userRepository,times(1)).existsByEmail(updateUserRequest.getEmail());
@@ -158,9 +165,10 @@ class UserManagementServiceTest {
     void deleteUser_DeletesUser_WhenUserExists() {
         // Arrange
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(JwtService.extractUserId("token")).thenReturn(1L);
 
         // Act
-        userService.deleteUser(1L);
+        userService.deleteUser("token");
 
         // Assert
         verify(userRepository, times(1)).deleteById(1L);
@@ -170,10 +178,11 @@ class UserManagementServiceTest {
     void deleteUser_ThrowUserNotFoundException_WhenUserDoesNotExist() {
         // Arrange
         when(userRepository.findById(1L)).thenReturn(Optional.empty());
+        when(JwtService.extractUserId("token")).thenReturn(1L);
 
         // Act & Assert
         assertThrows(UserNotFoundException.class, () -> {
-            userService.deleteUser(1L);
+            userService.deleteUser("token");
         });
         verify(userRepository, times(1)).findById(1L);
     }

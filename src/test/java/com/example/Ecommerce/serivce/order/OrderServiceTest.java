@@ -13,9 +13,8 @@ import com.example.Ecommerce.model.entity.User;
 import com.example.Ecommerce.repository.OrderRepository;
 import com.example.Ecommerce.request.order.AddOrderItemRequest;
 import com.example.Ecommerce.request.order.CreateOrderRequest;
+import com.example.Ecommerce.security.jwt.JwtService;
 import com.example.Ecommerce.serivce.cart.ICartService;
-import com.example.Ecommerce.serivce.order.IOrderFactory;
-import com.example.Ecommerce.serivce.order.OrderService;
 import com.example.Ecommerce.serivce.product.IProductService;
 import com.example.Ecommerce.serivce.user.IUserService;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,7 +25,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -55,6 +53,9 @@ class OrderServiceTest {
     @Mock
     private IOrderMapper orderMapper;
 
+    @Mock
+    private JwtService jwtService;
+
     @InjectMocks
     private OrderService orderService;
 
@@ -81,7 +82,7 @@ class OrderServiceTest {
     }
 
     @Test
-    void placeOrderByCart_ReturnOrderDto_WhenCartIsValid() {
+    void placeOrderByCart_ReturnProductOrderDto_WhenCartIsValid() {
         // Arrange
         cart.setUser(user);
         when(cartService.getCartById(anyLong())).thenReturn(cart);
@@ -102,7 +103,7 @@ class OrderServiceTest {
     }
 
     @Test
-    void placeOrderByCart_ThrowIllegalArgumentException_WhenCartIsEmpty() {
+    void placeProductOrderByCart_ThrowIllegalArgumentException_WhenCartIsEmpty() {
         // Arrange
         when(cartService.getCartById(anyLong())).thenReturn(new Cart());
 
@@ -114,7 +115,7 @@ class OrderServiceTest {
     }
 
     @Test
-    void placeOrder_ReturnOrderDto_WhenOrderIsValid() {
+    void placeOrder_ReturnOrderDto_WhenProductOrderIsValid() {
         // Arrange
         user.setId(1L);
         when(userService.getUserById(1L)).thenReturn(user);
@@ -124,7 +125,7 @@ class OrderServiceTest {
         when(orderMapper.toDto(order)).thenReturn(orderDto);
 
         // Act
-        OrderDto result = orderService.placeOrder(createOrderRequest);
+        OrderDto result = orderService.placeProductOrder(createOrderRequest);
 
         // Assert
         assertNotNull(result);
@@ -137,7 +138,7 @@ class OrderServiceTest {
     }
 
     @Test
-    void placeOrderItem_ThrowIllegalArgumentException_WhenQuantityExceedsAvailable() {
+    void placeProductOrderItem_ThrowIllegalArgumentException_WhenQuantityExceedsAvailable() {
         // Arrange
         AddOrderItemRequest request = new AddOrderItemRequest();
         request.setProductId(1L);
@@ -186,9 +187,11 @@ class OrderServiceTest {
         // Arrange
         when(orderRepository.findByUserId(1L)).thenReturn(List.of(order));
         when(orderMapper.toDto(order)).thenReturn(orderDto);
+        when(jwtService.extractUserId("token")).thenReturn(1L);
+
 
         // Act
-        List<OrderDto> result = orderService.getAllOrders(1L);
+        List<OrderDto> result = orderService.getAllOrders("token");
 
         // Assert
         assertNotNull(result);
@@ -203,9 +206,10 @@ class OrderServiceTest {
         // Arrange
         when(orderRepository.findByOrderStatusAndUserId(OrderStatus.PENDING, 1L)).thenReturn(List.of(order));
         when(orderMapper.toDto(order)).thenReturn(orderDto);
+        when(jwtService.extractUserId("token")).thenReturn(1L);
 
         // Act
-        List<OrderDto> result = orderService.getOrdersByUserIdAndStatus(1L, OrderStatus.PENDING);
+        List<OrderDto> result = orderService.getOrdersByUserIdAndStatus("token", OrderStatus.PENDING);
 
         // Assert
         assertNotNull(result);
