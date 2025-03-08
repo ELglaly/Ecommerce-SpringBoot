@@ -6,6 +6,7 @@ import com.example.Ecommerce.model.dto.order.OrderDto;
 import com.example.Ecommerce.request.order.CreateOrderRequest;
 import com.example.Ecommerce.response.ApiResponse;
 import com.example.Ecommerce.serivce.order.IOrderService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,8 +27,8 @@ public class OrderController {
         return ResponseEntity.ok(new ApiResponse(order, "Order created successfully"));
     }
     @PostMapping("/by-product")
-    public ResponseEntity<ApiResponse> placeOrderByCart(@RequestBody CreateOrderRequest request) {
-        OrderDto order = orderService.placeOrder(request);
+    public ResponseEntity<ApiResponse> placeOrderByProduct(@RequestBody CreateOrderRequest request) {
+        OrderDto order = orderService.placeProductOrder(request);
         return ResponseEntity.ok(new ApiResponse(order, "Order created successfully"));
     }
 
@@ -37,15 +38,17 @@ public class OrderController {
         return ResponseEntity.ok(new ApiResponse(order, "Order retrieved successfully"));
     }
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<ApiResponse> getAllOrders(@PathVariable Long userId) {
-        List<OrderDto> orders = orderService.getAllOrders(userId);
+    @GetMapping()
+    public ResponseEntity<ApiResponse> getAllOrders(HttpServletResponse response) {
+        String token = response.getHeader("Authorization").replace("Bearer ", "");
+        List<OrderDto> orders = orderService.getAllOrders(token);
         return ResponseEntity.ok(new ApiResponse(orders, "Orders retrieved successfully"));
     }
 
     @GetMapping("/status/{userId}")
-    public ResponseEntity<ApiResponse> getAllOrders(@PathVariable Long userId, @RequestParam OrderStatus status) {
-        List<OrderDto> orders = orderService.getOrdersByUserIdAndStatus(userId,status);
+    public ResponseEntity<ApiResponse> getAllOrders(@RequestParam OrderStatus status, HttpServletResponse response) {
+        String token = response.getHeader("Authorization").replace("Bearer ", "");
+        List<OrderDto> orders = orderService.getOrdersByUserIdAndStatus(token,status);
         return ResponseEntity.ok(new ApiResponse(orders, "Orders retrieved successfully"));
     }
 

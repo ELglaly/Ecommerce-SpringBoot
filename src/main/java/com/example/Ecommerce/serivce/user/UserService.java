@@ -4,7 +4,6 @@ import com.example.Ecommerce.exceptions.user.AccountIsNotActivatedException;
 import com.example.Ecommerce.exceptions.user.UserNotFoundException;
 import com.example.Ecommerce.exceptions.user.UserAlreadyExistsException;
 import com.example.Ecommerce.mapper.IUserMapper;
-import com.example.Ecommerce.mapper.UserMapper;
 import com.example.Ecommerce.model.dto.UserDto;
 import com.example.Ecommerce.model.entity.User;
 import com.example.Ecommerce.repository.UserRepository;
@@ -12,7 +11,8 @@ import com.example.Ecommerce.request.user.CreateUserRequest;
 import com.example.Ecommerce.request.user.LoginRequest;
 import com.example.Ecommerce.request.user.UpdateUserRequest;
 import com.example.Ecommerce.security.jwt.JwtService;
-import com.example.Ecommerce.serivce.email.EmailService;
+import com.example.Ecommerce.serivce.email.IRegistrationEmail;
+import com.example.Ecommerce.serivce.email.IResetPasswordEmail;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -24,17 +24,19 @@ import java.util.Optional;
 @Service
 public class UserService implements IUserService {
 
-    private final EmailService emailService;
+    private final IRegistrationEmail IRegistrationEmail;
+    private final IResetPasswordEmail resetPasswordEmail;
     private final UserRepository userRepository;
     private final IUserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
 
-    public UserService(EmailService emailService, UserRepository userRepository, IUserMapper userMapper,
+    public UserService(IRegistrationEmail IRegistrationEmail, IResetPasswordEmail resetPasswordEmail, UserRepository userRepository, IUserMapper userMapper,
                        PasswordEncoder passwordEncoder,
                        AuthenticationManager authenticationManager, JwtService jwtService) {
-        this.emailService = emailService;
+        this.IRegistrationEmail = IRegistrationEmail;
+        this.resetPasswordEmail = resetPasswordEmail;
         this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.passwordEncoder = passwordEncoder;
@@ -98,7 +100,7 @@ public class UserService implements IUserService {
         // Hash password
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user = userRepository.save(user);
-        emailService.sendSimpleMessage(user.getEmail(),user.getUsername());
+        IRegistrationEmail.sendSimpleMessage(user.getEmail(),user.getUsername());
         return userMapper.toDto(user);
     }
 
@@ -113,8 +115,9 @@ public class UserService implements IUserService {
 
     @Override
     @Transactional
-    public UserDto updateUser(Long id, UpdateUserRequest request) {
-        // id for because if the user need to change email -=> check it
+    public UserDto updateUser(String token, UpdateUserRequest request) {
+
+        Long id = jwtService.extractUserId(token);
         Optional<User> existingUser = userRepository.findById(id);
         if(existingUser.isEmpty())
         {
@@ -138,7 +141,8 @@ public class UserService implements IUserService {
 
     @Override
     @Transactional
-    public void deleteUser(Long id) {
+    public void deleteUser(String token) {
+        Long id = jwtService.extractUserId(token);
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User with ID " + id + " not found"));
         userRepository.deleteById(id);
@@ -149,6 +153,37 @@ public class UserService implements IUserService {
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
         user.setActivated(true);
         userRepository.save(user);
+    }
+
+    @Override
+    public void changePassword(String token, String password, String newPassword, String confirmPassword) {
+        if (!newPassword.equals(confirmPassword)) {
+            throw new IllegalArgumentException("Passwords do not match");
+        }
+        String username = jwtService.extractUsername(token);
+        User user = Optional.ofNullable(userRepository.findByUsername(username))
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+        if (passwordEncoder.matches(password, user.getPassword())) {
+            user.setPassword(passwordEncoder.encode(newPassword));
+            userRepository.save(user);
+        } else {
+            throw new IllegalArgumentException("Password is incorrect");
+        }
+    }
+    @Override
+    public void resetPassword(String email) {
+      User user = Optional.ofNullable( userRepository.findByEmail(email))
+                .orElseThrow(() -> new UserNotFoundException("User with email " + email + " not found"));
+      if (user.isActivated()) {
+         resetPasswordEmail.sendEmail(user.getEmail(),user.getUsername());
+      } else {
+          throw new AccountIsNotActivatedException();
+      }
+    }
+
+    @Override
+    public void resetPasswordSaved(String password, String confirmPassword) {
+
     }
 
 }

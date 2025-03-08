@@ -9,7 +9,7 @@ package com.example.Ecommerce.serivce.email;
         import org.springframework.stereotype.Component;
 
         @Component
-        public class RegistrationEmail implements EmailService {
+        public class RegistrationEmail implements IRegistrationEmail {
 
             @Autowired
             private JavaMailSender emailSender;

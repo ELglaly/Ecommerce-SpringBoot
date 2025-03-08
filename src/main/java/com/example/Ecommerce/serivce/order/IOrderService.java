@@ -11,12 +11,12 @@ import java.util.Set;
 
 public interface IOrderService {
 
-    OrderDto placeOrderByCart(Long userId);
+    OrderDto placeOrderByCart(Long cartId);
     OrderDto getOrderById(Long orderId);
-    List<OrderDto> getAllOrders(Long userId);
-    List<OrderDto> getOrdersByUserIdAndStatus(Long userId, OrderStatus status);
+    List<OrderDto> getAllOrders(String token);
+    List<OrderDto> getOrdersByUserIdAndStatus(String token, OrderStatus status);
 
     BigDecimal calculateTotalPrice(Set<OrderItem> orderItems);
 
-    OrderDto placeOrder(CreateOrderRequest request);
+    OrderDto placeProductOrder(CreateOrderRequest request);
 }

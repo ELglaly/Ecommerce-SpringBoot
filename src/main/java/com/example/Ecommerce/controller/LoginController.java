@@ -28,12 +28,6 @@ public class LoginController {
     @GetMapping("/google")
     public String loginWithGoogle()
     {
-        return "hkxckdv";
+        return "Login with Google";
     }
-    // TODO: Implement login with Facebook endpoint
-    // TODO: Implement login with Twitter endpoint
-    // TODO: Implement login with LinkedIn endpoint
-    // TODO: Implement login with GitHub endpoint
-    // TODO: Implement login with Bitbucket endpoint
-    // TODO: Implement login with StackOverflow endpoint
 }
