@@ -1,142 +1,163 @@
-# Ecommerce-SpringBoot
+# 🛍️ E-commerce Platform
 
-## Table of Contents
-- [Overview](#overview)
-- [Features](#features)
-- [Technologies Used](#technologies-used)
-- [Installation](#installation)
-- [Configuration](#configuration)
-- [Usage](#usage)
-- [API Endpoints](#api-endpoints)
-- [Testing](#testing)
-- [Contributing](#contributing)
-- [License](#license)
-- [Acknowledgements](#acknowledgements)
+![E-commerce Banner](https://via.placeholder.com/1000x300?text=E-commerce+Platform)
 
-## Overview
+## 📌 Project Information
 
-Ecommerce-SpringBoot is a Java-based e-commerce application built on the Spring Boot framework. This project aims to provide a robust and scalable solution for online shopping, featuring essential functionalities for both users and administrators. The application is designed to be modular and maintainable, making it easy to extend with additional features.
+**Project Name:** E-commerce Platform
 
-## Features
+**Project Description:**  
+A robust and scalable e-commerce platform built with **Spring Boot**. This system enables users to browse products, manage their shopping cart, and complete secure purchases. It includes an **admin panel** for managing products, orders, and users. Designed with modern best practices, this project is ideal for businesses looking to establish or expand their online presence.
 
-- **User Registration and Authentication**: 
-  - Secure user sign-up and login using JWT (JSON Web Tokens).
-  - Password encryption for enhanced security.
+## 🚀 Features
+- **🔐 User Authentication & Authorization** – Secure user registration, login, and role-based access with JWT.
+- **📧 Email Verification** – Send email verification links using JavaMailSender.
+- **🛒 Product Management** – Admins can add, update, and delete products.
+- **🛍️ Shopping Cart** – Users can manage their cart and checkout securely.
+- **💳 Order Processing** – Integrated with Stripe/PayPal for payments.
+- **📨 Email Notifications** – Automated emails for registration and order updates.
+- **🖥️ RESTful API** – Well-documented API for frontend and third-party integrations.
+- **🧪 Testing** – Unit and integration tests using JUnit 5 and Mockito.
 
-- **Product Management**: 
-  - Admin capabilities to add, update, and delete products.
-  - Product categorization and filtering options.
+## 🎯 Target Audience
+- **🛍️ Online Retailers** – Businesses expanding their e-commerce presence.
+- **💻 Developers** – A robust backend to build upon.
+- **📚 Students & Learners** – Learn **Spring Boot**, REST APIs, and secure app development.
 
-- **Shopping Cart**: 
-  - Users can add products to their cart, view, and modify quantities.
-  - Persistent cart functionality across sessions.
+## 🛠️ Technologies & Tools
+**Languages:**  
+- Java
 
-- **Order Processing**: 
-  - Complete order management from cart to checkout.
-  - Order history and tracking for users.
+**Frameworks & Libraries:**  
+- Spring Boot, Spring Security, Spring Data JPA, Hibernate, JavaMailSender
 
-- **Image Management**: 
-  - Upload and update product images efficiently.
-  - Image storage and retrieval.
+**Database & Storage:**  
+- MySQL (for production), H2 Database (for testing)
 
-- **Admin Dashboard**: 
-  - Overview of sales metrics, user statistics, and product inventory.
+**APIs & Integrations:**  
+- Stripe/PayPal, SMTP (e.g., Gmail SMTP)
 
-## Technologies Used
+## 🏗️ Project Structure
+```
+📂 src
+ ├── 📂 main
+ │   ├── 📂 java
+ │   │   ├── 📂 com.example.Ecommerce
+ │   │       ├── 📂 aspect
+ │   │       ├── 📂 config
+ │   │       ├── 📂 constants
+ │   │       ├── 📂 controller
+ │   │       ├── 📂 enums
+ │   │       ├── 📂 exceptions
+ │   │       ├── 📂 factory
+ │   │       ├── 📂 mapper
+ │   │       ├── 📂 model
+ │   │       ├── 📂 repository
+ │   │       ├── 📂 request
+ │   │       ├── 📂 response
+ │   │       ├── 📂 scheduler
+ │   │       ├── 📂 security
+ │   │       ├── 📂 service
+ │   │       ├── 📂 util
+ │   │       ├── 📂 validator
+ │   │       ├── 📄 DemoApplication.java
+ │   │       ├── 📄 DummyObjects.java
+ │   ├── 📂 resources
+ │   ├── 📂 test
+ ├── 📂 target
+ ├── 📄 .gitattributes
+```
 
-- **Java**: Core programming language.
-- **Spring Boot**: Framework for building the application.
-- **Spring Security**: For securing the application and managing authentication.
-- **Hibernate**: ORM for database interactions.
-- **MySQL**: Relational database for storing user and product data.
-- **Maven**: Project management and build tool.
-- **Thymeleaf**: For server-side rendering of web pages (if applicable).
-- **RESTful API**: For communication between client and server.
+## 📥 Installation & Setup
+### Prerequisites
+- Java Development Kit (JDK) 11+
+- Maven
+- MySQL
+- SMTP Server (for email notifications)
 
-## Installation
+### Installation Steps
+```sh
+git clone https://github.com/ELglaly/Ecommerce-SpringBoot.git
+cd Ecommerce-SpringBoot
+```
+#### Configure Database
+```properties
+spring.datasource.url=jdbc:mysql://localhost:3306/ecommerce_db
+spring.datasource.username=your_username
+spring.datasource.password=your_password
+```
+#### Configure Email Settings
+```properties
+spring.mail.host=smtp.gmail.com
+spring.mail.port=587
+spring.mail.username=your_email@gmail.com
+spring.mail.password=your_email_password
+spring.mail.properties.mail.smtp.auth=true
+spring.mail.properties.mail.smtp.starttls.enable=true
+```
+#### Build & Run
+```sh
+mvn clean install
+mvn spring-boot:run
+```
+#### Access the Application
+[http://localhost:8080](http://localhost:8080)
 
-1. **Clone the repository**:
-   ```bash
-   git clone https://github.com/ELglaly/Ecommerce-SpringBoot.git
-   ```
+## 🔍 API Endpoints
+### User Authentication
+```sh
+POST /api/auth/register
+```
+```json
+{
+  "username": "user1",
+  "email": "user1@example.com",
+  "password": "password123"
+}
+```
+### Fetch Products
+```sh
+GET /api/products
+```
+### Add to Cart
+```sh
+POST /api/cart/add
+```
+```json
+{
+  "productId": 1,
+  "quantity": 2
+}
+```
+### Place Order
+```sh
+POST /api/orders
+```
+```json
+{
+  "cartId": 1,
+  "paymentMethod": "credit_card"
+}
+```
 
-2. **Navigate to the project directory**:
-   ```bash
-   cd Ecommerce-SpringBoot
-   ```
-
-3. **Install dependencies**:
-   ```bash
-   mvn install
-   ```
-
-4. **Configure your database settings** in `src/main/resources/application.properties`:
-   ```properties
-   spring.datasource.url=jdbc:mysql://localhost:3306/ecommerce
-   spring.datasource.username=your_username
-   spring.datasource.password=your_password
-   ```
-
-5. **Run the application**:
-   ```bash
-   mvn spring-boot:run
-   ```
-
-## Configuration
-
-- Ensure that your MySQL server is running and the database `ecommerce` is created.
-- Adjust any other configurations in `application.properties` as needed, such as server port or logging levels.
-
-## Usage
-
-Once the application is running, you can access it via `http://localhost:8080`. 
-
-### User Interface
-- **Registration**: Users can create an account to start shopping.
-- **Product Browsing**: Users can view available products and categories.
-- **Cart Management**: Users can manage their shopping cart before checkout.
-- **Admin Access**: Admins can log in to manage products and view statistics.
-
-## API Endpoints
-
-| Method | Endpoint                  | Description                       |
-|--------|---------------------------|-----------------------------------|
-| POST   | `/api/auth/register`      | Register a new user              |
-| POST   | `/api/auth/login`         | Authenticate user                 |
-| GET    | `/api/products`           | Retrieve all products             |
-| POST   | `/api/products`           | Add a new product (Admin only)   |
-| PUT    | `/api/products/{id}`      | Update product details (Admin)    |
-| DELETE | `/api/products/{id}`      | Delete a product (Admin)          |
-| GET    | `/api/orders`             | Retrieve user's order history      |
-
-## Testing
-
-To run tests, use the following command:
-```bash
+## 🧪 Testing & Debugging
+Run all tests:
+```sh
 mvn test
 ```
-Ensure that you have test cases written for your application logic.
 
-## Contributing
-
-Contributions are welcome! Please follow these steps:
-1. Fork the repository.
-2. Create a new branch for your feature or bug fix.
-3. Make your changes and commit them.
-4. Push to your forked repository.
-5. Submit a pull request for review.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Acknowledgements
-
-- [Spring Boot Documentation](https://spring.io/projects/spring-boot)
-- [Hibernate Documentation](https://hibernate.org/orm/documentation/)
-- [MySQL Documentation](https://dev.mysql.com/doc/)
-- [Thymeleaf Documentation](https://www.thymeleaf.org/documentation.html)
-
----
-
-Feel free to customize any sections based on the specific features and functionalities of your project!
+## 📜 Contribution Guidelines
+1. **Fork** the repository.
+2. **Create a feature branch:**
+   ```sh
+   git checkout -b feature/your-feature-name
+   ```
+3. **Commit changes:**
+   ```sh
+   git commit -m "Add your feature"
+   ```
+4. **Push to branch:**
+   ```sh
+   git push origin feature/your-feature-name
+   ```
+5. **Open a pull request.**
