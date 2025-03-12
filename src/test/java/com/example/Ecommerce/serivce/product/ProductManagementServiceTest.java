@@ -39,7 +39,8 @@ import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
-class ProductManagementServiceTest {
+class
+ProductManagementServiceTest {
 
 
     private Validator validator = (Validator) Validation.buildDefaultValidatorFactory().getValidator();

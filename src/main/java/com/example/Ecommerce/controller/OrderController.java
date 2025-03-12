@@ -7,6 +7,7 @@ import com.example.Ecommerce.request.order.CreateOrderRequest;
 import com.example.Ecommerce.response.ApiResponse;
 import com.example.Ecommerce.serivce.order.IOrderService;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,7 +28,7 @@ public class OrderController {
         return ResponseEntity.ok(new ApiResponse(order, "Order created successfully"));
     }
     @PostMapping("/by-product")
-    public ResponseEntity<ApiResponse> placeOrderByProduct(@RequestBody CreateOrderRequest request) {
+    public ResponseEntity<ApiResponse> placeOrderByProduct(@RequestBody @Valid CreateOrderRequest request) {
         OrderDto order = orderService.placeProductOrder(request);
         return ResponseEntity.ok(new ApiResponse(order, "Order created successfully"));
     }
