@@ -3,10 +3,21 @@ package com.example.Ecommerce;
 import com.example.Ecommerce.mapper.CategoryMapper;
 import com.example.Ecommerce.mapper.ICategoryMapper;
 import com.example.Ecommerce.mapper.IProductMapper;
+import com.example.Ecommerce.mapper.order.IOrderMapper;
+import com.example.Ecommerce.mapper.order.OrderMapper;
 import com.example.Ecommerce.model.dto.CategoryDto;
 import com.example.Ecommerce.model.dto.ProductDto;
+import com.example.Ecommerce.model.dto.UserDto;
+import com.example.Ecommerce.model.dto.cart.CartDto;
+import com.example.Ecommerce.model.dto.cart.CartItemDto;
+import com.example.Ecommerce.model.dto.order.OrderDto;
+import com.example.Ecommerce.model.dto.order.OrderItemDto;
 import com.example.Ecommerce.model.entity.*;
+import com.example.Ecommerce.request.order.AddOrderItemRequest;
+import com.example.Ecommerce.request.order.CreateOrderRequest;
 import com.example.Ecommerce.request.product.AddProductRequest;
+import com.example.Ecommerce.request.product.UpdateProductRequest;
+import com.example.Ecommerce.request.user.*;
 import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -14,14 +25,15 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 
+@Component
 public class DummyObjects {
 
-
-    private final IProductMapper productMapper;
-    private final ICategoryMapper categoryMapper;
+    @Autowired
+    private IOrderMapper orderMapper;
 
     private EntityManager entityManager;
     public static Product product1;
@@ -31,6 +43,7 @@ public class DummyObjects {
     public static ProductDto productDto2;
     public static ProductDto productDto3;
     public static AddProductRequest addProductRequest1;
+    public static UpdateProductRequest updateProductRequest;
 
     public static OrderItem orderItem1;
     public static OrderItem orderItem2;
@@ -39,6 +52,9 @@ public class DummyObjects {
     public static Order order1;
     public static Order order2;
     public static Order order3;
+    public static OrderDto orderDto;
+    public static CreateOrderRequest createOrderRequest;
+    public static AddOrderItemRequest addOrderItemRequest;
 
     public static Category category1;
     public static Category category2;
@@ -50,24 +66,32 @@ public class DummyObjects {
     public static User user1;
     public static User user2;
     public static User user3;
+    public static UserDto userDto1;
+    public static CreateUserRequest createUserRequest1;
+    public static UpdateUserRequest updateUserRequest1;
+    public static AddAddressRequest addAddressRequest1;
+    public static UpdateAddressRequest updateAddressRequest1;
+    public static AddPhoneNumberRequest addPhoneNumberRequest1;
+    public static UpdatePhoneNumberRequest updatePhoneNumberRequest1;
 
     public static Cart cart1;
     public static Cart cart2;
     public static Cart cart3;
+    public static CartDto cartDto;
 
     public static CartItem cartItem1;
     public static CartItem cartItem2;
     public static CartItem cartItem3;
+    public static CartItemDto cartItemDto;
 
-    public DummyObjects(IProductMapper productMapper, ICategoryMapper categoryMapper) {
-        this.productMapper = productMapper;
-        this.categoryMapper = categoryMapper;
+    public DummyObjects() {
+
         createCategories();
         createProducts();
         createUsers();
         createOrderItems();
-    //    createCarts();
         createCartItems();
+        createCarts();
         createOrders();
     }
 
@@ -102,11 +126,25 @@ public class DummyObjects {
                 .category(category2) // Assuming you have a default category
                 .build();
 
-        productDto1=productMapper.toDto(product1);
-        productDto2=productMapper.toDto(product2);
-        productDto3=productMapper.toDto(product3);
+        productDto1= ProductDto.builder()
+                .name("Sample Product 1")
+                .brand("Sample Brand 1")
+                .description("This is a sample product description 1.")
+                .price(new BigDecimal("19.99"))
+                .quantity(100)// Assuming you have an empty list of images
+                .ImageDto(null)
+                .categoryDto(categoryDto1) // Assuming you have a default category
+                .build();
         addProductRequest1= AddProductRequest.builder()
                 .name(product1.getName())
+                .brand(product1.getBrand())
+                .category(category1.getName())
+                .description(product1.getDescription())
+                .price(product1.getPrice())
+                .quantity(product1.getQuantity())
+                .build();
+        updateProductRequest= UpdateProductRequest.builder()
+                .name("Updated Product 2")
                 .brand(product1.getBrand())
                 .category(category1.getName())
                 .description(product1.getDescription())
@@ -153,6 +191,28 @@ public class DummyObjects {
                 .orderItems(Set.of(orderItem3))
                 .user(user3) // Assuming user3 is already created
                 .build();
+      OrderItemDto orderItemDto=new OrderItemDto.Builder()
+        .productDto(productDto1)
+        .quantity(2)
+        .build();
+
+        orderDto=OrderDto.builder()
+                .orderTotalPrice(new BigDecimal("39.98"))
+                .orderStatus(order1.getOrderStatus())
+                .orderDate(order1.getCreatedAt())
+                .orderItems(Set.of(orderItemDto))
+                .user(userDto1) // Assuming user1 is already created
+                .build();
+
+         addOrderItemRequest =AddOrderItemRequest.builder()
+                .productId(1L)
+                .quantity(2)
+                .build();
+
+        createOrderRequest =CreateOrderRequest.builder()
+                .orderItems(Set.of(addOrderItemRequest))
+                .userId(1L)
+                .build();
     }
 
     private void createCategories() {
@@ -171,10 +231,10 @@ public class DummyObjects {
                 .description("Category for clothing and apparel.")
                 .build();
 
-        categoryDto1 = categoryMapper.toDto(category1);
-        categoryDto2 = categoryMapper.toDto(category2);
-        categoryDto3 = categoryMapper.toDto(category3);
-
+        categoryDto1 =  CategoryDto.builder()
+                .name("Electronics")
+                .description("Category for electronic products.")
+                .build();
     }
 
     private void createUsers() {
@@ -204,6 +264,55 @@ public class DummyObjects {
                 .password("password789")
                 .email("fatimakhaled@example.com")
                 .build();
+        userDto1 = UserDto.builder()
+                .firstName("Mohamed")
+                .lastName("Ahmed")
+                .birthDate(new Date(90, 1, 1)) // Assuming birthDate is January 1, 1990
+                .username("mohamedahmed")
+                .email("mohamedahmed@example.com")
+                .build();
+
+        addAddressRequest1 =AddAddressRequest.builder()
+                .city("Minya")
+                .country("Egypt")
+                .user(user1)
+                .street("Samalout")
+                .zip("12365")
+                .build();
+        updateAddressRequest1 =UpdateAddressRequest.builder()
+                .city("Cairo")
+                .country("Egypt")
+                .user(user1)
+                .street("Samalout")
+                .zip("12365")
+                .build();
+
+        addPhoneNumberRequest1=AddPhoneNumberRequest.builder()
+                .countryCode("+20")
+                .number("1026386402")
+                .build();
+
+        updatePhoneNumberRequest1 =UpdatePhoneNumberRequest.builder()
+                .countryCode("+20")
+                .number("01126386402").build();
+
+        createUserRequest1 = CreateUserRequest.builder()
+                .username("Mohamed")
+                .password("password123")
+                .email("mohamedahmed@example.com")
+                .phoneNumber(List.of(addPhoneNumberRequest1))
+                .address(addAddressRequest1)
+                .build();
+
+        updateUserRequest1 = UpdateUserRequest.builder()
+                .username("Mohamed")
+                .firstName("Updated")
+                .lastName("Ahmed")
+                .birthDate(new Date(90, 1, 1))
+                .email("mohamedahmed@example.com")
+                .phoneNumber(List.of(updatePhoneNumberRequest1))
+                .address(updateAddressRequest1)
+                .build();
     }
 
 
@@ -225,5 +334,27 @@ public class DummyObjects {
                 .product(product3)
                 .cart(cart3)
                 .build();
+    }
+    private void createCarts() {
+        cart1 = Cart.builder()
+                .user(user1)
+                .quantity(2)
+                .totalPrice(product1.getPrice().multiply(BigDecimal.valueOf(2)))
+                .id(1L)
+                .items(List.of(cartItem1))
+                .build();
+
+        cartItemDto=CartItemDto.builder()
+                .quantity(2)
+                .product(productDto1)
+                .build();
+
+        cartDto = CartDto.builder()
+                .user(userDto1)
+                .totalAmount(2)
+                .totalPrice(product1.getPrice().multiply(BigDecimal.valueOf(2)))
+                .id(1L)
+                .build();
+
     }
 }

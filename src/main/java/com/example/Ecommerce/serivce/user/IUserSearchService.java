@@ -10,4 +10,5 @@ public interface IUserSearchService {
     UserDto getUserByEmail(String email);
     UserDto getUserByUsername(String username);
     String login(LoginRequest loginRequest);
+
 }

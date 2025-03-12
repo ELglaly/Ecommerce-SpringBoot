@@ -48,6 +48,8 @@ public class CartItem {
     private CartItem(Builder builder) {
         this.quantity = builder.quantity;
         this.product = builder.product;
+        this.unitPrice=product.getPrice();
+        this.totalPrice=unitPrice.multiply(BigDecimal.valueOf(quantity));
         this.cart = builder.cart;
     }
 

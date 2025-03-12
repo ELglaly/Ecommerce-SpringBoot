@@ -55,6 +55,7 @@ public class Order {
         this.orderTotalPrice = builder.orderTotalPrice;
         this.orderItems = builder.orderItems;
         this.user = builder.user;
+        this.orderStatus=OrderStatus.PENDING;
         this.createdAt=LocalDateTime.now();
     }
 

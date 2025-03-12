@@ -20,9 +20,14 @@ public class LoginController {
     // implement login endpoint
    @PostMapping
     public ResponseEntity<ApiResponse> login(@RequestBody @Valid LoginRequest loginRequest) {
-        String userDto = userService.login(loginRequest);
-        return ResponseEntity.ok(new ApiResponse(userDto, "Login successful"));
+        String JwtToken = userService.login(loginRequest);
+        return ResponseEntity.ok(new ApiResponse(JwtToken, "Login successful"));
     }
     // TODO: Implement logout endpoint
     // TODO: Implement login with Google endpoint
+    @GetMapping("/google")
+    public String loginWithGoogle()
+    {
+        return "Login with Google";
+    }
 }

@@ -5,8 +5,7 @@ import jakarta.validation.constraints.PositiveOrZero;
 import lombok.*;
 
 import java.math.BigDecimal;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 
 @AllArgsConstructor
@@ -29,7 +28,7 @@ public class Cart {
     private int quantity =0;
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<CartItem> items=new HashSet<>();
+    private List<CartItem> items=new ArrayList<>();
 
     @OneToOne
     @JoinColumn(name = "user_id")

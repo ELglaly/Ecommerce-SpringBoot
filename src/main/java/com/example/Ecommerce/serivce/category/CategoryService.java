@@ -3,7 +3,10 @@ package com.example.Ecommerce.serivce.category;
 import com.example.Ecommerce.exceptions.category.CategoryNotFoundException;
 import com.example.Ecommerce.exceptions.category.CategoryAlreadyExistsException;
 import com.example.Ecommerce.mapper.CategoryMapper;
+import com.example.Ecommerce.mapper.ICategoryMapper;
 import com.example.Ecommerce.model.dto.CategoryDto;
+import com.example.Ecommerce.model.dto.ImageDto;
+import com.example.Ecommerce.model.dto.ProductDto;
 import com.example.Ecommerce.model.entity.Category;
 import com.example.Ecommerce.repository.CategoryRepository;
 import com.example.Ecommerce.request.category.AddCategoryRequest;
@@ -12,6 +15,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 @Service
@@ -19,10 +23,10 @@ public class CategoryService implements ICategoryService {
 
     private final CategoryRepository categoryRepository;
     private final ModelMapper modelMapper;
-    private final CategoryMapper categoryMapper;
+    private final ICategoryMapper categoryMapper;
 
     // Constructor to inject CategoryRepository dependency
-    public CategoryService (CategoryRepository categoryRepository, ModelMapper modelMapper, CategoryMapper categoryMapper) {
+    public CategoryService (CategoryRepository categoryRepository, ModelMapper modelMapper, ICategoryMapper categoryMapper) {
         this.categoryRepository = categoryRepository;
         this.modelMapper = modelMapper;
         this.categoryMapper = categoryMapper;
@@ -85,7 +89,7 @@ public class CategoryService implements ICategoryService {
     // Helper method to update an existing category's details
     private CategoryDto updateExistingCategory(Category existingCategory, UpdateCategoryRequest request) {
         if(categoryRepository.countByName(request.getName())>1) {
-            throw new CategoryAlreadyExistsException("Category Already Exists");
+            throw new CategoryAlreadyExistsException("Category Name Already Exists");
         }
         else
         {
@@ -109,4 +113,5 @@ public class CategoryService implements ICategoryService {
         // Return the total count of categories
         return categoryRepository.count();
     }
+
 }

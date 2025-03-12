@@ -1,7 +1,9 @@
 package com.example.Ecommerce.request.user;
 
 import com.example.Ecommerce.model.entity.User;
+import lombok.Builder;
 
+@Builder
 public class UpdateAddressRequest {
 
     private String street;

@@ -1,11 +1,13 @@
 package com.example.Ecommerce.request.user;
 
 import jakarta.validation.constraints.*;
+import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;
 
 @Data
+@Builder
 public class CreateUserRequest {
 
     @NotNull

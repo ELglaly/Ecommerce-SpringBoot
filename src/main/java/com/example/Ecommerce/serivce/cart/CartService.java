@@ -3,6 +3,7 @@ package com.example.Ecommerce.serivce.cart;
 import com.example.Ecommerce.exceptions.CartNotFoundException;
 import com.example.Ecommerce.exceptions.ValidationException;
 import com.example.Ecommerce.mapper.cart.CartMapper;
+import com.example.Ecommerce.mapper.cart.ICartMapper;
 import com.example.Ecommerce.model.dto.cart.CartDto;
 import com.example.Ecommerce.model.dto.cart.CartItemDto;
 import com.example.Ecommerce.model.entity.Cart;
@@ -17,26 +18,31 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Optional;
 
 @Service
 public class CartService implements ICartService {
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
-    private final CartMapper cartMapper;
+    private final ICartMapper cartMapper;
     private final IProductService productService;
     private final IUserService userService;
-    public CartService(CartRepository cartRepository, CartItemRepository cartItemRepository, CartMapper cartMapper,
-                       IProductService productService, IUserService userService) {
+    private final ICartItemService cartItemService;
+    public CartService(CartRepository cartRepository, CartItemRepository cartItemRepository, ICartMapper cartMapper,
+                       IProductService productService, IUserService userService,ICartItemService cartItemService) {
         this.cartRepository = cartRepository;
         this.cartItemRepository = cartItemRepository;
         this.productService=productService;
         this.cartMapper = cartMapper;
         this.userService=userService;
+        this.cartItemService=cartItemService;
     }
 
     @Override
     public CartDto getCartDtoById(Long id) {
+
         return cartMapper.toDto(getCartById(id));
     }
     @Override
@@ -51,7 +57,6 @@ public class CartService implements ICartService {
     public Cart getCartByUserId(Long userId) {
         return Optional.ofNullable(cartRepository.findByUserId(userId))
                 .orElse(new Cart());
-
     }
 
     @Override
@@ -59,66 +64,14 @@ public class CartService implements ICartService {
     public void clearCart(Long cartId) {
         Cart cart = getCartById(cartId);
         cartItemRepository.deleteAllByCartId(cart.getId());
-        cart.getItems().clear();
+        cart.setItems(new ArrayList<>());
         cartRepository.save(cart);
     }
 
     @Override
-    public void addItem(Long userId, Long productId, int amount) {
-
-        Product product=productService.getProductById(productId);
-        if(product.getQuantity()<amount)
-            throw new ValidationException("Product quantity are not Enough");
-        Cart cart = getCartByUserId(userId);
-        // Filter the cart items to find the one with the matching product ID
-        boolean itemExists = cart.getItems()
-                .stream()
-                .filter(cartItem -> cartItem.getProduct().getId().equals(productId))
-                .peek(cartItem -> cartItem.setQuantity(cartItem.getQuantity()+amount))
-                .findAny()
-                .isPresent();
-
-        if (!itemExists) {
-            CartItem newCartItem = new CartItem.Builder()
-                    .cart(cart)
-                    .product(product)
-                    .quantity(amount)
-                    .build();
-            cart.addItem(newCartItem);
-            User user = userService.getUserById(userId);
-            cart.setUser(user);
-        }
-        cartRepository.save(cart);
-    }
-
-    private void updateTotalPrice(Cart cart, BigDecimal price, int newQuantity) {
-        // Handle null totalPrice by initializing it to BigDecimal.ZERO
-        BigDecimal currentTotalPrice = cart.getTotalPrice() != null ? cart.getTotalPrice() : BigDecimal.ZERO;
-
-        // Convert newQuantity to BigDecimal for multiplication
-        BigDecimal quantity = BigDecimal.valueOf(newQuantity);
-
-        // Calculate the new total price
-        BigDecimal newTotalPrice = currentTotalPrice.add(price.multiply(quantity));
-
-        // Set the new total price in the cart
-        cart.setTotalPrice(newTotalPrice);
-    }
-
-    @Override
-    public void updateItem(Long userId, Long productId, int amount) {
-        Product product=productService.getProductById(productId);
-        if(product.getQuantity()<amount)
-            throw new ValidationException("Product quantity are not Enough");
-        Cart cart = getCartByUserId(userId);
-        // Filter the cart items to find the one with the matching product ID
-       cart.getItems()
-                .stream()
-                .filter(cartItem -> cartItem.getProduct().getId().equals(productId))
-                .peek(cartItem -> cartItem.setQuantity(cartItem.getQuantity()+amount));
-        product.setQuantity(product.getQuantity()-amount);
-        cartRepository.save(cart);
-
+    public CartDto updateItem(Long cartId, Long productId, int quantity) {
+        Cart updatedCart=cartItemService.updateItemQuantity(cartId,productId,quantity);
+        return cartMapper.toDto(updatedCart);
     }
 
     @Override
@@ -133,5 +86,9 @@ public class CartService implements ICartService {
                 .map(CartItemDto::getTotalPrice)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
-
+    @Override
+    public CartDto addProductToCart(Long cartId, Long productId, int quantity) {
+       Cart updatedCart = cartItemService.addItemToCart(cartId,productId,quantity);
+       return cartMapper.toDto(updatedCart);
+    }
 }

@@ -27,9 +27,12 @@ public class ProductService implements IProductService {
 
     // Add a new product to the repository
     @Override
-    public Product addProduct(AddProductRequest request) {
-        Optional.ofNullable(productRepository.findByName(request.getName()))
-                .orElseThrow(()-> new ProductAlreadyExistsException("product already exists"));
+    public ProductDto addProduct(AddProductRequest request) {
+        Optional.of(productRepository.existsByName(request.getName()))
+                .filter(exists -> exists) // Check if the product exists
+                .ifPresent(exists -> {
+                    throw new ProductAlreadyExistsException("Product already exists");
+                });
            Category category= categoryExist(request);
            return createProduct(request,category);
     }
@@ -40,11 +43,12 @@ public class ProductService implements IProductService {
     }
 
     // Helper method to create a new Product entity from the productDto and category
-    private Product createProduct(AddProductRequest request, Category category) {
+    private ProductDto createProduct(AddProductRequest request, Category category) {
         Product product = productMapper.toEntityFromAddRequest(request);
         product.setCategory(category);
         product = productRepository.save(product);
-        return product;
+       ProductDto productDto= productMapper.toDto(product);
+       return productDto;
     }
 
     // return a product by ID and throws exception if not found
@@ -59,10 +63,9 @@ public class ProductService implements IProductService {
     }
         // return all products from the repository
     @Override
-    public List<ProductDto> getAllProducts() {
+    public List<Product> getAllProducts() {
         return productRepository.findAll()
-                .stream()
-                .map(productMapper::toDto)  // Mapping Product to ProductDto
+                .stream()// Mapping Product to ProductDto
                 .toList();
 
     }
@@ -100,52 +103,46 @@ public class ProductService implements IProductService {
 
     // return products by their name
     @Override
-    public List<ProductDto> getProductsByName(String name) {
+    public List<Product> getProductsByName(String name) {
         return productRepository.findByNameContaining(name).stream()
-                .map(productMapper::toDto)
                 .toList();
     }
 
     // return all products under a specific category
     @Override
-    public List<ProductDto> getAllProductsByCategory(String category) {
+    public List<Product> getAllProductsByCategory(String category) {
         return productRepository.findByCategoryName(category).stream()
-                .map(productMapper::toDto)
                 .toList();
     }
 
     // return all products of a specific brand
     @Override
-    public List<ProductDto> getAllProductsByBrand(String brand) {
+    public List<Product> getAllProductsByBrand(String brand) {
         return productRepository.findByBrand(brand)
                 .stream()
-                .map(productMapper::toDto)
                 .toList();
     }
 
     // return all products matching a specific category and brand
     @Override
-    public List<ProductDto> getAllProductsByCategoryAndBrand(String category, String brand) {
+    public List<Product> getAllProductsByCategoryAndBrand(String category, String brand) {
         return productRepository.findByCategoryNameAndBrand(category, brand)
                 .stream()
-                .map(productMapper::toDto)
                 .toList();
     }
 
     // return all products matching a specific name and category
     @Override
-    public List<ProductDto> getAllProductsByNameAndCategory(String name, String category) {
+    public List<Product> getAllProductsByNameAndCategory(String name, String category) {
         return productRepository.findByNameAndCategoryName(name, category)
                 .stream()
-                .map(productMapper::toDto)
                 .toList();
     }
 
     // return all products matching a specific brand and name
     @Override
-    public List<ProductDto> getAllProductsByBrandAndName(String brand, String name) {
+    public List<Product> getAllProductsByBrandAndName(String brand, String name) {
         return productRepository.findByBrandAndName(brand, name).stream()
-                .map(productMapper::toDto)
                 .toList();
     }
 

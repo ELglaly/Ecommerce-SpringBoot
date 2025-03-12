@@ -8,4 +8,5 @@ public interface ICategorySearchService {
     CategoryDto getCategoryById(Long id);
     List<CategoryDto> getAllCategories();
     CategoryDto getCategoryByName(String categoryName);
+
 }

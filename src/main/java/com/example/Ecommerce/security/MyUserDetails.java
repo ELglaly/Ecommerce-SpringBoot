@@ -20,6 +20,10 @@ public class MyUserDetails implements UserDetails {
     private String username;
     private String password;
     private Collection<GrantedAuthority> authorities;
+    private boolean isAccountNonExpired;
+    private boolean isAccountNonLocked;
+    private boolean isCredentialsNonExpired;
+    private boolean isActivated;
 
 
     public static MyUserDetails buildUserDetails(User user) {
@@ -30,6 +34,10 @@ public class MyUserDetails implements UserDetails {
                 .id(user.getId())
                 .username(user.getUsername())
                 .password(user.getPassword())
+                .isCredentialsNonExpired(user.isCredentialsNonExpired())
+                .isAccountNonExpired(user.isAccountNonExpired())
+                .isActivated(user.isActivated())
+                .isAccountNonLocked(user.isAccountNonLocked())
                 .authorities(authorities)
                 .build();
     }
@@ -51,21 +59,21 @@ public class MyUserDetails implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return UserDetails.super.isAccountNonExpired();
+        return isAccountNonExpired;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return UserDetails.super.isAccountNonLocked();
+        return isAccountNonLocked;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return UserDetails.super.isCredentialsNonExpired();
-    }
+        return isCredentialsNonExpired;
+        }
 
     @Override
     public boolean isEnabled() {
-        return UserDetails.super.isEnabled();
+        return isActivated;
     }
 }

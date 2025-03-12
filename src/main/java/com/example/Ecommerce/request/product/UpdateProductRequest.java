@@ -3,40 +3,42 @@ package com.example.Ecommerce.request.product;
 
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
+import static com.example.Ecommerce.constants.ErrorMessages.ProductError.*;
+import static com.example.Ecommerce.constants.ErrorMessages.ProductError.CATEGORY_NULL;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class UpdateProductRequest {
-    @NotNull(message = "Name cannot be null")
-    @NotBlank(message = "Name cannot be empty")
-    @Size(min = 2, max = 100, message = "Name must be between 2 and 100 characters")
+    @NotNull(message = NAME_NULL)
+    @Size(min = 2, max = 100, message = NAME_SIZE)
     private String name;
 
-    @NotNull(message = "Brand cannot be null")
-    @NotBlank(message = "Brand cannot be empty")
-    @Size(min = 2, max = 50, message = "Brand must be between 2 and 50 characters")
+    @NotNull(message = BRAND_NULL)
+    @Size(min = 2, max = 50, message =BRAND_SIZE)
     private String brand;
 
-    @NotNull(message = "Description cannot be null")
-    @NotBlank(message = "Description cannot be Empty")
-    @Size(min = 5, max = 500, message = "Description must be between 5 and 500 characters")
+    @NotNull(message = DESCRIPTION_NULL)
+    @Size(min = 5, max = 500, message = DESCRIPTION_SIZE)
     private String description;
 
-    @NotNull(message = "Price cannot be null")
-    @DecimalMin(value = "0.01", message = "Price must be greater than 0")
-    @Digits(integer = 10, fraction = 2, message = "Price must have up to 2 decimal places")
+    @NotNull(message = PRICE_NULL)
+    @DecimalMin(value = "0.01", message = PRICE_MIN)
+    @Digits(integer = 10, fraction = 2, message = PRICE_DIGITS)
     private BigDecimal price;
 
-    @Min(value = 1, message = "Quantity must be at least 1")
-    @Max(value = 10000, message = "Quantity cannot exceed 10,000")
+    @Min(value = 1, message = QUANTITY_MIN)
+    @Max(value = 10000, message = QUANTITY_MAX)
     private int quantity;
 
-    @NotNull(message = "Category cannot be null")
+    @NotNull(message = CATEGORY_NULL)
     private String category;
 
 

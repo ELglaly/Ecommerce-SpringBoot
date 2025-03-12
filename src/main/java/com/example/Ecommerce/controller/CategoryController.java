@@ -5,6 +5,7 @@ import com.example.Ecommerce.model.dto.CategoryDto;
 import com.example.Ecommerce.request.category.AddCategoryRequest;
 import com.example.Ecommerce.request.category.UpdateCategoryRequest;
 import com.example.Ecommerce.response.ApiResponse;
+import com.example.Ecommerce.serivce.email.IRegistrationEmail;
 import com.example.Ecommerce.serivce.category.ICategoryService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -62,6 +63,7 @@ public class CategoryController {
             return ResponseEntity.ok(new ApiResponse(categoryDto,"Category Updated!"));
 
     }
+
 
 
 }

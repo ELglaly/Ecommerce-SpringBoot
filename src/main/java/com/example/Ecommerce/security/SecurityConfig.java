@@ -35,16 +35,18 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .httpBasic(Customizer.withDefaults())
+                .oauth2Login(oauth2 -> oauth2
+                        .defaultSuccessUrl("/api/v1/login/google", true)
+                )
                 //.formLogin(AbstractHttpConfigurer::disable)
-                //.logout(Customizer.withDefaults())// Disable logout (for testing)
-                .authorizeHttpRequests(auth -> auth.requestMatchers("api/v1/register","api/v1/login").permitAll()
+                .logout(Customizer.withDefaults())// Disable logout (for testing)
+                .authorizeHttpRequests(auth -> auth.requestMatchers("/api/v1/login","/api/v1/register","/api/v1/users/activate/**").permitAll()
                         .anyRequest().authenticated()
                 )
-                .sessionManagement(c -> c.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(sessionManagement ->
+                        sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
         ;
-    // Allow all requests
-
         return http.build();
     }
 
