@@ -1,6 +1,5 @@
 # 🛍️ E-commerce Platform
 
-![E-commerce Banner](https://via.placeholder.com/1000x300?text=E-commerce+Platform)
 
 ## 📌 Project Information
 
@@ -103,42 +102,236 @@ mvn spring-boot:run
 #### Access the Application
 [http://localhost:8080](http://localhost:8080)
 
-## 🔍 API Endpoints
-### User Authentication
-```sh
-POST /api/auth/register
+# E-Commerce Platform API
+
+## Overview
+This API provides access to an e-commerce platform, allowing users to manage products, orders, and user accounts.
+
+## Base URL
 ```
-```json
-{
-  "username": "user1",
-  "email": "user1@example.com",
-  "password": "password123"
-}
+https://api.yourdomain.com
 ```
-### Fetch Products
-```sh
-GET /api/products
-```
-### Add to Cart
-```sh
-POST /api/cart/add
-```
-```json
-{
-  "productId": 1,
-  "quantity": 2
-}
-```
-### Place Order
-```sh
-POST /api/orders
-```
-```json
-{
-  "cartId": 1,
-  "paymentMethod": "credit_card"
-}
-```
+
+## Authentication
+All API endpoints require authentication via a Bearer token.
+
+---
+
+## API Endpoints
+
+### 1. User Authentication
+
+#### **POST /api/register**
+**Description:** Registers a new user.
+- **Request Body:**
+  ```json
+  {
+    "username": "string",
+    "password": "string",
+    "email": "string"
+  }
+  ```
+- **Response:**
+  ```json
+  {
+    "data": { "user details" },
+    "message": "User created successfully"
+  }
+  ```
+
+#### **POST /api/login**
+**Description:** Logs in a user and returns an authentication token.
+- **Request Body:**
+  ```json
+  {
+    "username": "string",
+    "password": "string"
+  }
+  ```
+- **Response:**
+  ```json
+  {
+    "data": "JWT Token",
+    "message": "Login successful"
+  }
+  ```
+
+#### **GET /api/login/google**
+**Description:** Login with Google.
+- **Response:**
+  ```json
+  {
+    "data": "Login with Google",
+    "message": "Success"
+  }
+  ```
+
+---
+
+### 2. Product Management
+
+#### **POST /api/products**
+**Description:** Create a new product.
+- **Request Body:**
+  ```json
+  {
+    "name": "Product Name",
+    "price": 100.0,
+    "category": "Category"
+  }
+  ```
+- **Response:**
+  ```json
+  {
+    "data": { "product details" },
+    "message": "Product created successfully"
+  }
+  ```
+
+#### **GET /api/products/{id}**
+**Description:** Get product by ID.
+- **Response:**
+  ```json
+  {
+    "data": { "product details" },
+    "message": "Product found"
+  }
+  ```
+
+#### **GET /api/products**
+**Description:** Get all products.
+- **Response:**
+  ```json
+  {
+    "data": [ { "product details" } ],
+    "message": "Products retrieved successfully"
+  }
+  ```
+
+#### **PUT /api/products/{id}**
+**Description:** Update a product.
+- **Request Body:**
+  ```json
+  {
+    "name": "Updated Product Name",
+    "price": 150.0,
+    "category": "Updated Category"
+  }
+  ```
+- **Response:**
+  ```json
+  {
+    "data": { "updated product details" },
+    "message": "Product updated successfully"
+  }
+  ```
+
+#### **DELETE /api/products/{id}**
+**Description:** Delete a product.
+- **Response:**
+  ```json
+  {
+    "data": true,
+    "message": "Product deleted successfully"
+  }
+  ```
+
+---
+
+### 3. Order Management
+
+#### **POST /api/orders/by-cart/{cartId}**
+**Description:** Place an order by cart ID.
+- **Response:**
+  ```json
+  {
+    "data": { "order details" },
+    "message": "Order created successfully"
+  }
+  ```
+
+#### **POST /api/orders/by-product**
+**Description:** Place an order by product.
+- **Request Body:**
+  ```json
+  {
+    "productId": 1,
+    "quantity": 2
+  }
+  ```
+- **Response:**
+  ```json
+  {
+    "data": { "order details" },
+    "message": "Order created successfully"
+  }
+  ```
+
+#### **GET /api/orders/{orderId}**
+**Description:** Get order by ID.
+- **Response:**
+  ```json
+  {
+    "data": { "order details" },
+    "message": "Order retrieved successfully"
+  }
+  ```
+
+#### **GET /api/orders**
+**Description:** Get all orders.
+- **Response:**
+  ```json
+  {
+    "data": [ { "order details" } ],
+    "message": "Orders retrieved successfully"
+  }
+  ```
+
+---
+
+### 4. Cart Management
+
+#### **GET /api/carts/{cartId}**
+**Description:** Get cart by ID.
+- **Response:**
+  ```json
+  {
+    "data": { "cart details" },
+    "message": "Cart retrieved successfully"
+  }
+  ```
+
+#### **POST /api/carts/{cartId}**
+**Description:** Add product to cart.
+- **Request Params:**
+  - `productId: Long`
+  - `quantity: int`
+- **Response:**
+  ```json
+  {
+    "data": { "cart details" },
+    "message": "Product added to cart successfully"
+  }
+  ```
+
+#### **DELETE /api/carts/item/{itemId}/{cartId}**
+**Description:** Remove item from cart.
+- **Response:**
+  ```json
+  {
+    "data": null,
+    "message": "Item removed successfully"
+  }
+  ```
+
+---
+
+## Error Handling
+- **400:** Bad Request (Invalid input)
+- **401:** Unauthorized (Invalid credentials)
+- **403:** Forbidden (Admin only access)
+- **404:** Not Found (Resource does not exist)
+- **500:** Internal Server Error
 
 ## 🧪 Testing & Debugging
 Run all tests:
