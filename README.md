@@ -18,11 +18,6 @@ A robust and scalable e-commerce platform built with **Spring Boot**. This syste
 - **🖥️ RESTful API** – Well-documented API for frontend and third-party integrations.
 - **🧪 Testing** – Unit and integration tests using JUnit 5 and Mockito.
 
-## 🎯 Target Audience
-- **🛍️ Online Retailers** – Businesses expanding their e-commerce presence.
-- **💻 Developers** – A robust backend to build upon.
-- **📚 Students & Learners** – Learn **Spring Boot**, REST APIs, and secure app development.
-
 ## 🛠️ Technologies & Tools
 **Languages:**  
 - Java
