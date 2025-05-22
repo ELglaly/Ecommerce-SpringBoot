@@ -1,24 +1,24 @@
-# 🛍️ E-commerce Platform
+#  E-commerce Platform
 
 
-## 📌 Project Information
+##  Project Information
 
 **Project Name:** E-commerce Platform
 
 **Project Description:**  
 A robust and scalable e-commerce platform built with **Spring Boot**. This system enables users to browse products, manage their shopping cart, and complete secure purchases. It includes an **admin panel** for managing products, orders, and users. Designed with modern best practices, this project is ideal for businesses looking to establish or expand their online presence.
 
-## 🚀 Features
-- **🔐 User Authentication & Authorization** – Secure user registration, login, and role-based access with JWT.
-- **📧 Email Verification** – Send email verification links using JavaMailSender.
-- **🛒 Product Management** – Admins can add, update, and delete products.
-- **🛍️ Shopping Cart** – Users can manage their cart and checkout securely.
-- **💳 Order Processing** – Integrated with Stripe/PayPal for payments.
-- **📨 Email Notifications** – Automated emails for registration and order updates.
-- **🖥️ RESTful API** – Well-documented API for frontend and third-party integrations.
-- **🧪 Testing** – Unit and integration tests using JUnit 5 and Mockito.
+##  Features
+- **User Authentication & Authorization** – Secure user registration, login, and role-based access with JWT.
+- **Email Verification** – Send email verification links using JavaMailSender.
+- **Product Management** – Admins can add, update, and delete products.
+- **Shopping Cart** – Users can manage their cart and checkout securely.
+- **Order Processing** – Integrated with Stripe/PayPal for payments.
+- **Email Notifications** – Automated emails for registration and order updates.
+- **RESTful API** – Well-documented API for frontend and third-party integrations.
+- **Testing** – Unit and integration tests using JUnit 5 and Mockito.
 
-## 🛠️ Technologies & Tools
+## Technologies & Tools
 **Languages:**  
 - Java
 
@@ -28,10 +28,7 @@ A robust and scalable e-commerce platform built with **Spring Boot**. This syste
 **Database & Storage:**  
 - MySQL (for production), H2 Database (for testing)
 
-**APIs & Integrations:**  
-- Stripe/PayPal, SMTP (e.g., Gmail SMTP)
-
-## 🏗️ Project Structure
+##  Project Structure
 ```
 📂 src
  ├── 📂 main
@@ -62,7 +59,7 @@ A robust and scalable e-commerce platform built with **Spring Boot**. This syste
  ├── 📄 .gitattributes
 ```
 
-## 📥 Installation & Setup
+##  Installation & Setup
 ### Prerequisites
 - Java Development Kit (JDK) 11+
 - Maven
@@ -97,15 +94,6 @@ mvn spring-boot:run
 #### Access the Application
 [http://localhost:8080](http://localhost:8080)
 
-# E-Commerce Platform API
-
-## Overview
-This API provides access to an e-commerce platform, allowing users to manage products, orders, and user accounts.
-
-## Base URL
-```
-https://api.yourdomain.com
-```
 
 ## Authentication
 All API endpoints require authentication via a Bearer token.
@@ -328,24 +316,8 @@ All API endpoints require authentication via a Bearer token.
 - **404:** Not Found (Resource does not exist)
 - **500:** Internal Server Error
 
-## 🧪 Testing & Debugging
+##  Testing & Debugging
 Run all tests:
 ```sh
 mvn test
 ```
-
-## 📜 Contribution Guidelines
-1. **Fork** the repository.
-2. **Create a feature branch:**
-   ```sh
-   git checkout -b feature/your-feature-name
-   ```
-3. **Commit changes:**
-   ```sh
-   git commit -m "Add your feature"
-   ```
-4. **Push to branch:**
-   ```sh
-   git push origin feature/your-feature-name
-   ```
-5. **Open a pull request.**
