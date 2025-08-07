@@ -1,10 +1,10 @@
-package com.example.Ecommerce.controller;
+package com.example.ecommerce.controller;
 
 
-import com.example.Ecommerce.constants.ApiConstants;
-import com.example.Ecommerce.model.dto.ImageDto;
-import com.example.Ecommerce.response.ApiResponse;
-import com.example.Ecommerce.serivce.image.IImageService;
+import com.example.ecommerce.constants.ApiConstants;
+import com.example.ecommerce.dto.ImageDTO;
+import com.example.ecommerce.response.ApiResponse;
+import com.example.ecommerce.serivce.image.IImageService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,14 +22,14 @@ public class ImageController {
     @PostMapping("/product/{productId}")
     public ResponseEntity<ApiResponse> addImages(@PathVariable Long productId,
                                               @RequestParam List<MultipartFile> file) {
-        List<ImageDto> imageDtos =imageService.addImage(file,productId);
+        List<ImageDTO> imageDTOS =imageService.addImage(file,productId);
 
-        return ResponseEntity.ok(new ApiResponse(imageDtos,"Added Successfully"));
+        return ResponseEntity.ok(new ApiResponse(imageDTOS,"Added Successfully"));
     }
 
     @GetMapping("/product/{id}")
     public ResponseEntity<ApiResponse> getImageById(@PathVariable Long id) {
-        ImageDto imageDto = imageService.getImage(id);
+        ImageDTO imageDto = imageService.getImage(id);
         return ResponseEntity.ok(new ApiResponse(imageDto, "Image Retrieved Successfully"));
     }
 
@@ -48,14 +48,14 @@ public class ImageController {
 
     @GetMapping()
     public ResponseEntity<ApiResponse> getAllImages() {
-        List<ImageDto> imageDtos = imageService.getAllImages();
-        return ResponseEntity.ok(new ApiResponse(imageDtos, "All Images Retrieved Successfully"));
+        List<ImageDTO> imageDTOS = imageService.getAllImages();
+        return ResponseEntity.ok(new ApiResponse(imageDTOS, "All Images Retrieved Successfully"));
     }
 
     @GetMapping("/product-mame/{productName}")
     public ResponseEntity<ApiResponse> getImagesByProduct(@RequestParam String productName) {
-        List<ImageDto> imageDtos = imageService.getImagesByProduct(productName);
-        return ResponseEntity.ok(new ApiResponse(imageDtos, "Images Retrieved Successfully"));
+        List<ImageDTO> imageDTOS = imageService.getImagesByProduct(productName);
+        return ResponseEntity.ok(new ApiResponse(imageDTOS, "Images Retrieved Successfully"));
     }
 
 //    @GetMapping("/count/{productName}")

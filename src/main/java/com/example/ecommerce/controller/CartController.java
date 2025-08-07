@@ -1,11 +1,11 @@
-package com.example.Ecommerce.controller;
+package com.example.ecommerce.controller;
 
 
-import com.example.Ecommerce.constants.ApiConstants;
-import com.example.Ecommerce.model.dto.cart.CartDto;
-import com.example.Ecommerce.response.ApiResponse;
-import com.example.Ecommerce.serivce.cart.ICartItemService;
-import com.example.Ecommerce.serivce.cart.ICartService;
+import com.example.ecommerce.constants.ApiConstants;
+import com.example.ecommerce.dto.cart.CartDTO;
+import com.example.ecommerce.response.ApiResponse;
+import com.example.ecommerce.serivce.cart.ICartItemService;
+import com.example.ecommerce.serivce.cart.ICartService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,7 +22,7 @@ public class CartController {
 
     @GetMapping("/{cartId}")
     public ResponseEntity<ApiResponse> getCart(@PathVariable Long cartId) {
-        CartDto cartDto =cartService.getCartDtoById(cartId);
+        CartDTO cartDto =cartService.getCartDtoById(cartId);
         return ResponseEntity.ok(new ApiResponse (cartDto,"Cart Retravied Successfully"));
     }
     @DeleteMapping("/{cartId}")
@@ -39,7 +39,7 @@ public class CartController {
     @PostMapping("/{cartId}")
     public ResponseEntity<ApiResponse> addProductToCart(@PathVariable Long cartId,
                                                         @RequestParam Long productId, @RequestParam int quantity ) {
-        CartDto cartDto= cartService.addProductToCart(cartId,productId,quantity);
+        CartDTO cartDto= cartService.addProductToCart(cartId,productId,quantity);
         return ResponseEntity.ok(new ApiResponse (cartDto,"Product added to cart successfully"));
     }
 

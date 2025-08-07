@@ -1,9 +1,9 @@
-package com.example.Ecommerce.controller;
+package com.example.ecommerce.controller;
 
-import com.example.Ecommerce.constants.ApiConstants;
-import com.example.Ecommerce.request.user.LoginRequest;
-import com.example.Ecommerce.response.ApiResponse;
-import com.example.Ecommerce.serivce.user.IUserService;
+import com.example.ecommerce.constants.ApiConstants;
+import com.example.ecommerce.request.user.LoginRequest;
+import com.example.ecommerce.response.ApiResponse;
+import com.example.ecommerce.serivce.user.IUserService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
