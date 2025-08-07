@@ -1,6 +1,6 @@
-package com.example.Ecommerce.security;
+package com.example.ecommerce.security;
 
-import com.example.Ecommerce.model.entity.User;
+import com.example.ecommerce.entity.user.User;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

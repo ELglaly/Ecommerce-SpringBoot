@@ -1,6 +1,6 @@
-package com.example.Ecommerce.security;
+package com.example.ecommerce.security;
 
-import com.example.Ecommerce.security.filter.JwtAuthenticationFilter;
+import com.example.ecommerce.security.filter.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -40,8 +40,7 @@ public class SecurityConfig {
                 )
                 //.formLogin(AbstractHttpConfigurer::disable)
                 .logout(Customizer.withDefaults())// Disable logout (for testing)
-                .authorizeHttpRequests(auth -> auth.requestMatchers("/api/v1/login","/api/v1/register","/api/v1/users/activate/**").permitAll()
-                        .anyRequest().authenticated()
+                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll()
                 )
                 .sessionManagement(sessionManagement ->
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

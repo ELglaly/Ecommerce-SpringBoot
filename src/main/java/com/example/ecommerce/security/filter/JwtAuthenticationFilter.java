@@ -1,6 +1,6 @@
-package com.example.Ecommerce.security.filter;
+package com.example.ecommerce.security.filter;
 
-import com.example.Ecommerce.security.jwt.JwtService;
+import com.example.ecommerce.security.jwt.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

@@ -1,6 +1,6 @@
-package com.example.Ecommerce.security.jwt;
+package com.example.ecommerce.security.jwt;
 
-import com.example.Ecommerce.model.entity.User;
+import com.example.ecommerce.entity.user.User;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Service;
