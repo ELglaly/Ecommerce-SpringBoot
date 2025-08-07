@@ -1,6 +1,6 @@
-package com.example.Ecommerce.exceptions.user;
+package com.example.ecommerce.exceptions.user;
 
-import com.example.Ecommerce.exceptions.AppException;
+import com.example.ecommerce.exceptions.AppException;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(org.springframework.http.HttpStatus.BAD_REQUEST)

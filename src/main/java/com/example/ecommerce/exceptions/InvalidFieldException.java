@@ -1,4 +1,4 @@
-package com.example.Ecommerce.exceptions;
+package com.example.ecommerce.exceptions;
 
 public class InvalidFieldException extends AppException {
 

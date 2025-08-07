@@ -1,6 +1,6 @@
-package com.example.Ecommerce.exceptions.image;
+package com.example.ecommerce.exceptions.image;
 
-import com.example.Ecommerce.exceptions.AppException;
+import com.example.ecommerce.exceptions.AppException;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(org.springframework.http.HttpStatus.CONFLICT)
