@@ -1,6 +1,7 @@
 package com.example.ecommerce.exceptions;
 
 
+import com.example.ecommerce.response.ErrorResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -14,11 +15,9 @@ import java.util.Map;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(AppException.class)
-    public ResponseEntity<Map<String, Object>> handleGlobalException(AppException ex) {
-              Map<String, Object> errorDetails = new HashMap<>();
-              errorDetails.put("message", ex.getMessage());
-              errorDetails.put("timestamp", LocalDateTime.now());
-              return new ResponseEntity<>(errorDetails, ex.getStatus());
+    public ResponseEntity<ErrorResponse> handleGlobalException(AppException ex) {
+                return ResponseEntity.status(ex.getErrorResponse().statusCode())
+                .body(ex.getErrorResponse());
     }
 
 
