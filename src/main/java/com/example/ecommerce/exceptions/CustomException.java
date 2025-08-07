@@ -9,12 +9,11 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 @Getter
 @Setter
 public class CustomException extends Exception {
-    private String errorCode;
-    private String message;
-    private HttpStatus status;
+
     public CustomException(String message) {
-        this.setMessage(message);
-        this.setErrorCode("VALIDATION_ERROR");
-        this.setStatus(BAD_REQUEST);
+        super(message);
+    }
+    public CustomException(String message, Throwable cause) {
+        super(message, cause);
     }
 }

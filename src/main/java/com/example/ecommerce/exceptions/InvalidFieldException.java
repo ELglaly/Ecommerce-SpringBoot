@@ -1,8 +1,28 @@
 package com.example.ecommerce.exceptions;
 
-public class InvalidFieldException extends AppException {
+import com.example.ecommerce.response.ErrorResponse;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
-    public InvalidFieldException(String message) {
-        super("Invalid field: "+message);
+@ResponseStatus(HttpStatus.BAD_REQUEST)
+public class InvalidFieldException extends AppException {
+    private static final String DEFAULT_MESSAGE = "Invalid field provided";
+
+    public InvalidFieldException(String path) {
+        super(new ErrorResponse(
+                DEFAULT_MESSAGE,
+                HttpStatus.BAD_REQUEST.value(),
+                String.valueOf(System.currentTimeMillis()),
+                path
+        ));
+    }
+
+    public InvalidFieldException(String path, String customMessage) {
+        super(new ErrorResponse(
+                customMessage,
+                HttpStatus.BAD_REQUEST.value(),
+                String.valueOf(System.currentTimeMillis()),
+                path
+        ));
     }
 }

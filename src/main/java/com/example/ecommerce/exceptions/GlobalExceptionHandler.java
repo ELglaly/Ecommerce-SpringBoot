@@ -17,7 +17,6 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, Object>> handleGlobalException(AppException ex) {
               Map<String, Object> errorDetails = new HashMap<>();
               errorDetails.put("message", ex.getMessage());
-              errorDetails.put("errorCode",ex.getErrorCode());
               errorDetails.put("timestamp", LocalDateTime.now());
               return new ResponseEntity<>(errorDetails, ex.getStatus());
     }
