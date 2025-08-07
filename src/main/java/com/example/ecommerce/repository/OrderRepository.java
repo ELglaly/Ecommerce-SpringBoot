@@ -1,7 +1,7 @@
-package com.example.Ecommerce.repository;
+package com.example.ecommerce.repository;
 
-import com.example.Ecommerce.enums.OrderStatus;
-import com.example.Ecommerce.model.entity.Order;
+import com.example.ecommerce.enums.OrderStatus;
+import com.example.ecommerce.entity.Order;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

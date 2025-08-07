@@ -1,6 +1,6 @@
-package com.example.Ecommerce.repository;
+package com.example.ecommerce.repository;
 
-import com.example.Ecommerce.model.entity.Category;
+import com.example.ecommerce.entity.Category;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;

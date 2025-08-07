@@ -1,6 +1,6 @@
-package com.example.Ecommerce.repository;
+package com.example.ecommerce.repository;
 
-import com.example.Ecommerce.model.entity.Cart;
+import com.example.ecommerce.entity.Cart;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CartRepository extends JpaRepository<Cart, Long> {
