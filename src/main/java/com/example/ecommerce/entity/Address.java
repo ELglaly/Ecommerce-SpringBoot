@@ -20,7 +20,6 @@ public class Address {
     private Long id;
 
     @NotBlank(message = "Street is required")
-
     @Size(min= 3, max = 100, message = "Street name must be between 3 - 100 character")
     @Pattern(regexp = "^[a-zA-Z0-9\\s]+$", message = "Street must contain only letters, numbers, and spaces")
     @Column(nullable = false, length = 100)
