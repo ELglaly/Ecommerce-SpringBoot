@@ -1,8 +1,8 @@
-package com.example.Ecommerce.validator.orde;
+package com.example.ecommerce.validator.orde;
 
-import com.example.Ecommerce.model.entity.Order;
-import com.example.Ecommerce.model.entity.OrderItem;
-import com.example.Ecommerce.model.entity.User;
+import com.example.ecommerce.entity.Order;
+import com.example.ecommerce.entity.OrderItem;
+import com.example.ecommerce.entity.user.User;
 
 import java.math.BigDecimal;
 import java.util.Set;

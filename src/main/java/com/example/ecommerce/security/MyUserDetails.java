@@ -1,6 +1,7 @@
 package com.example.ecommerce.security;
 
 import com.example.ecommerce.entity.user.User;
+import com.example.ecommerce.repository.user.UserLoginProjection;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -16,7 +17,6 @@ import java.util.stream.Collectors;
 @Builder
 public class MyUserDetails implements UserDetails {
 
-    private Long id;
     private String username;
     private String password;
     private Collection<GrantedAuthority> authorities;
@@ -26,14 +26,13 @@ public class MyUserDetails implements UserDetails {
     private boolean isActivated;
 
 
-    public static MyUserDetails buildUserDetails(User user) {
+    public static MyUserDetails buildUserDetails(UserLoginProjection user) {
         List<GrantedAuthority> authorities = user.getRoles()
-                .stream().map(role -> new SimpleGrantedAuthority(role.getName()))
+                .stream().map(role -> new SimpleGrantedAuthority(role.getUserRole().name()))
                 .collect(Collectors.toList());
         return  MyUserDetails.builder()
-                .id(user.getId())
                 .username(user.getUsername())
-                .password(user.getPassword())
+                .password(user.getHashedPassword())
                 .isCredentialsNonExpired(user.isCredentialsNonExpired())
                 .isAccountNonExpired(user.isAccountNonExpired())
                 .isActivated(user.isActivated())

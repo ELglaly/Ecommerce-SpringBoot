@@ -1,7 +1,8 @@
 package com.example.ecommerce.security;
 
 import com.example.ecommerce.entity.user.User;
-import com.example.ecommerce.repository.UserRepository;
+import com.example.ecommerce.repository.user.UserLoginProjection;
+import com.example.ecommerce.repository.user.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -18,7 +19,7 @@ public class UserServiceDetails implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-         User user = Optional.ofNullable(userRepository.findByUsername(username))
+        UserLoginProjection user = Optional.ofNullable(userRepository.findByUsername(username,UserLoginProjection.class))
                 .orElseThrow(() -> new UsernameNotFoundException("User with username " + username + " not found"));
         return MyUserDetails.buildUserDetails(user);
     }
