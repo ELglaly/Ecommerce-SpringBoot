@@ -3,7 +3,7 @@ package com.example.ecommerce.controller;
 import com.example.ecommerce.constants.ApiConstants;
 import com.example.ecommerce.dto.ProductDTO;
 import com.example.ecommerce.exceptions.product.ProductNotFoundException;
-import com.example.ecommerce.mapper.IProductMapper;
+import com.example.ecommerce.mapper.ProductMapper;
 import com.example.ecommerce.request.product.AddProductRequest;
 import com.example.ecommerce.request.product.UpdateProductRequest;
 import com.example.ecommerce.response.ApiResponse;
@@ -20,10 +20,10 @@ import java.util.List;
 public class ProductController {
 
     private final IProductService productService;
-    private final IProductMapper productMapper;
+    private final ProductMapper productMapper;
 
     // Constructor for dependency injection
-    public ProductController(IProductService productService, IProductMapper productMapper) {
+    public ProductController(IProductService productService, ProductMapper productMapper) {
         this.productService = productService;
         this.productMapper = productMapper;
     }

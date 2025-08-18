@@ -20,7 +20,7 @@ public class LoginController {
     // implement login endpoint
    @PostMapping
     public ResponseEntity<ApiResponse> login(@RequestBody @Valid LoginRequest loginRequest) {
-        String JwtToken = userService.login(loginRequest);
+        String JwtToken = userService.authenticate(loginRequest);
         return ResponseEntity.ok(new ApiResponse(JwtToken, "Login successful"));
     }
     // TODO: Implement logout endpoint

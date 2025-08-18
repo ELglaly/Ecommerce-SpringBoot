@@ -1,4 +1,4 @@
-package com.example.Ecommerce.response;
+package com.example.ecommerce.response;
 
 
 import lombok.Data;
