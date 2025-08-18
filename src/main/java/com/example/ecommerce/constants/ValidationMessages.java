@@ -1,4 +1,4 @@
-package com.example.Ecommerce.constants;
+package com.example.ecommerce.constants;
 
 public class ValidationMessages {
     public static final String REQUIRED_FIELD = "This field is required.";

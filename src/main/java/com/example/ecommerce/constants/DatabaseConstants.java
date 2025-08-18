@@ -1,4 +1,4 @@
-package com.example.Ecommerce.constants;
+package com.example.ecommerce.constants;
 
 
 public class DatabaseConstants {

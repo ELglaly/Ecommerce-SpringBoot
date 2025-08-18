@@ -1,4 +1,4 @@
-package com.example.Ecommerce.constants;
+package com.example.ecommerce.constants;
 
 public class PaginationConstants {
     public static final int DEFAULT_PAGE_SIZE = 20;
