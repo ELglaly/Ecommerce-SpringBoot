@@ -1,22 +1,18 @@
-package com.example.Ecommerce.request.product;
-
+package com.example.ecommerce.request.product;
 
 import jakarta.validation.constraints.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 
-import static com.example.Ecommerce.constants.ErrorMessages.ProductError.*;
-import static com.example.Ecommerce.constants.ErrorMessages.ProductError.CATEGORY_NULL;
+import static com.example.ecommerce.constants.ErrorMessages.ProductError.*;
 
-@Data
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UpdateProductRequest {
+public class AddProductRequest {
+
     @NotNull(message = NAME_NULL)
     @Size(min = 2, max = 100, message = NAME_SIZE)
     private String name;
@@ -40,6 +36,5 @@ public class UpdateProductRequest {
 
     @NotNull(message = CATEGORY_NULL)
     private String category;
-
 
 }

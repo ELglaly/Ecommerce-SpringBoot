@@ -1,4 +1,4 @@
-package com.example.Ecommerce.request.cart;
+package com.example.ecommerce.request.cart;
 
 public class AddCartItemRequest {
 

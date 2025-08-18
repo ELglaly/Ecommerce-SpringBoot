@@ -1,6 +1,6 @@
-package com.example.Ecommerce.request.category;
+package com.example.ecommerce.request.category;
 
-import com.example.Ecommerce.request.image.AddImageRequest;
+import com.example.ecommerce.request.image.AddImageRequest;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -10,7 +10,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.nio.Buffer;
 import java.util.ArrayList;
 import java.util.List;
 

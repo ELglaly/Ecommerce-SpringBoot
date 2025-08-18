@@ -1,4 +1,4 @@
-package com.example.Ecommerce.request.user;
+package com.example.ecommerce.request.user;
 
 import jakarta.validation.constraints.*;
 import lombok.Builder;

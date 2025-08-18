@@ -1,6 +1,6 @@
-package com.example.Ecommerce.request.user;
+package com.example.ecommerce.request.user;
 
-import com.example.Ecommerce.model.entity.User;
+import com.example.ecommerce.entity.user.User;
 import lombok.Builder;
 
 @Builder

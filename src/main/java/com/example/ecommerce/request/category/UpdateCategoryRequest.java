@@ -1,6 +1,6 @@
-package com.example.Ecommerce.request.category;
+package com.example.ecommerce.request.category;
 
-import com.example.Ecommerce.request.image.UpdateImageRequest;
+import com.example.ecommerce.request.image.UpdateImageRequest;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;

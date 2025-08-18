@@ -1,8 +1,8 @@
-package com.example.Ecommerce.request.order;
+package com.example.ecommerce.request.order;
 
-import com.example.Ecommerce.enums.OrderStatus;
-import com.example.Ecommerce.model.dto.UserDto;
-import com.example.Ecommerce.model.entity.OrderItem;
+import com.example.ecommerce.enums.OrderStatus;
+import com.example.ecommerce.dto.UserDTO;
+import com.example.ecommerce.entity.OrderItem;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -16,6 +16,6 @@ public class UpdateOrderRequest {
     private BigDecimal orderTotalPrice;
     private OrderStatus orderStatus;
     private Set<OrderItem> orderItems=new HashSet<>();
-    private UserDto user;
+    private UserDTO user;
 
 }

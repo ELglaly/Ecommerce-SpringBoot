@@ -1,7 +1,7 @@
-package com.example.Ecommerce.request.image;
+package com.example.ecommerce.request.image;
 
 
-import com.example.Ecommerce.model.dto.ProductDto;
+import com.example.ecommerce.dto.ProductDTO;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -28,7 +28,7 @@ public class UpdateImageRequest {
 
     @NotNull(message = "Product cannot be null")
     @Valid
-    private ProductDto productDTO;
+    private ProductDTO productDTO;
 
 }
 

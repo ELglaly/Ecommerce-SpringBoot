@@ -1,9 +1,9 @@
-package com.example.Ecommerce.request.user;
+package com.example.ecommerce.request.user;
 
 import lombok.Builder;
 
 @Builder
-public class UpdatePhoneNumberRequest {
+public class AddPhoneNumberRequest {
     private String countryCode;
     private String number;
 }
