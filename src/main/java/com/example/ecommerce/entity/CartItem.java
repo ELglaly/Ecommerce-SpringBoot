@@ -48,5 +48,5 @@ public class CartItem {
     @NotNull(message = "Order is mandatory")
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
     @JoinColumn(name = "cart_id", nullable = false)
-    private Order cart;
+    private Cart cart;
 }

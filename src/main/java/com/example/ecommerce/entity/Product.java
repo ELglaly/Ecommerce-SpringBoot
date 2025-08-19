@@ -42,11 +42,10 @@ public class Product {
     @Column(nullable = false)
     private int quantity;
 
-    @OneToMany(mappedBy = "products",cascade = CascadeType.ALL,orphanRemoval = true)
-    @JoinColumn(name="product_id")
+    @OneToMany(mappedBy = "product",cascade = CascadeType.ALL,orphanRemoval = true)
     private List<Image> images;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "category_id")
     private Category category;
 
