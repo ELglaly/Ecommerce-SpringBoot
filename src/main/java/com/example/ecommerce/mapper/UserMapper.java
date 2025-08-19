@@ -20,9 +20,9 @@ public interface UserMapper{
 
     User toEntity(CreateUserRequest createUserRequest);
 
-    User toEntity(UpdateUserRequest updateUserRequest, User user);
+    User toEntity(UpdateUserRequest updateUserRequest);
 
-    UserDTO toUserDTOFromUpdateRequest(UpdateUserRequest updateUserRequest, User user);
+    UserDTO toUserDTOFromUpdateRequest(UpdateUserRequest updateUserRequest);
 
     UserDTO toUserDTOFromCreateRequest(CreateUserRequest createUserRequest);
 

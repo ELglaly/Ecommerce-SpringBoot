@@ -6,6 +6,7 @@ import com.example.ecommerce.entity.Product;
 import com.example.ecommerce.request.product.AddProductRequest;
 import com.example.ecommerce.request.product.UpdateProductRequest;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 /**
@@ -21,6 +22,12 @@ public interface ProductMapper {
 
     ProductDTO toDto(Product product);
     Product toEntity(ProductDTO productDto);
+
+    @Mapping(target = "category", ignore = true)
     Product toEntity(AddProductRequest addProductRequest);
+    // ignore the Category field in the UpdateProductRequest
+    // as it is not needed for updating the product
+
+    @Mapping(target = "category", ignore = true)
     Product toEntity(UpdateProductRequest updateProductRequest);
 }

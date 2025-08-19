@@ -9,7 +9,7 @@ import org.mapstruct.factory.Mappers;
 /**
  * Mapper interface for converting between Address entity and AddressDTO, AddAddressRequest, and UpdateAddressRequest.
  */
-@Mapper
+@Mapper(componentModel = "spring")
 public interface AddressMapper
 {
     AddressMapper INSTANCE = Mappers.getMapper(AddressMapper.class);
@@ -20,5 +20,5 @@ public interface AddressMapper
 
     Address toEntity(UpdateAddressRequest request);
 
-    Address updateEntityFromRequest(UpdateAddressRequest request, Address address);
+    Address updateEntityFromRequest(UpdateAddressRequest request);
 }
