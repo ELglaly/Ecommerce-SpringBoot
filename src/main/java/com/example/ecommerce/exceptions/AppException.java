@@ -16,8 +16,8 @@ public class AppException extends RuntimeException implements Serializable {
     private ErrorResponse errorResponse;
     private static final long serialVersionUID = 1L;
 
-    public AppException(String message, Throwable cause) {
-        super(message, cause);
+    public AppException(String message) {
+        super(message);
     }
 
     public AppException(ErrorResponse errorResponse) {
