@@ -1,10 +1,11 @@
 package com.example.ecommerce.repository;
 
 import com.example.ecommerce.entity.Role;
+import com.example.ecommerce.enums.UserRole;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface RoleRepository extends JpaRepository<Role, Long> {
-    Role findByName(String name);
+    Role findByUserRole(UserRole name);
 
-    void deleteByName(String roleName);
+    void deleteByUserRole(UserRole roleName);
 }

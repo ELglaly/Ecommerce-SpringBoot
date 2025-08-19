@@ -12,6 +12,11 @@ import java.util.Set;
  * DTO for {@link com.example.ecommerce.entity.user.User}
  */
 public record UserDTO(@Size(message = "First name must be between 2 and 50 characters", min = 2, max = 50) @Pattern(message = "First name must contain only letters", regexp = "^[a-zA-Z]+$") @NotBlank(message = "Last name is required") String firstName, @Size(message = "Last name must be between 2 and 50 characters", min = 2, max = 50) @Pattern(message = "Last name must contain only letters", regexp = "^[a-zA-Z]+$") @NotBlank(message = "Last name is required") String lastName, @Size(message = "Username must be between 3 and 50 characters", min = 3, max = 50) @Pattern(message = "Username can only contain letters, numbers, dots, underscores, and hyphens", regexp = "^[a-zA-Z0-9._-]+$") @NotBlank(message = "Username is required") String username, Collection<RoleDto> roles, UserContactDto userContact, UserSecurityDto userSecurity) implements Serializable {
+    public UserDTO() {
+        this("", "", "", List.of(), null, null);
+
+    }
+
     /**
      * DTO for {@link com.example.ecommerce.entity.Role}
      */
