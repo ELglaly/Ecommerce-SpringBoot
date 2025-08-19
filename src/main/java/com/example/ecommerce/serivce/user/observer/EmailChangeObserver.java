@@ -8,6 +8,6 @@ public class EmailChangeObserver implements UserObserver {
 
     @Override
     public void update(User user) {
-         System.out.println("Email changed: " + user.getEmail());
+         System.out.println("Email changed: " + user.getUserContact().getEmail());
     }
 }
