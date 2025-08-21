@@ -33,19 +33,14 @@ public class OrderFactory implements IOrderFactory {
 
         Set<OrderItem> orderItems = createOrderItems(cart);
         validateOrderItems(orderItems);
-        Order order = new Order.Builder()
-                .orderTotalPrice(cart.getTotalPrice())
-                .orderItems(orderItems)
-                .user(user)
-                .build();
+        // BigDecimal totalPrice = orderService.calculateTotalPrice(orderItems);
+        Order order = buildOrder(user, orderItems, BigDecimal.valueOf(20));
         validateOrder(order);
         return order;
 
     }
     private Set<OrderItem> createOrderItems(Cart cart) {
-        return cart.getItems().stream().map(
-                cartItem -> createOrderItem(cartItem.getProduct(), cartItem.getQuantity())
-        ).collect(Collectors.toSet());
+       return null;
     }
 
 
@@ -57,20 +52,13 @@ public class OrderFactory implements IOrderFactory {
         return order;
     }
     private Order buildOrder(User user, Set<OrderItem> orderItems,BigDecimal totalPrice) {
-        return new Order.Builder()
-                .orderTotalPrice(totalPrice)
-                .user(user)
-                .orderItems(orderItems)
-                .build();
+     return null;
     }
 
     public OrderItem createOrderItem(Product product, int quantity) {
         product.setQuantity(product.getQuantity() - quantity);
         productRepository.save(product);
-        return new OrderItem.Builder()
-                .product(product)
-                .quantity(quantity)
-                .build();
+        return new OrderItem();
     }
 
     private void validateOrderItems(Set<OrderItem> orderItems) {

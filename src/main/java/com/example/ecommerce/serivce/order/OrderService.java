@@ -13,7 +13,7 @@ import com.example.ecommerce.request.order.CreateOrderRequest;
 import com.example.ecommerce.security.jwt.JwtService;
 import com.example.ecommerce.serivce.cart.ICartService;
 import com.example.ecommerce.serivce.product.IProductService;
-import com.example.ecommerce.serivce.user.IUserService;
+import com.example.ecommerce.serivce.user.UserService;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -31,13 +31,13 @@ public class OrderService implements IOrderService {
     private final  ICartService cartService;
     private  final IOrderFactory orderFactory;
     private final IProductService productService;
-    private final IUserService userService;
+    private final UserService userService;
     private final OrderMapper orderMapper;
     private final JwtService jwtService;
 
     public OrderService(OrderRepository orderRepository, ICartService cartService,
                         IOrderFactory orderFactory, IProductService productService,
-                        IUserService userService, OrderMapper orderMapper, JwtService jwtService) {
+                        UserService userService, OrderMapper orderMapper, JwtService jwtService) {
         this.orderRepository = orderRepository;
         this.cartService = cartService;
         this.orderFactory = orderFactory;
@@ -52,7 +52,7 @@ public class OrderService implements IOrderService {
     @Override
     public OrderDTO placeOrderByCart(Long cartId) {
         Cart cart = cartService.getCartById(cartId);
-        if (cart == null || cart.getItems().isEmpty()) {
+        if (cart == null || cart.getCartItems().isEmpty()) {
             throw new IllegalArgumentException("Cart is empty");
         }
         User user = cart.getUser();
@@ -109,10 +109,5 @@ public class OrderService implements IOrderService {
                 .reduce(BigDecimal.ZERO, BigDecimal::add); // Sum all total prices
     }
 
-    private int calculateOrderQuantity(Set<OrderItem> orderItems) {
-        return orderItems.stream()
-                .map(OrderItem::getQuantity) // Extract total price from each OrderItem
-                .reduce(0,Integer::sum ); // Sum all total prices
-    }
 
 }

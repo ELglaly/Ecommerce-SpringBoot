@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
 
+import static com.example.ecommerce.constants.ErrorMessages.UserError.PASSWORD_EMPTY;
 import static com.example.ecommerce.constants.ErrorMessages.UserError.PASSWORD_PATTERN;
 
 @Getter
@@ -14,9 +15,9 @@ import static com.example.ecommerce.constants.ErrorMessages.UserError.PASSWORD_P
 @Embeddable
 public class UserSecurity {
 
-    @NotBlank(message = "Password is Required")
+    @NotBlank(message = PASSWORD_EMPTY)
     @Column(nullable = false)
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$",
+    @Pattern(regexp = "^(?=.[a-z])(?=.[A-Z])(?=.\\d)(?=.[@#$%^&+=!])(?!.*\\s).{8,20}$",
             message = PASSWORD_PATTERN)
     private String hashedPassword;
 

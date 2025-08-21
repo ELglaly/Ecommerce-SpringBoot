@@ -8,13 +8,15 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.*;
 
+import static com.example.ecommerce.constants.ErrorMessages.UserError.*;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Setter
 @Getter
 @Entity
 @Builder
-@Table(name = "users")
+@ToString
 public class User {
     @Getter
     @Id
@@ -22,27 +24,23 @@ public class User {
     private Long id;
 
 
-    @NotBlank(message = "Last name is required")
-    @Size(min = 2, max = 50, message = "First name must be between 2 and 50 characters")
-    @Column(nullable = false)
-    @Pattern(regexp = "^[a-zA-Z]+$", message = "First name must contain only letters")
+
+    @Size(min = 2, max = 50, message = FIRST_NAME_SIZE)
+    @Pattern(regexp = "^[a-zA-Z]+$", message = FIRST_NAME_PATTERN)
     private String firstName;
 
 
-    @NotBlank(message = "Last name is required")
-    @Size(min = 2, max = 50, message = "Last name must be between 2 and 50 characters")
-    @Column(nullable = false)
-    @Pattern(regexp = "^[a-zA-Z]+$", message = "Last name must contain only letters")
+    @Size(min = 2, max = 50, message = LAST_NAME_SIZE)
+    @Pattern(regexp = "^[a-zA-Z]+$", message = LAST_NAME_PATTERN)
     private String lastName;
 
-    @Past(message = "Birth date must be in the past")
+    @Past(message = BIRTH_DATE_PAST)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @Column(nullable = true)
     private Date birthDate;
 
-    @NotBlank(message = "Username is required")
-    @Size(min = 3, max = 50, message = "Username must be between 3 and 50 characters")
-    @Pattern(regexp = "^[a-zA-Z0-9._-]+$", message = "Username can only contain letters, numbers, dots, underscores, and hyphens")
+    @NotBlank(message = USERNAME_EMPTY)
+    @Size(min = 3, max = 50, message = USERNAME_SIZE)
+    @Pattern(regexp = "^[a-zA-Z0-9._-]+$", message = USERNAME_PATTERN)
     @Column(unique = true, nullable = false)
     private String username;
 
@@ -50,6 +48,7 @@ public class User {
     private Set<UserObserver> observers = new HashSet<>();
 
     @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.LAZY)
+    @ToString.Exclude
     private Set<Order> orders = new HashSet<>();
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -57,8 +56,6 @@ public class User {
 
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
-    @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private Collection<Role> roles = new HashSet<>();
 
     @Embedded

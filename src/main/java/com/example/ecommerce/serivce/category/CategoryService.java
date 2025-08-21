@@ -69,7 +69,7 @@ public class CategoryService implements ICategoryService {
 
     // Helper method to create and save a new category
     private CategoryDTO createCategory(AddCategoryRequest request) {
-        Category category =  categoryMapper.toEntityFromAddRequest(request);
+        Category category =  categoryMapper.toEntity(request);
         Category savedCategory = categoryRepository.save(category);
         return categoryMapper.toDto(savedCategory);
     }
@@ -89,7 +89,7 @@ public class CategoryService implements ICategoryService {
         }
         else
         {
-            Category savedCategory = categoryMapper.toEntityFromUpdateRequest(request);
+            Category savedCategory = categoryMapper.toEntity(request);
             savedCategory.setId(existingCategory.getId());
             categoryRepository.save(savedCategory);
             return categoryMapper.toDto(savedCategory);// Return the updated category DTO

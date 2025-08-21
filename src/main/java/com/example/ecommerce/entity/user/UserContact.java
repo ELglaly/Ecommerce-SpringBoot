@@ -14,21 +14,24 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static com.example.ecommerce.constants.ErrorMessages.UserError.EMAIL_EMPTY;
+import static com.example.ecommerce.constants.ErrorMessages.UserError.EMAIL_INVALID;
+
 
 @Setter
 @Getter
 @Embeddable
 public class UserContact {
 
-    @Email(message = "Email should be valid")
-    @NotBlank(message = "Email is Required")
+    @Email(message = EMAIL_INVALID)
+    @NotBlank(message = EMAIL_EMPTY)
     @Column(unique = true, nullable = false)
     private String email;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private Set<PhoneNumber> phoneNumber = new HashSet<>();
+    private Set<PhoneNumber> phoneNumber;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<Address> address =new ArrayList<>();
+    private List<Address> address;
 
 }

@@ -52,19 +52,15 @@ public class ImageService implements IImageService {
 
     private Image saveImage(MultipartFile file, Product product)  {
         // Logic to save image to the database
-        try {
             String urlImage= ApiConstants.URL_IMAGES;
             Image image= Image.builder()
-                    .image(new SerialBlob(file.getBytes()))
+                    .url(null) // URL will be set after saving
                     .product(product).name(file.getOriginalFilename())
                     .build();
             String url=urlImage+image.getProduct().getName()+image.getId();
             image.setUrl(url);
             image = imageRepository.save(image);
             return image;
-        } catch (SQLException | IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     @Override

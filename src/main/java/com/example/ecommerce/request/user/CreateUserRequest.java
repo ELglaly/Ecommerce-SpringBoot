@@ -2,29 +2,27 @@ package com.example.ecommerce.request.user;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
-import lombok.Builder;
-import lombok.Data;
 
 import java.util.List;
 import java.util.Set;
 
-import static com.example.ecommerce.constants.ErrorMessages.UserError.PASSWORD_PATTERN;
-import static io.lettuce.core.pubsub.PubSubOutput.Type.message;
+import static com.example.ecommerce.constants.ErrorMessages.UserError.*;
 
 public record CreateUserRequest (
 
-    @NotNull
-    @NotBlank(message= "Must Be valid username")
-     String username,
+        @NotBlank(message = USERNAME_EMPTY)
+        @Size(min = 3, max = 50, message = USERNAME_SIZE)
+        @Pattern(regexp = "^[a-zA-Z0-9._-]+$", message = USERNAME_PATTERN)
+        String username,
 
-    @NotNull(message = "Must be a valid password")
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+=!]).{6,}$",
-            message = PASSWORD_PATTERN)
-     String password,
-    @Email(message = "Must be a valid Email")
-    @NotNull(message = "Must be a valid Email")
+        @NotBlank(message = PASSWORD_EMPTY)
+        @Pattern(regexp = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,20}$",
+                message = PASSWORD_PATTERN)
+        String password,
+
+     @Email(message = EMAIL_INVALID)
+      @NotBlank(message = EMAIL_EMPTY)
      String email,
-
 
      Set<@Valid AddPhoneNumberRequest> phoneNumber,
      List<@Valid AddAddressRequest> address

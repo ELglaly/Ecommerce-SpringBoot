@@ -45,7 +45,7 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<ApiResponse> register(@RequestBody @Valid CreateUserRequest request) {
         UserDTO userDTO = authService.registerUser(request);
-        return ResponseEntity.ok(new ApiResponse(userDTO, "Registration successful"));
+        return ResponseEntity.status(201).body(new  ApiResponse(userDTO, "Registration successful"));
     }
 
     @GetMapping("/google")

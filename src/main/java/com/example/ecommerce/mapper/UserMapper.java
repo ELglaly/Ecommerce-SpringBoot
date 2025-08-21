@@ -5,6 +5,7 @@ import com.example.ecommerce.entity.user.User;
 import com.example.ecommerce.request.user.CreateUserRequest;
 import com.example.ecommerce.request.user.UpdateUserRequest;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 /**
  * Mapper interface for converting between User entity and UserDTO.
@@ -18,6 +19,8 @@ public interface UserMapper{
 
     UserDTO toDto(User user);
 
+    @Mapping(source = "email", target = "userContact.email")
+    @Mapping(source = "password", target = "userSecurity.hashedPassword")
     User toEntity(CreateUserRequest createUserRequest);
 
     User toEntity(UpdateUserRequest updateUserRequest);

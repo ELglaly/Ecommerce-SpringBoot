@@ -3,17 +3,15 @@ package com.example.ecommerce.serivce.cart;
 import com.example.ecommerce.exceptions.CartNotFoundException;
 import com.example.ecommerce.mapper.cart.CartMapper;
 import com.example.ecommerce.dto.cart.CartDTO;
-import com.example.ecommerce.dto.cart.CartItemDTO;
 import com.example.ecommerce.entity.Cart;
 import com.example.ecommerce.repository.CartItemRepository;
 import com.example.ecommerce.repository.CartRepository;
 import com.example.ecommerce.serivce.product.IProductService;
-import com.example.ecommerce.serivce.user.IUserService;
+import com.example.ecommerce.serivce.user.UserService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Optional;
 
 @Service
@@ -22,10 +20,10 @@ public class CartService implements ICartService {
     private final CartItemRepository cartItemRepository;
     private final CartMapper cartMapper;
     private final IProductService productService;
-    private final IUserService userService;
+    private final UserService userService;
     private final ICartItemService cartItemService;
     public CartService(CartRepository cartRepository, CartItemRepository cartItemRepository, CartMapper cartMapper,
-                       IProductService productService, IUserService userService,ICartItemService cartItemService) {
+                       IProductService productService, UserService userService,ICartItemService cartItemService) {
         this.cartRepository = cartRepository;
         this.cartItemRepository = cartItemRepository;
         this.productService=productService;
@@ -57,8 +55,7 @@ public class CartService implements ICartService {
     @Transactional
     public void clearCart(Long cartId) {
         Cart cart = getCartById(cartId);
-        cartItemRepository.deleteAllByCartId(cart.getId());
-        cart.setItems(new ArrayList<>());
+        cartItemRepository.deleteAllByCartId(cart.getCartId());
         cartRepository.save(cart);
     }
 
@@ -76,9 +73,7 @@ public class CartService implements ICartService {
     @Override
     public BigDecimal getTotalPrice(Long id) {
         CartDTO cart = getCartDtoById(id);
-        return cart.getItems().stream()
-                .map(CartItemDTO::getTotalPrice)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        return null;
     }
     @Override
     public CartDTO addProductToCart(Long cartId, Long productId, int quantity) {

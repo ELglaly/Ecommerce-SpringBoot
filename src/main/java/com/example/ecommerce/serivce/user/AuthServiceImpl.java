@@ -22,6 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -32,7 +33,7 @@ public class AuthServiceImpl implements AuthService{
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
     private final AuthenticationManager authenticationManager;
-    private final String rootPath = System.getProperty("user.dir");
+    private final String rootPath = Objects.requireNonNull(AuthServiceImpl.class.getResource("")).getPath();
 
     public AuthServiceImpl(UserRepository userRepository, JwtService jwtService, EmailService emailService, PasswordEncoder passwordEncoder, UserMapper userMapper, AuthenticationManager authenticationManager) {
         this.userRepository = userRepository;
@@ -152,10 +153,11 @@ public class AuthServiceImpl implements AuthService{
     public String login(LoginRequest loginRequest) {
 
       authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.usernameOrEmail(), loginRequest.password())
-        );
+                new UsernamePasswordAuthenticationToken(loginRequest.usernameOrEmail(), loginRequest.password()));
+
         User user = Optional.ofNullable(userRepository.findByUsernameOrUserContactEmail(loginRequest.usernameOrEmail(), loginRequest.usernameOrEmail(),User.class ))
                     .orElseThrow(() -> new UserNotFoundException(rootPath,"User with username or email " + loginRequest.usernameOrEmail() + " not found"));
+
         return JwtService.generateToken(user);
     }
 
@@ -178,7 +180,7 @@ public class AuthServiceImpl implements AuthService{
     @Override
     public UserDTO registerUser(CreateUserRequest request) {
         validateUserDoesNotExist(request.email(), request.username());
-        User user =new User(); //= userMapper.toEntity(request);
+        User user = userMapper.toEntity(request);
         // Hash password
         user.getUserSecurity().setHashedPassword(passwordEncoder.encode(request.password()));
         user = userRepository.save(user);
@@ -186,12 +188,7 @@ public class AuthServiceImpl implements AuthService{
         return userMapper.toDto(user);
     }
 
-    private void validateUserDoesNotExist(
-            @Email(message = "Must be a valid Email")
-            @NotNull(message = "Must be a valid Email")
-            String email,
-            @NotNull @NotBlank(message= "Must Be valid username")
-            String username) {
+    private void validateUserDoesNotExist(String email, String username) {
         if (userRepository.existsByUserContactEmail(email)) {
             throw new UserAlreadyExistsException(rootPath, "User with email " + email + " already exists");
         }

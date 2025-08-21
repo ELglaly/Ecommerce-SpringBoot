@@ -44,7 +44,7 @@ public class ProductService implements IProductService {
 
     // Helper method to create a new Product entity from the productDto and category
     private ProductDTO createProduct(AddProductRequest request, Category category) {
-        Product product = productMapper.toEntityFromAddRequest(request);
+        Product product = productMapper.toEntity(request);
         product.setCategory(category);
         product = productRepository.save(product);
        ProductDTO productDto= productMapper.toDto(product);
@@ -79,7 +79,7 @@ public class ProductService implements IProductService {
 
     // Helper method to update product fields from the productDto
     private ProductDTO updateExistingProduct(Product existingProduct, UpdateProductRequest request) {
-         Product updatedProduct=productMapper.toEntityFromUpdateRequest(request);
+         Product updatedProduct=productMapper.toEntity(request);
          updatedProduct.setId(existingProduct.getId());
          updatedProduct.setImages(existingProduct.getImages());
 
