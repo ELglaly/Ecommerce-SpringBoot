@@ -1,19 +1,16 @@
 
 
-package com.example.Ecommerce.serivce.cart;
-import com.example.Ecommerce.DummyObjects;
-import com.example.Ecommerce.exceptions.CartNotFoundException;
-import com.example.Ecommerce.exceptions.product.ProductNotFoundException;
-import com.example.Ecommerce.mapper.cart.ICartMapper;
-import com.example.Ecommerce.model.dto.cart.CartDto;
-import com.example.Ecommerce.model.entity.Cart;
-import com.example.Ecommerce.model.entity.CartItem;
-import com.example.Ecommerce.model.entity.Product;
-import com.example.Ecommerce.model.entity.User;
-import com.example.Ecommerce.repository.CartItemRepository;
-import com.example.Ecommerce.repository.CartRepository;
-import com.example.Ecommerce.serivce.product.IProductService;
-import com.example.Ecommerce.serivce.user.IUserService;
+package com.example.ecommerce.serivce.cart;
+import com.example.ecommerce.exceptions.CartNotFoundException;
+import com.example.ecommerce.mapper.cart.CartMapper;
+import com.example.ecommerce.dto.cart.CartDTO;
+import com.example.ecommerce.entity.Cart;
+import com.example.ecommerce.entity.Product;
+import com.example.ecommerce.entity.user.User;
+import com.example.ecommerce.repository.CartItemRepository;
+import com.example.ecommerce.repository.CartRepository;
+import com.example.ecommerce.serivce.product.IProductService;
+import com.example.ecommerce.serivce.user.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,14 +33,14 @@ class ICartSearchServiceTest {
         private IProductService productService;
 
         @Mock
-        private IUserService userService;
+        private UserService userService;
         @Mock
         private ICartItemService cartItemService;
         @Mock
         private CartItemRepository cartItemRepository;
 
         @Mock
-        private ICartMapper cartMapper;
+        private CartMapper cartMapper;
 
         @InjectMocks
         private CartService cartService;
@@ -51,15 +48,11 @@ class ICartSearchServiceTest {
         private Cart cart;
         private User user;
         private Product product;
-        private CartDto cartDto;
+        private CartDTO cartDto;
 
         @BeforeEach
         void setUp() {
-            DummyObjects dummyObjects=new DummyObjects();
-            user = DummyObjects.user1; // Initialize user
-            cart = DummyObjects.cart1; // Initialize cart
-            product = DummyObjects.product1; // Initialize product
-            cartDto = DummyObjects.cartDto; // Initialize cart DTO
+
         }
 
         @Test
@@ -69,7 +62,7 @@ class ICartSearchServiceTest {
             when(cartMapper.toDto(cart)).thenReturn(cartDto);
 
             // Act
-            CartDto result = cartService.getCartDtoById(1L);
+            CartDTO result = cartService.getCartDtoById(1L);
 
             // Assert
             assertNotNull(result);
@@ -97,7 +90,7 @@ class ICartSearchServiceTest {
         when(cartMapper.toDto(cart)).thenReturn(cartDto);
 
         // Act & Assert
-        CartDto result = cartService.getCartDtoByUserId(1L);
+        CartDTO result = cartService.getCartDtoByUserId(1L);
         assertNotNull(result);
         assertEquals(cartDto, result);
         verify(cartRepository, times(1)).findByUserId(1L);

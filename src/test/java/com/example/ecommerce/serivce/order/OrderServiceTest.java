@@ -1,22 +1,21 @@
-package com.example.Ecommerce.serivce.order;
+package com.example.ecommerce.serivce.order;
 
-import com.example.Ecommerce.DummyObjects;
-import com.example.Ecommerce.enums.OrderStatus;
-import com.example.Ecommerce.exceptions.OrderNotFoundException;
-import com.example.Ecommerce.mapper.order.IOrderMapper;
-import com.example.Ecommerce.model.dto.order.OrderDto;
-import com.example.Ecommerce.model.entity.Cart;
-import com.example.Ecommerce.model.entity.Order;
-import com.example.Ecommerce.model.entity.OrderItem;
-import com.example.Ecommerce.model.entity.Product;
-import com.example.Ecommerce.model.entity.User;
-import com.example.Ecommerce.repository.OrderRepository;
-import com.example.Ecommerce.request.order.AddOrderItemRequest;
-import com.example.Ecommerce.request.order.CreateOrderRequest;
-import com.example.Ecommerce.security.jwt.JwtService;
-import com.example.Ecommerce.serivce.cart.ICartService;
-import com.example.Ecommerce.serivce.product.IProductService;
-import com.example.Ecommerce.serivce.user.IUserService;
+import com.example.ecommerce.enums.OrderStatus;
+import com.example.ecommerce.exceptions.OrderNotFoundException;
+import com.example.ecommerce.mapper.order.OrderMapper;
+import com.example.ecommerce.dto.order.OrderDTO;
+import com.example.ecommerce.entity.Cart;
+import com.example.ecommerce.entity.Order;
+import com.example.ecommerce.entity.OrderItem;
+import com.example.ecommerce.entity.Product;
+import com.example.ecommerce.entity.user.User;
+import com.example.ecommerce.repository.OrderRepository;
+import com.example.ecommerce.request.order.AddOrderItemRequest;
+import com.example.ecommerce.request.order.CreateOrderRequest;
+import com.example.ecommerce.security.jwt.JwtService;
+import com.example.ecommerce.serivce.cart.ICartService;
+import com.example.ecommerce.serivce.product.IProductService;
+import com.example.ecommerce.serivce.user.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -48,10 +47,10 @@ class OrderServiceTest {
     private IProductService productService;
 
     @Mock
-    private IUserService userService;
+    private UserService userService;
 
     @Mock
-    private IOrderMapper orderMapper;
+    private OrderMapper orderMapper;
 
     @Mock
     private JwtService jwtService;
@@ -62,7 +61,7 @@ class OrderServiceTest {
     private Cart cart;
     private User user;
     private Order order;
-    private OrderDto orderDto;
+    private OrderDTO orderDto;
     private Product product;
     private OrderItem orderItem;
     private CreateOrderRequest createOrderRequest;
@@ -70,15 +69,7 @@ class OrderServiceTest {
 
     @BeforeEach
     void setUp() {
-        DummyObjects dummyObjects=new DummyObjects();
-        user = DummyObjects.user1;
-        cart = DummyObjects.cart1;
-        order = DummyObjects.order1;
-        orderDto =DummyObjects.orderDto;
-        product = DummyObjects.product1;
-        orderItem =DummyObjects.orderItem1;
-        createOrderRequest=DummyObjects.createOrderRequest;
-        addOrderItemRequest=DummyObjects.addOrderItemRequest;
+
     }
 
     @Test
@@ -91,7 +82,7 @@ class OrderServiceTest {
         when(orderMapper.toDto(order)).thenReturn(orderDto);
 
         // Act
-        OrderDto result = orderService.placeOrderByCart(1L);
+        OrderDTO result = orderService.placeOrderByCart(1L);
 
         // Assert
         assertNotNull(result);
@@ -120,12 +111,12 @@ class OrderServiceTest {
         user.setId(1L);
         when(userService.getUserById(1L)).thenReturn(user);
         when(productService.getProductById(1L)).thenReturn(product);
-        when(orderFactory.createOrderItem(product, 2)).thenReturn(DummyObjects.orderItem1);
+        when(orderFactory.createOrderItem(product, 2)).thenReturn(orderItem);
         when(orderFactory.createOrder(anySet(), eq(user))).thenReturn(order);
         when(orderMapper.toDto(order)).thenReturn(orderDto);
 
         // Act
-        OrderDto result = orderService.placeProductOrder(createOrderRequest);
+        OrderDTO result = orderService.placeProductOrder(createOrderRequest);
 
         // Assert
         assertNotNull(result);
@@ -161,7 +152,7 @@ class OrderServiceTest {
         when(orderMapper.toDto(order)).thenReturn(orderDto);
 
         // Act
-        OrderDto result = orderService.getOrderById(1L);
+        OrderDTO result = orderService.getOrderById(1L);
 
         // Assert
         assertNotNull(result);
@@ -191,7 +182,7 @@ class OrderServiceTest {
 
 
         // Act
-        List<OrderDto> result = orderService.getAllOrders("token");
+        List<OrderDTO> result = orderService.getAllOrders("token");
 
         // Assert
         assertNotNull(result);
@@ -209,7 +200,7 @@ class OrderServiceTest {
         when(jwtService.extractUserId("token")).thenReturn(1L);
 
         // Act
-        List<OrderDto> result = orderService.getOrdersByUserIdAndStatus("token", OrderStatus.PENDING);
+        List<OrderDTO> result = orderService.getOrdersByUserIdAndStatus("token", OrderStatus.PENDING);
 
         // Assert
         assertNotNull(result);

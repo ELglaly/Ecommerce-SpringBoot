@@ -1,9 +1,7 @@
-package com.example.Ecommerce.serivce.product;
+package com.example.ecommerce.serivce.product;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class IProductSearchServiceTest {
 
