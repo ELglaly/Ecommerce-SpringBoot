@@ -1,33 +1,12 @@
-package com.example.Ecommerce.controller;
+package com.example.ecommerce.controller;
 
-import com.example.Ecommerce.constants.ApiConstants;
-import com.example.Ecommerce.exceptions.category.CategoryAlreadyExistsException;
-import com.example.Ecommerce.model.dto.CategoryDto;
-import com.example.Ecommerce.request.category.AddCategoryRequest;
-import com.example.Ecommerce.request.category.UpdateCategoryRequest;
-import com.example.Ecommerce.security.TestSecurityConfig;
-import com.example.Ecommerce.security.jwt.JwtService;
-import com.example.Ecommerce.serivce.category.ICategoryService;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.example.ecommerce.dto.CategoryDTO;
+import com.example.ecommerce.request.category.AddCategoryRequest;
+import com.example.ecommerce.request.category.UpdateCategoryRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.web.SpringBootMockServletContext;
-import org.springframework.context.annotation.Import;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
-
-import java.util.List;
-
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
 public class CategoryControllerTest {
@@ -35,7 +14,7 @@ public class CategoryControllerTest {
 
     private AddCategoryRequest request;
     private UpdateCategoryRequest updatedRequest;
-    private CategoryDto categoryDto;
+    private CategoryDTO categoryDto;
 
     @BeforeEach
     void beforeEach() {
@@ -49,11 +28,7 @@ public class CategoryControllerTest {
                 .description("Contains Electronics")
                 .build();
 
-        categoryDto = CategoryDto.builder()
-                .name(request.getName())
-                .id(1L)
-                .description(request.getDescription())
-                .build();
+
     }
 
     // 1. Add Category
