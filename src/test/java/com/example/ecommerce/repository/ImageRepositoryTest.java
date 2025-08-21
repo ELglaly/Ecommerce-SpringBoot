@@ -1,7 +1,7 @@
-package com.example.Ecommerce.repository;
+package com.example.ecommerce.repository;
 
-import com.example.Ecommerce.model.entity.Image;
-import com.example.Ecommerce.model.entity.Product;
+import com.example.ecommerce.entity.Image;
+import com.example.ecommerce.entity.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

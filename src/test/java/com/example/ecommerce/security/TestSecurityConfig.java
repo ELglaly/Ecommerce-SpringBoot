@@ -1,4 +1,4 @@
-package com.example.Ecommerce.security;
+package com.example.ecommerce.security;
 
 
 import org.springframework.boot.test.context.TestConfiguration;
