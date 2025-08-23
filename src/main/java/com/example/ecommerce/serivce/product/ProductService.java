@@ -38,8 +38,7 @@ public class ProductService implements IProductService {
     }
 
     private Category categoryExist(AddProductRequest request) {
-        return Optional.ofNullable(categoryRepository.findByName(request.getCategory()))
-                .orElseThrow(()-> new CategoryNotFoundException("Category Not Found"));
+        return null;
     }
 
     // Helper method to create a new Product entity from the productDto and category
@@ -84,10 +83,12 @@ public class ProductService implements IProductService {
          updatedProduct.setImages(existingProduct.getImages());
 
         // Find and update category if present
-        Category category= Optional.ofNullable(categoryRepository.findByName(request.getCategory()))
-                .orElseThrow(()->new CategoryNotFoundException("Category Not Found"));
-
-        updatedProduct.setCategory(category);
+        //TODO : Add category update logic
+//        Category category;
+//        Optional.ofNullable(categoryRepository.findByName(request.getCategory()))
+//                .orElseThrow(()->new CategoryNotFoundException("Category Not Found"));
+//
+//        updatedProduct.setCategory(category);
         productRepository.save(updatedProduct);
         return productMapper.toDto(updatedProduct);
     }
