@@ -1,7 +1,13 @@
 package com.example.ecommerce.response;
 
 
+import lombok.Builder;
 
-public record ErrorResponse(String message, int statusCode, String timestamp, String path) {
+@Builder
+public record ErrorResponse(
+        String message,
+        int statusCode,
+        String timestamp,
+        String path) {
 }
 

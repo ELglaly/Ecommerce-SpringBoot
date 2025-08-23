@@ -4,7 +4,6 @@ package com.example.ecommerce.response;
 import lombok.Data;
 
 @Data
-
 public class ApiResponse {
     private Object data;
     private String message;
