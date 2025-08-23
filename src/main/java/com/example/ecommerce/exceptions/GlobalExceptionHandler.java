@@ -19,12 +19,21 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(AppException.class)
     public ResponseEntity<ErrorResponse> handleGlobalException(AppException ex) {
-                return ResponseEntity.status(ex.getErrorResponse().statusCode())
+        if(ex.getErrorResponse()==null)
+        {
+             ErrorResponse errorResponse = ErrorResponse.builder()
+                .message(ex.getMessage())
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .timestamp(String.valueOf(LocalDateTime.now()))
+                .build();
+            return ResponseEntity.badRequest().body(errorResponse);
+        }
+        return ResponseEntity.status(ex.getErrorResponse().statusCode())
                 .body(ex.getErrorResponse());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<?> handleValidationExceptions(MethodArgumentNotValidException ex) {
+    public ResponseEntity<ErrorResponse> handleValidationExceptions(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
         ex.getBindingResult().getAllErrors().forEach((error) -> {
             String fieldName = ((FieldError) error).getField();
@@ -34,8 +43,21 @@ public class GlobalExceptionHandler {
 
         String message = errors.values().iterator().next();
 
-        ApiResponse apiResponse = new ApiResponse(null, message);
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .message(message)
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .timestamp(String.valueOf(LocalDateTime.now()))
+                .build();
+        return ResponseEntity.badRequest().body(errorResponse);
+    }
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorResponse> handleIllegalArgumentExceptions(IllegalArgumentException ex) {
 
-        return new ResponseEntity<>(apiResponse, HttpStatus.BAD_REQUEST);
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .message(ex.getMessage())
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .timestamp(String.valueOf(LocalDateTime.now()))
+                .build();
+        return ResponseEntity.badRequest().body(errorResponse);
     }
 }
