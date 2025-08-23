@@ -1,36 +1,29 @@
 package com.example.ecommerce.request.category;
 
 import com.example.ecommerce.request.image.AddImageRequest;
+import com.example.ecommerce.util.CategoryUtils;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.List;
 
-@AllArgsConstructor
-@Data
-@NoArgsConstructor
+
 @Builder
-public class AddCategoryRequest {
+public record AddCategoryRequest(
 
-    @NotNull(message = "Name cannot be null")
-    @NotBlank(message = "Name cannot be empty")
-    @Size(min = 3, max = 100, message = "Name must be between 3 and 100 characters")
-    @Pattern(regexp = "^[^\\d]*$", message = "Name must not contain digits")
-    private String name;
+        @NotBlank(message = CategoryUtils.INVALID_CATEGORY_NAME)
+        @Size(min = 3, max = 100, message = CategoryUtils.CATEGORY_NAME_SIZE)
+        @Pattern(regexp = CategoryUtils.CATEGORY_NAME_PATTERN, message = CategoryUtils.CATEGORY_NAME_PATTERN_MESSAGE)
+        String name,
 
-    @NotNull(message = "Description cannot be null")
-    @NotBlank(message = "Description cannot be Empty")
-    @Size(min = 5, max = 500, message = "Description must be between 5 and 500 characters")
-    private String description;
+        @NotBlank(message = CategoryUtils.INVALID_CATEGORY_DESCRIPTION)
+        @Size(min = 5, max = 500, message = CategoryUtils.CATEGORY_DESCRIPTION_SIZE)
+        String description,
 
-
-    private List<AddImageRequest> images=new ArrayList<>();
+        List<AddImageRequest> images
+) {
 
 }
