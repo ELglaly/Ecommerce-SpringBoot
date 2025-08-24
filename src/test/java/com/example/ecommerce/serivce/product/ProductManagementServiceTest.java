@@ -68,7 +68,7 @@ ProductManagementServiceTest {
     void addProduct_ReturnsProduct_WhenAddProductRequestIsValid() {
         //Arrange
         when(productRepository.existsByName(product.getName())).thenReturn(false);
-        when(categoryRepository.findByName(category.getName())).thenReturn(category);
+        when(categoryRepository.findByName(category.getName(),Category.class)).thenReturn(category);
         when(productMapper.toEntity(addProductRequest)).thenReturn(product);
         when(productMapper.toDto(product)).thenReturn(productDto);
         when(productRepository.save(any(Product.class))).thenReturn(product);
@@ -79,7 +79,7 @@ ProductManagementServiceTest {
         assertEquals(productDto, result);
         checkEqualityTwoProduct(productDto,result);
         verify(productRepository, times(1)).existsByName(addProductRequest.getName());
-        verify(categoryRepository, times(1)).findByName(addProductRequest.getCategory());
+        verify(categoryRepository, times(1)).findByName(addProductRequest.getCategory(),Category.class);
         verify(productMapper, times(1)).toEntity(addProductRequest);
         verify(productMapper, times(1)).toDto(product);
         verify(productRepository, times(1)).save(product);
@@ -103,14 +103,14 @@ ProductManagementServiceTest {
     void addProduct_ReturnsNotFoundExistException_WhenCategoryDoesNotExist() {
         //Arrange
         when(productRepository.existsByName(addProductRequest.getName())).thenReturn(false);
-        when(categoryRepository.findByName(addProductRequest.getCategory())).thenReturn(null);
+        when(categoryRepository.findByName(addProductRequest.getCategory(),Category.class)).thenReturn(null);
 
         //Act&Assert
         assertThrows(CategoryNotFoundException.class,()->{
              productService.addProduct(addProductRequest);
         });
         verify(productRepository, times(1)).existsByName(addProductRequest.getName());
-        verify(categoryRepository, times(1)).findByName(addProductRequest.getCategory());
+        verify(categoryRepository, times(1)).findByName(addProductRequest.getCategory(),Category.class);
 
     }
 
@@ -165,7 +165,7 @@ ProductManagementServiceTest {
 
         //Arrange
         when(productRepository.findById(product.getId())).thenReturn(Optional.ofNullable(product));
-        when(categoryRepository.findByName(product.getCategory().getName())).thenReturn(category);
+        when(categoryRepository.findByName(product.getCategory().getName(),Category.class)).thenReturn(category);
         when(productMapper.toEntity(updateProductRequest)).thenReturn(product);
         when(productMapper.toDto(product)).thenReturn(updatedProduct);
         //Act
@@ -174,8 +174,8 @@ ProductManagementServiceTest {
         assertNotNull(result);
         assertEquals(updateProductRequest.getName(), result.name());
         verify(productRepository,times(1)).findById(product.getId());
-        verify(categoryRepository,times(1)).findByName(product.getCategory().getName());
-        verify(categoryRepository,times(1)).findByName(product.getCategory().getName());
+        verify(categoryRepository,times(1)).findByName(product.getCategory().getName(),Category.class);
+        verify(categoryRepository,times(1)).findByName(product.getCategory().getName(),Category.class);
     }
     @Test
     void updateProduct_ReturnsProductNotFoundException_WhenIdNotFound()
@@ -197,13 +197,13 @@ ProductManagementServiceTest {
         product.setId(1L);
         when(productRepository.findById(1L)).thenReturn(Optional.ofNullable(product));
         when(productMapper.toEntity(updateProductRequest)).thenReturn(product);
-        when(categoryRepository.findByName(product.getCategory().getName())).thenReturn(null);
+        when(categoryRepository.findByName(product.getCategory().getName(),Category.class)).thenReturn(null);
         //Act&Assert
         assertThrows(CategoryNotFoundException.class,()->{
             productService.updateProduct(updateProductRequest,product.getId());
         });
         verify(productRepository,times(1)).findById(product.getId());
-        verify(categoryRepository,times(1)).findByName(product.getCategory().getName());
+        verify(categoryRepository,times(1)).findByName(product.getCategory().getName(),Category.class);
     }
 
     void checkEqualityTwoProduct(ProductDTO product, ProductDTO result) {

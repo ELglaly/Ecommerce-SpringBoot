@@ -4,6 +4,7 @@ import com.example.ecommerce.dto.UserDTO;
 import com.example.ecommerce.entity.user.User;
 import com.example.ecommerce.entity.user.UserContact;
 import com.example.ecommerce.entity.user.UserSecurity;
+import com.example.ecommerce.enums.PhoneNumberType;
 import com.example.ecommerce.exceptions.user.AccountIsNotActivatedException;
 import com.example.ecommerce.exceptions.user.UserAlreadyExistsException;
 import com.example.ecommerce.exceptions.user.UserNotFoundException;
@@ -58,6 +59,8 @@ class AuthServiceTest {
     private User user;
     private UserDTO userDTO;
     private CreateUserRequest createUserRequest;
+    private AddPhoneNumberRequest addPhoneNumberRequest;
+    private AddAddressRequest addAddressRequest;
     private UserContact userContact;
     private UserSecurity userSecurity;
     LoginRequest loginRequest;
@@ -81,13 +84,21 @@ class AuthServiceTest {
 
         userDTO = new UserDTO("Test", "User", "testuser", Collections.emptyList(), null, null);
 
+        addAddressRequest = new AddAddressRequest(
+                "123 Test St", "City", "Country", "55555", "Egypt"
+        );
+        addPhoneNumberRequest = AddPhoneNumberRequest.builder()
+                .countryCode("+20")
+                .phoneNumberType(PhoneNumberType.MOBILE)
+                .number("0102638652")
+                .build();
         createUserRequest = new CreateUserRequest(
-                "Test",
-                "User",
-                "testuser",Set.of(new AddPhoneNumberRequest("1234567890", "true")), List.of(
-                        new AddAddressRequest("0987654321", "Home", "123 Main St", "City", "State")
-                )
-                );
+                "ValidUser",
+                "Password123@#123",
+                "sherif@gmail.com",
+                Set.of(addPhoneNumberRequest),
+                List.of(addAddressRequest)
+        );
         loginRequest = new LoginRequest("testuser","Password123!");
     }
 

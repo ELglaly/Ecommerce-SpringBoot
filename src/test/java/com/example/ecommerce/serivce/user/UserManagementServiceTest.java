@@ -2,6 +2,7 @@ package com.example.ecommerce.serivce.user;
 
 import com.example.ecommerce.entity.user.UserContact;
 import com.example.ecommerce.entity.user.UserSecurity;
+import com.example.ecommerce.enums.PhoneNumberType;
 import com.example.ecommerce.exceptions.user.AccountIsNotActivatedException;
 import com.example.ecommerce.exceptions.user.UserAlreadyExistsException;
 import com.example.ecommerce.exceptions.user.UserNotFoundException;
@@ -55,6 +56,8 @@ class UserManagementServiceTest {
     private UserDTO userDTO;
     private CreateUserRequest createUserRequest;
     private UpdateUserRequest updateUserRequest;
+    private AddPhoneNumberRequest addPhoneNumberRequest;
+    private AddAddressRequest addAddressRequest;
     private UserContact userContact;
     private UserSecurity userSecurity;
 
@@ -77,14 +80,20 @@ class UserManagementServiceTest {
 
         userDTO = new UserDTO("Test", "User", "testuser", Collections.emptyList(), null, null);
 
-        createUserRequest = new CreateUserRequest(
-                "Test",
-                "User",
-                "testuser",Set.of(new AddPhoneNumberRequest("1234567890", "true")), List.of(
-                new AddAddressRequest("0987654321", "Home", "123 Main St", "City", "State")
-        )
+        addAddressRequest = new AddAddressRequest(
+                "123 Test St", "City", "Country", "55555", "Egypt"
         );
-
+        addPhoneNumberRequest = AddPhoneNumberRequest.builder()
+                .countryCode("+20")
+                .phoneNumberType(PhoneNumberType.MOBILE)
+                .number("0102638652")
+                .build();
+        createUserRequest = new CreateUserRequest(
+                "ValidUser",
+                "Password123@#123",
+                "sherif@gmail.com",
+                Set.of(addPhoneNumberRequest),
+                List.of(addAddressRequest));
         updateUserRequest = UpdateUserRequest.builder()
                 .firstName("Updated")
                 .lastName("User")
