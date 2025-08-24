@@ -7,6 +7,7 @@ import com.example.ecommerce.exceptions.category.CategoryAlreadyExistsException;
 import com.example.ecommerce.repository.CategoryRepository;
 import com.example.ecommerce.request.category.AddCategoryRequest;
 import com.example.ecommerce.request.category.UpdateCategoryRequest;
+import com.example.ecommerce.util.CategoryUtils;
 import groovy.util.logging.Slf4j;
 import io.micrometer.core.instrument.config.validate.Validated;
 import lombok.RequiredArgsConstructor;
@@ -48,10 +49,9 @@ public class CategoryValidatorImpl implements CategoryValidator {
         log.debug("validating add category request");
         validateCategoryName(request.name());
         if (categoryRepository.existsByName(request.name())) {
-            throw new CategoryAlreadyExistsException("Category Name Already Exists");
+            throw new CategoryAlreadyExistsException();
         }
         validateCategoryDescription(request.description());
-
     }
 
     @Override

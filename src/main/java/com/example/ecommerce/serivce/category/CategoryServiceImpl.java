@@ -13,6 +13,10 @@ import com.example.ecommerce.validator.Category.CategoryValidator;
 import groovy.util.logging.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,7 +50,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryDTO getCategoryById(Long id) {
         return Optional.ofNullable(categoryRepository.findById(id, CategoryDTO.class))
-                .orElseThrow(() -> new CategoryNotFoundException(CategoryUtils.CATEGORY_NOT_FOUND+ id));
+                .orElseThrow(() -> new CategoryNotFoundException("/CategoryService/getCategoryById",CategoryUtils.CATEGORY_NOT_FOUND+ id));
     }
 
     /**
@@ -74,7 +78,8 @@ public class CategoryServiceImpl implements CategoryService {
     public Page<CategoryDTO> searchByName(String categoryName) {
         // return a category by name and map it to DTO
         Pageable pageable = Pageable.ofSize(10);
-        return categoryRepository.findByNameContainingOrderByNameAsc(categoryName, pageable, CategoryDTO.class);
+        Page<Category>  categories = categoryRepository.findByNameContainingOrderByNameAsc(categoryName, pageable, Category.class);
+        return  categories.map(categoryMapper::toDto);
     }
 
     /**
@@ -104,11 +109,30 @@ public class CategoryServiceImpl implements CategoryService {
     private CategoryDTO createCategory(AddCategoryRequest request) {
         log.debug("Mapped Category entity: {}", request);
         Category category =  categoryMapper.toEntity(request);
+        category.setCreatedAt(java.time.LocalDateTime.now());
+        category.setCreatedBy(getCurrentUsername());
         log.debug("Saving Category entity: {}",category);
         Category savedCategory = categoryRepository.save(category);
         log.info("Category created with ID: {}", savedCategory.getId());
         log.debug("Mapped Category DTO: {}", savedCategory);
         return categoryMapper.toDto(savedCategory);
+    }
+    private String getCurrentUsername() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication != null && authentication.isAuthenticated()
+                && !(authentication instanceof AnonymousAuthenticationToken)) {
+
+            Object principal = authentication.getPrincipal();
+
+            if (principal instanceof UserDetails userDetails) {
+                return userDetails.getUsername();
+            } else {
+                return principal.toString();
+            }
+        }
+
+        return "system";
     }
 
     /**
@@ -133,7 +157,7 @@ public class CategoryServiceImpl implements CategoryService {
                 .orElseThrow(() ->
                         {
                             log.error("Category with ID: {} not found for update", id);
-                            return new CategoryNotFoundException(CategoryUtils.CATEGORY_NOT_FOUND + id);
+                            return new CategoryNotFoundException("/CategoryService/updateCategory",CategoryUtils.CATEGORY_NOT_FOUND + id);
                         }
                 );
     }
@@ -148,12 +172,21 @@ public class CategoryServiceImpl implements CategoryService {
     private CategoryDTO updateExistingCategory(Category existingCategory, UpdateCategoryRequest request) {
 
             categoryValidator.validateUpdateCategoryRequest(request);
+            if(categoryRepository.existsByNameAndIdNot(request.name(), existingCategory.getId())) {
+                log.error("Category with name: {} already exists", request.name());
+                throw new CategoryAlreadyExistsException();
+            }
 
             log.debug("Mapped Category entity for update: {}", request);
             Category savedCategory = categoryMapper.toEntity(request);
 
             log.debug("Updating Category entity: {}", savedCategory);
             savedCategory.setId(existingCategory.getId());
+
+            savedCategory.setCreatedAt(existingCategory.getCreatedAt());
+            savedCategory.setCreatedBy(existingCategory.getCreatedBy());
+            savedCategory.setUpdatedAt(java.time.LocalDateTime.now());
+            savedCategory.setUpdatedBy(getCurrentUsername());
 
             log.debug("Saving updated Category entity: {}", savedCategory);
             categoryRepository.save(savedCategory);
@@ -177,7 +210,7 @@ public class CategoryServiceImpl implements CategoryService {
             categoryRepository.deleteById(id);
         } else {
             log.error("Category with ID: {} not found for deletion", id);
-            throw new CategoryNotFoundException(CategoryUtils.CATEGORY_NOT_FOUND + id);
+            throw new CategoryNotFoundException("Category/deleteCategory",CategoryUtils.CATEGORY_NOT_FOUND + id);
         }
     }
 
