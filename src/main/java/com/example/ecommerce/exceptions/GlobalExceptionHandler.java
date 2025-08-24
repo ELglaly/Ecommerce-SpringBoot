@@ -23,10 +23,9 @@ public class GlobalExceptionHandler {
         {
              ErrorResponse errorResponse = ErrorResponse.builder()
                 .message(ex.getMessage())
-                .statusCode(HttpStatus.BAD_REQUEST.value())
                 .timestamp(String.valueOf(LocalDateTime.now()))
                 .build();
-            return ResponseEntity.badRequest().body(errorResponse);
+            return ResponseEntity.status(errorResponse.statusCode()).body(errorResponse);
         }
         return ResponseEntity.status(ex.getErrorResponse().statusCode())
                 .body(ex.getErrorResponse());

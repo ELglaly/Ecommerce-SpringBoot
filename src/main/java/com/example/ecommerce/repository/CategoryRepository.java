@@ -1,6 +1,9 @@
 package com.example.ecommerce.repository;
 
 import com.example.ecommerce.entity.Category;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -58,4 +61,5 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
      */
     <T> T findByName(String name,Class<T> type);
 
+    boolean existsByNameAndIdNot(String name, Long id);
 }
