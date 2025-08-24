@@ -45,7 +45,7 @@ public class Category {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @Column(name = "created_by", length = 100)
+    @Column(name = "created_by", length = 100,nullable = false, updatable = false)
     private String createdBy;
 
     @Column(name = "updated_by", length = 100)

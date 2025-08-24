@@ -43,16 +43,14 @@ public class Image {
     @Column(length = 512)
     private String url;
 
-
-    // Better approach: Store file path instead
-    @NotBlank(message = "Storage Type is Required")
+    @NotBlank(message = "File Path is mandatory")
     @Column(name = "file_path", length = 512)
     private String filePath;
 
     @Column(nullable = false)
     @NotNull(message = "Storage Type is Required")
     @Enumerated(EnumType.STRING)
-    private StorageType storageType; // DATABASE, FILESYSTEM, CLOUD
+    private StorageType storageType;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
