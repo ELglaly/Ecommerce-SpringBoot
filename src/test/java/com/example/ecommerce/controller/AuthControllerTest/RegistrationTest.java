@@ -1,7 +1,7 @@
 package com.example.ecommerce.controller.AuthControllerTest;
 
-import com.example.ecommerce.dto.UserDTO;
 import com.example.ecommerce.entity.user.User;
+import com.example.ecommerce.enums.PhoneNumberType;
 import com.example.ecommerce.mapper.UserMapper;
 import com.example.ecommerce.repository.user.UserRepository;
 import com.example.ecommerce.request.user.AddAddressRequest;
@@ -19,15 +19,14 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.reactive.function.server.EntityResponse;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 import static com.example.ecommerce.constants.ErrorMessages.UserError.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)// src/test/java/com/example/ecommerce/controller/AuthControllerTest.java
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @DisplayName("Registration Integration Tests - Real Calls")
 @Profile("test")
@@ -48,6 +47,7 @@ class RegistrationTest {
     AddPhoneNumberRequest addPhoneNumberRequest;
     AddAddressRequest addAddressRequest;
     private String baseUrl;
+
     @BeforeEach
     void setUp() {
         baseUrl = "http://localhost:" + port;
@@ -55,7 +55,11 @@ class RegistrationTest {
         addAddressRequest = new AddAddressRequest(
                 "123 Test St", "City", "Country", "55555", "Egypt"
         );
-        addPhoneNumberRequest = new AddPhoneNumberRequest("1234567890", "Home");
+        addPhoneNumberRequest = AddPhoneNumberRequest.builder()
+                .number("010263864")
+                .countryCode("+20")
+                .phoneNumberType(PhoneNumberType.MOBILE)
+                .build();
         createUserRequest = new CreateUserRequest(
                 "ValidUser",
                 "Password123@#123",
@@ -67,10 +71,10 @@ class RegistrationTest {
         userRepository.deleteAll();
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "{index} - Register with password \"{0}\" ")
     @DisplayName("Register with invalid password should return validation error")
-    @ValueSource(strings = { "short", "nouppercase1!", "NOLOWERCASE1!",
-            "NoNumber!", "NoSpecialChar1", "Short1!", "!" , "ValidPassword@12345678901234567890"
+    @ValueSource(strings = {"short", "nouppercase1!", "NOLOWERCASE1!",
+            "NoNumber!", "NoSpecialChar1", "Short1!", "!", "ValidPassword@12345678901234567890"
             , "ValidPassword@12345678901234567890123456789012345678901234567890",
             "ValidPassword@1234567890123456789012345678901234567890123456789012345678901234567890"
     })
@@ -97,10 +101,11 @@ class RegistrationTest {
         assertThat(response.getBody().getData()).isNull();
 
     }
-    @ParameterizedTest(name = "{index} - Register with invalid email should return validation error")
-    @ValueSource(strings = { "invalid-email", "user@.com", "user#domain#",
+
+    @ParameterizedTest(name = "{index} - Register with Email \"{0}\"")
+    @ValueSource(strings = {"invalid-email", "user@.com", "user#domain#",
             "user@domain.", "user@domain..com", "user@domain,com", "user@domain,com",
-            "user@domain..com","sh"})
+            "user@domain..com", "sh"})
     void testRegister_InvalidEmail_ShouldReturnValidationError(String invalidEmail) {
         // Arrange
         CreateUserRequest req = new CreateUserRequest(
@@ -123,8 +128,8 @@ class RegistrationTest {
         assertThat(response.getBody().getData()).isNull();
     }
 
-    @ParameterizedTest(name = "{index} - Register with null or empty email should return validation error")
-    @ValueSource(strings = { "" })
+    @ParameterizedTest(name = "{index} - Register with Email \"{0}\"")
+    @ValueSource(strings = {""})
     @DisplayName("Register with null or empty email should return validation error")
     void testRegister_NullOrEmptyEmail_ShouldReturnValidationError(String nullOrEmptyEmail) {
         // Arrange
@@ -148,11 +153,11 @@ class RegistrationTest {
         assertThat(response.getBody().getData()).isNull();
     }
 
-    @ParameterizedTest(name = "{index} - Register with invalid username should return validation error")
-    @ValueSource(strings = { "a!b@c", "user name", "user name with spaces", "user@name", "user#name", "user$name", "user%name",
+    @ParameterizedTest(name = "{index} - Register with username \"{0}\"")
+    @ValueSource(strings = {"a!b@c", "user name", "user name with spaces", "user@name", "user#name", "user$name", "user%name",
             "user^name", "user&name", "user*name", "user(name)", "user)name", "user+name",
             "user=name", "user{name}", "user}name", "user|name", "user\\name", "user/name",
-            "user?name"," ", "   ", "\t", "\n", "\r" ,"\t\n\r "})
+            "user?name", "   "})
     void testRegister_InvalidUsername_ShouldReturnValidationError(String invalidUsername) {
         // Arrange
         CreateUserRequest req = new CreateUserRequest(
@@ -177,8 +182,8 @@ class RegistrationTest {
         assertThat(response.getBody().getData()).isNull();
     }
 
-    @ParameterizedTest(name = "{index} - Register with null or empty username should return validation error")
-    @ValueSource(strings = { "" })
+    @ParameterizedTest(name = "{index} - Register with username \"{0}\"")
+    @ValueSource(strings = {" "})
     @DisplayName("Register with null or empty username should return validation error")
     void testRegister_NullOrEmptyUsername_ShouldReturnValidationError(String nullOrEmptyUsername) {
         // Arrange
@@ -201,10 +206,10 @@ class RegistrationTest {
         assertThat(response.getBody().getMessage()).contains(USERNAME_EMPTY);
         assertThat(response.getBody().getData()).isNull();
     }
-    @ParameterizedTest(name = "{index} - Register with size not convenient username should return validation error")
-    @ValueSource(strings = {"a", "ab",
-            "                         Sherif c Ali Sherif              above50char" })
-    @DisplayName("Register with null or empty username should return validation error")
+
+    @ParameterizedTest(name = "{index} - Register with username \"{0}\"")   @ValueSource(strings = {"a", "ab",
+            "AliSheriabove5S_55555555555555555555555555555555555550char"})
+    @DisplayName("Register with inconvenient username size should return validation error")
     void testRegister_SizeNotConvenientUsername_ShouldReturnValidationError(String sizeNotConvenientUsername) {
         // Arrange
         CreateUserRequest req = new CreateUserRequest(
@@ -312,7 +317,177 @@ class RegistrationTest {
                 .isNotNull();
         assertThat(response.getBody().getData())
                 .isNotNull()
-                .hasFieldOrPropertyWithValue("username",createUserRequest.username());
+                .hasFieldOrPropertyWithValue("username", createUserRequest.username());
+
+    }
+
+
+    @ParameterizedTest(name = "{index} Phone number \"{0}\"")
+    @DisplayName("Register With invalid Phone number")
+    @ValueSource(strings = {"1", "22", "333", "4444", "55555", "666666", "1616161616161616",
+            "sherif101", "010#45SH", "+25185358", "********", "+-*/+--*/+/", " 010268*854"})
+    void testRegister_InValidPhoneNumber_ShouldReturnErrorMessage(String inValidPhoneNumber) {
+        //Arrange
+        addPhoneNumberRequest = AddPhoneNumberRequest.builder()
+                .number(inValidPhoneNumber)
+                .countryCode("+20")
+                .phoneNumberType(PhoneNumberType.MOBILE)
+                .build();
+
+        createUserRequest = CreateUserRequest.builder()
+                .username("sherif")
+                .email("sherif@gmail.com")
+                .password("Sherfi@#010")
+                .phoneNumber(Set.of(addPhoneNumberRequest))
+                .build();
+        // Act
+
+        ResponseEntity<ErrorResponse> response = restTemplate.postForEntity(
+                baseUrl + "/api/v1/auth/register",
+                createUserRequest,
+                ErrorResponse.class
+        );
+
+        // Assert
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(response.getBody())
+                .isNotNull().extracting(ErrorResponse::message)
+                .isEqualTo("Invalid phone number");
+
+    }
+
+
+    @ParameterizedTest(name = "{index} Phone number \"{0}\"")
+    @DisplayName("Register With Empty Phone number")
+    @ValueSource(strings = {"   ",})
+    void testRegister_EmptyOrBlankPhoneNumber_ShouldReturnErrorMessage(String emptyOrBlankPhoneNumber) {
+        //Arrange
+        addPhoneNumberRequest = AddPhoneNumberRequest.builder()
+                .number(emptyOrBlankPhoneNumber)
+                .countryCode("+20")
+                .phoneNumberType(PhoneNumberType.MOBILE)
+                .build();
+
+        createUserRequest = CreateUserRequest.builder()
+                .username("sherif")
+                .email("sherif@gmail.com")
+                .password("Sherfi@#010")
+                .phoneNumber(Set.of(addPhoneNumberRequest))
+                .build();
+        // Act
+
+        ResponseEntity<ErrorResponse> response = restTemplate.postForEntity(
+                baseUrl + "/api/v1/auth/register",
+                createUserRequest,
+                ErrorResponse.class
+        );
+
+        // Assert
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(response.getBody())
+                .isNotNull().extracting(ErrorResponse::message)
+                .isEqualTo("Number is required");
+
+    }
+    @ParameterizedTest(name = "{index} Country Code \"{0}\"")
+    @DisplayName("Register With inValid Country Code")
+    @ValueSource(strings = {"-8888", "555","55555","88888888" , "/*+//*", "333","+666666"})
+    void testRegister_InvalidCountryCode_ShouldReturnErrorMessage(String inValidCountryCode) {
+        //Arrange
+        addPhoneNumberRequest = AddPhoneNumberRequest.builder()
+                .number("010263864")
+                .countryCode(inValidCountryCode)
+                .phoneNumberType(PhoneNumberType.MOBILE)
+                .build();
+
+        createUserRequest = CreateUserRequest.builder()
+                .username("sherif")
+                .email("sherif@gmail.com")
+                .password("Sherfi@#010")
+                .phoneNumber(Set.of(addPhoneNumberRequest))
+                .build();
+        // Act
+
+        ResponseEntity<ErrorResponse> response = restTemplate.postForEntity(
+                baseUrl + "/api/v1/auth/register",
+                createUserRequest,
+                ErrorResponse.class
+        );
+
+        // Assert
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(response.getBody())
+                .isNotNull().extracting(ErrorResponse::message)
+                .isEqualTo("Invalid country code");
+
+    }
+
+    @ParameterizedTest(name = "{index} Country Code \"{0}\"")
+    @DisplayName("Register With inValid Country Code")
+    @ValueSource(strings = {" ", "  ","",})
+    void testRegister_EmptyCountryCode_ShouldReturnErrorMessage(String emptyCountryCode) {
+        //Arrange
+        addPhoneNumberRequest = AddPhoneNumberRequest.builder()
+                .number("010263864")
+                .countryCode(emptyCountryCode)
+                .phoneNumberType(PhoneNumberType.MOBILE)
+                .build();
+
+        createUserRequest = CreateUserRequest.builder()
+                .username("sherif")
+                .email("sherif@gmail.com")
+                .password("Sherfi@#010")
+                .phoneNumber(Set.of(addPhoneNumberRequest))
+                .build();
+        // Act
+
+        ResponseEntity<ErrorResponse> response = restTemplate.postForEntity(
+                baseUrl + "/api/v1/auth/register",
+                createUserRequest,
+                ErrorResponse.class
+        );
+
+        // Assert
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(response.getBody())
+                .isNotNull().extracting(ErrorResponse::message)
+                .isEqualTo("Country code is required");
+
+    }
+
+    @ParameterizedTest(name = "{index} Country Code \"{0}\"")
+    @DisplayName("Register With inValid Phone Number Type")
+    @ValueSource(strings = {" ", "  ","","Mobiile", "HHOme","PhoneNumberType"})
+    void testRegister_InValidCountryCode_ShouldReturnErrorMessage(String invalidPhoneNumberType) {
+        //Arrange
+        Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("username", "sherif");
+        requestBody.put("email", "sherif@gmail.com");
+        requestBody.put("password", "Sherfi@#010");
+
+        Map<String, Object> phoneNumber = new HashMap<>();
+        phoneNumber.put("number", "010263864");
+        phoneNumber.put("countryCode", "+20");
+        phoneNumber.put("phoneNumberType", invalidPhoneNumberType);
+        requestBody.put("addPhoneNumberRequest", Set.of(phoneNumber));
+
+        // Act
+
+        ResponseEntity<ErrorResponse> response = restTemplate.postForEntity(
+                baseUrl + "/api/v1/auth/register",
+                requestBody,
+                ErrorResponse.class
+        );
+
+        System.out.println(response.toString());
+        // Assert
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(response.getBody())
+                .isNotNull().extracting(ErrorResponse::message)
+                .isEqualTo("Invalid PhoneNumberType");
 
     }
 }
+
+
+

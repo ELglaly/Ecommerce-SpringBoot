@@ -3,6 +3,7 @@ package com.example.ecommerce.controller.AuthControllerTest;
 import com.example.ecommerce.controller.UserController;
 import com.example.ecommerce.dto.UserDTO;
 import com.example.ecommerce.entity.user.User;
+import com.example.ecommerce.enums.PhoneNumberType;
 import com.example.ecommerce.mapper.UserMapper;
 import com.example.ecommerce.repository.user.UserRepository;
 import com.example.ecommerce.request.user.AddAddressRequest;
@@ -67,7 +68,11 @@ class AuthControllerTest {
         addAddressRequest = new AddAddressRequest(
                 "123 Test St", "City", "Country", "55555", "Egypt"
         );
-        addPhoneNumberRequest = new AddPhoneNumberRequest("1234567890", "Home");
+        addPhoneNumberRequest = AddPhoneNumberRequest.builder()
+                .countryCode("+20")
+                .phoneNumberType(PhoneNumberType.MOBILE)
+                .number("0102638652")
+                .build();
         createUserRequest = new CreateUserRequest(
                 "ValidUser",
                 "Password123@#123",
