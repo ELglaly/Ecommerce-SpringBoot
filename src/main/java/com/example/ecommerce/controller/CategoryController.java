@@ -9,6 +9,7 @@ import com.example.ecommerce.serivce.category.CategoryService;
 import com.example.ecommerce.util.CategoryUtils;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -30,10 +31,10 @@ public class CategoryController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse> addCategory(@RequestBody @Valid AddCategoryRequest request) {
         CategoryDTO category = categoryService.addCategory(request);
-        return ResponseEntity.ok(new ApiResponse(category, CategoryUtils.CATEGORY_ADDED));
+        return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse(category, CategoryUtils.CATEGORY_ADDED));
     }
 
-    @GetMapping ("/search/")
+    @GetMapping ("/search")
     public ResponseEntity<ApiResponse> searchByName(@RequestParam String name) {
         Page<CategoryDTO> categoryDTOS = categoryService.searchByName(name);
         return ResponseEntity.ok(new ApiResponse(categoryDTOS,CategoryUtils.CATEGORY_FETCHED));
@@ -41,7 +42,6 @@ public class CategoryController {
 
     @GetMapping()
     public ResponseEntity<ApiResponse> getAllCategory() {
-
         Page<CategoryDTO> categoryDTOS = categoryService.getAllCategories();
         return ResponseEntity.ok(new ApiResponse(categoryDTOS, CategoryUtils.CATEGORY_FETCHED) );
     }

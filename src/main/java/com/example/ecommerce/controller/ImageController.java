@@ -57,10 +57,4 @@ public class ImageController {
         List<ImageDTO> imageDTOS = imageService.getImagesByProduct(productName);
         return ResponseEntity.ok(new ApiResponse(imageDTOS, "Images Retrieved Successfully"));
     }
-
-//    @GetMapping("/count/{productName}")
-//    public ResponseEntity<ApiResponse> getImageCountByProduct(@PathVariable String productName) {
-//        Long count = imageService.getImageCountByProduct(productName);
-//        return ResponseEntity.ok(new ApiResponse(count, "Image Count Retrieved Successfully"));
-//    }
 }
